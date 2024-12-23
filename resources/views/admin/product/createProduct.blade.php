@@ -58,6 +58,10 @@
                 </div>
             @endif
         </div>
+        <div class="form-group">
+            <label for="img_prd">Ảnh</label>
+            <input type="file" name="img_prd" class="form-control" >
+        </div>
 
         <!-- Danh mục sản phẩm -->
         <div class="form-group">

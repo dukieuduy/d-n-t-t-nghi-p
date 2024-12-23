@@ -17,23 +17,26 @@ class HomeController extends Controller
         // $products = Product::query()
         // ->with(['lowestVariation']) // Định nghĩa mối quan hệ lowestVariation bên dưới
         // ->get();
-        $products = Product::query()
-            ->select('products.id', 'products.name')
-            ->addSelect([
-                'lowest_price_variation' => ProductVariation::select('price')
-                    ->whereColumn('product_variations.product_id', 'products.id')
-                    ->orderBy('price', 'asc')
-                    ->limit(1),
-                'lowest_price_image' => ProductVariation::select('image')  // Lấy ảnh của biến thể có giá thấp nhất
-                    ->whereColumn('product_variations.product_id', 'products.id')
-                    ->orderBy('price', 'asc')
-                    ->limit(1),
-            ])
-            ->with(['variations' => function ($query) {
-                $query->orderBy('price', 'asc');
-            }])
-            ->get();
+        // $products = Product::query()
+        //     ->select('products.id', 'products.name')
+        //     ->addSelect([
+        //         'lowest_price_variation' => ProductVariation::select('price')
+        //             ->whereColumn('product_variations.product_id', 'products.id')
+        //             ->orderBy('price', 'asc')
+        //             ->limit(1),
+        //         'lowest_price_image' => ProductVariation::select('image')  // Lấy ảnh của biến thể có giá thấp nhất
+        //             ->whereColumn('product_variations.product_id', 'products.id')
+        //             ->orderBy('price', 'asc')
+        //             ->limit(1),
+        //     ])
+        //     ->with(['variations' => function ($query) {
+        //         $query->orderBy('price', 'asc');
+        //     }])
+        //     ->get();
         // dd($products);
+        $products = Product::all();  // Lấy tất cả các sản phẩm
+        // dd($products);
+
         return view('client.pages.home',compact('products'));
     }
 
@@ -45,8 +48,7 @@ class HomeController extends Controller
             //     'category',
             //     'attributes' // Nếu có bảng pivot cho thuộc tính, tải các thuộc tính của sản phẩm
             // ])->findOrFail($id);
-                $product = Product::findOrFail($id);
-
+            $product = Product::findOrFail($id);
 
             // Tính tổng số lượng tồn kho từ các biến thể
             $variations = $product->variations;
@@ -64,14 +66,14 @@ class HomeController extends Controller
             // Lấy các giá trị màu sắc từ các biến thể có số lượng > 0
             $colorAttributes = $availableVariations->flatMap(function ($variation) {
                 return $variation->variationAttributes->filter(function ($attribute) {
-                    return $attribute->attributeValue->attribute->name == 'Màu sắc'; // Giả sử tên thuộc tính là "Màu sắc"
+                    return $attribute->attributeValue->attribute->name == 'color'; // Giả sử tên thuộc tính là "Màu sắc"
                 });
             });
 
             // Lấy các giá trị kích thước từ các biến thể có số lượng > 0
             $sizeAttributes = $availableVariations->flatMap(function ($variation) {
                 return $variation->variationAttributes->filter(function ($attribute) {
-                    return $attribute->attributeValue->attribute->name == 'Kích thước'; // Giả sử tên thuộc tính là "Kích thước"
+                    return $attribute->attributeValue->attribute->name == 'size'; // Giả sử tên thuộc tính là "Kích thước"
                 });
             });
 
@@ -84,8 +86,22 @@ class HomeController extends Controller
                 return $attribute->attributeValue->value; // Giá trị của kích thước
             })->unique()->values(); // Loại bỏ trùng lặp và đánh chỉ số lại
 
+             // Lưu thông tin kích thước với các màu sắc tương ứng
+             $sizesWithColors = [];
+                foreach ($availableVariations as $variation) {
+                    $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
+                    $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
+                    
+                    // Thêm vào mảng sizesWithColors với size là key và màu sắc là value
+                    if (!isset($sizesWithColors[$size])) {
+                        $sizesWithColors[$size] = [];
+                    }
+                    $sizesWithColors[$size][] = $color;
+                }
+                // dd($sizesWithColors);
+
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes'));
+            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes','sizesWithColors'));
         }
 
     

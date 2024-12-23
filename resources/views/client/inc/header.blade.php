@@ -39,6 +39,9 @@
                                     </a>
     
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <div class="dropdown-header">
+                                            <a>Thông tin tài khoản</a>
+                                        </div>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
@@ -81,14 +84,22 @@
                         </div>
                         <div class="middel_right_info">
 
-                            <div class="header_wishlist">
-                                <a href="wishlist.html"><span class="lnr lnr-heart"></span> Wish list </a>
+                            {{-- <div class="header_wishlist">
+                                <a href="wishlist.html"><span class="lnr lnr-heart"></span> yêu thích </a>
                                 <span class="wishlist_quantity">3</span>
+                            </div> --}}
+                            <div class="mini_cart_wrapper">
+                                <a href="{{route('cart.index')}}"><span class="lnr lnr-cart"></span>giỏ hàng </a>
+                                <span class="cart_quantity">{{$cartCount}}</span>
                             </div>
                             <div class="mini_cart_wrapper">
-                                <a href="{{route('cart.index')}}"><span class="lnr lnr-cart"></span>My Cart </a>
-                                <span class="cart_quantity">2</span>
+                                <a href="{{ route('user.orders.index') }}">
+                                    <span class="lnr lnr-cart"></span>đơn hàng</a>
+                        
+
+                                <span class="cart_quantity">{{ $orderCount }}</span>
                             </div>
+                            
                         </div>
 
                     </div>

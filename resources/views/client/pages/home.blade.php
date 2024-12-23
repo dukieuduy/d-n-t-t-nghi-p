@@ -235,7 +235,7 @@
                                     <p class="manufacture_product"><a href="#">Accessories</a></p>
                                 </div>
                                 <div class="product_thumb">
-                                    <a class="primary_img" href="#"> <img src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""></a>
+                                    <a class="primary_img" href="#"> <img src="{{ asset('storage/' . $item->image_prd)}}" alt=""></a>
                                     {{-- <a class="secondary_img" href="#"><img
                                             src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""></a> --}}
                                             {{-- <a class="secondary_img" href="#"> <img src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""> </a> --}}
@@ -268,7 +268,7 @@
                                     </div>
                                     <div class="product_footer d-flex align-items-center">
                                         <div class="price_box">
-                                            <span class="regular_price">{{$item->lowest_price_variation}}</span>
+                                            <span class="regular_price">{{$item->price_new}}</span>
                                         </div>
                                         <div class="add_to_cart">
                                             <a href="cart.html" title="add to cart"><span

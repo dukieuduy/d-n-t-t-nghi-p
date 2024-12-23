@@ -61,9 +61,19 @@ public function store(Request $request)
     ]);
 
     // Tạo sản phẩm
+
+    // lưa ảnh sản phẩm
+    $img_prd = null;
+    // Kiểm tra nếu có file ảnh được tải lên
+    if ($request->hasFile('img_prd') && $request->file('img_prd') instanceof \Illuminate\Http\UploadedFile) {
+        // Lưu ảnh vào thư mục 'products' và lấy đường dẫn của ảnh đã lưu
+        $img_prd = $request->file('img_prd')->store('products', 'public');
+    }
+    // dd($img_prd);
     $product = Product::create([
         'name' => $request->name,
         'description' => $request->description,
+        'image_prd'=>$img_prd,
         'category_id' => $request->category,
         'price_old' => $request->price_old ?? 0,
         'price_new' => $request->price_new ?? 0,
