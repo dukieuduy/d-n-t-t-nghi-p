@@ -72,7 +72,12 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::find($id);
+        if (!$category) {
+            return redirect()->route('admin.categories.index')->with('error', 'Category not found');
+        }
+        $categories = Category::all(); 
+        return view('admin.categories.edit', compact('category', 'categories'));
     }
 
     /**
@@ -80,7 +85,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // 'is_active' =>'required',
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+
+        // Trả về danh sách danh mục sau khi cập nhật
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -88,6 +102,15 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $category->delete();
+        $catefories = Category::all();
+        foreach($catefories as $x ){
+            if($x->parent_id==$id){
+                $x->delete();
+            }
+        }
+        // Trả về danh sách danh mục sau khi xóa
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
     }
 }

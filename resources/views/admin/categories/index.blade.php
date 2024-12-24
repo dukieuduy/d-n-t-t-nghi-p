@@ -56,11 +56,11 @@
                     
                         <td>{{$category->is_active == 1 ?"show":"hide"}}</td>
                         <td>
-                            <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure edit this category?')" >Edit</a>
+                            <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-warning btn-sm" onclick="return confirm('Bạn có chắc chắn muốn sửa danh mục này không ?')" >Sửa</a>
                             <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?')">Delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này không?')">Xóa</button>
                             </form>
                         </td>
                      @endforeach

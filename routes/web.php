@@ -110,12 +110,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
-    Route::get('categories', [CategoryController::class, 'index'])-> name('categories.index');
-    Route::get('categories/create', [CategoryController::class, 'create'])-> name('categories.create');
-    Route::post('categories/store', [CategoryController::class, 'store'])-> name('categories.store');
-    Route::post('categories/edit/{id}', [CategoryController::class, 'edit'])-> name('categories.edit');
-    Route::post('categories/destroy/{id}', [CategoryController::class, 'delete'])->name('categories.destroy');
-    // Route::resource('hosts',CategoryController::class);
+    Route::resource('categories',CategoryController::class);
 
 
 });
