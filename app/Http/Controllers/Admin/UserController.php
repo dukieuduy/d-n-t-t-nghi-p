@@ -46,15 +46,31 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
-    }
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')->with('error', 'Users not found');
+        }
+        $users = User::all(); 
+        return view('admin.users.edit', compact('user', 'users'));
+   }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+           
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+
+        // Trả về danh sách danh mục sau khi cập nhật
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
     /**
