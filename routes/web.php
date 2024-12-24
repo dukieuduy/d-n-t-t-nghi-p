@@ -23,6 +23,7 @@ use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,6 +112,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('categories',CategoryController::class);
+    Route::resource('users',AdminUserController::class);
 
 
 });
