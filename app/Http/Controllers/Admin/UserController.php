@@ -78,6 +78,15 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+        $users = User::all();
+        foreach($users as $x ){
+            if($x->parent_id==$id){
+                $x->delete();
+            }
+        }
+        // Trả về danh sách danh mục sau khi xóa
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 }
