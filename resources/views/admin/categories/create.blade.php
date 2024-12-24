@@ -30,7 +30,7 @@
             @enderror
         </div> -->
 
-        <button type="submit" class="btn btn-success">{{ isset($category) ? 'Update Category' : 'Create Category' }}</button>
+        <button type="submit" class="btn btn-success">{{ isset($category) ? 'Cập nhật' : 'Tạo mới' }}</button>
         <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>
