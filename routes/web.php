@@ -1,6 +1,8 @@
 <?php
 
 
+use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Admin\SaleController;
 use App\Models\User;
 // use App\Http\Controllers\AdminCartController;
 use App\Http\Middleware\IsAdmin;
@@ -107,11 +109,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::post('orders/{id}/update', [OrderController::class, 'update'])->name('orders.update');
-    
+
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('categories',CategoryController::class);
+
+    Route::resource('discounts', DiscountController::class);
+    Route::put('discounts/{discount}/change-status', [DiscountController::class, 'changeStatus'])->name('discounts.changeStatus');
+
+    Route::resource('sales', SaleController::class);
+    Route::put('sales/{sale}/change-status', [SaleController::class, 'changeStatus'])->name('sales.changeStatus');
 
 });
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
