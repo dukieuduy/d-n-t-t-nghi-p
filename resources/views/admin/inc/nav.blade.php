@@ -67,10 +67,7 @@
                 <a class="collapse-item" href="{{ route('admin.orders.index') }}">Danh sách đơn hàng</a>
                 {{-- <a class="collapse-item" href="{{route('admin.shipping_fees.create')}}">Thêm mới</a> --}}
             </div>
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Quản lý người dùng</h6>
-                <a class="collapse-item" href="{{route('admin.users.index')}}">Danh sách người dùng</a>
-            </div>
+           
         </div>
     </li>
 
