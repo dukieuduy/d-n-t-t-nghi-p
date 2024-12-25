@@ -70,7 +70,6 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Quản lý người dùng</h6>
                 <a class="collapse-item" href="{{route('admin.users.index')}}">Danh sách người dùng</a>
-                <a class="collapse-item" href="{{route('admin.users.create')}}">Thêm người dùng</a>
             </div>
         </div>
     </li>
