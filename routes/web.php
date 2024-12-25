@@ -112,8 +112,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('categories',CategoryController::class);
-    Route::resource('users',AdminUserController::class);
-
 
 });
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
