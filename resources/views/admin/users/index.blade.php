@@ -59,11 +59,11 @@
                         <td>{{$user->type}}</td>
                         <td>
                             <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm" onclick="return confirm('Bạn có chắc chắn muốn sửa người dùng này không ?')" >Sửa</a>
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;">
+                            <!-- <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">Xóa</button>
-                            </form>
+                            </form> -->
                         </td>
                      @endforeach
                      
