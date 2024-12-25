@@ -287,26 +287,82 @@ class CheckoutController extends Controller
     
 
 
-    public function confirmCheckout(Request $request) {
-        $cartItemIds = Arr::flatten($request->all());
-        // dd($cartItemIds);
-        if(empty($cartItemIds) || empty($request->cart_item_id)) {
-            return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
-        }
+    // public function confirmCheckout(Request $request) {
+    //     dd($request->color,$request->size);
+        
+    //     $cartItemIds = Arr::flatten($request->all());
+    //     // dd($cartItemIds);
+    //     if(empty($cartItemIds) || empty($request->cart_item_id)) {
+    //         return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
+    //     }
 
-        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
-        // dd($cartItems);
-        $totalAmount = $cartItems->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
-        // $provinces=$this->getProvinces();
-        $provinces = Province::all();
-        // dd($provinces);
-        $districts = District::where('province_id', $request->provinceId)->get();
-        $wards = Ward::where('district_id', $request->districtId)->get();
-        // dd($wards);
-        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards'));
+    //     $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
+    //     // dd($cartItems);
+    //     $totalAmount = $cartItems->sum(function ($item) {
+    //         return $item->price * $item->quantity;
+    //     });
+    //     // $provinces=$this->getProvinces();
+    //     $provinces = Province::all();
+    //     // dd($provinces);
+    //     $districts = District::where('province_id', $request->provinceId)->get();
+    //     $wards = Ward::where('district_id', $request->districtId)->get();
+    //     // dd($wards);
+    //     return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards'));
+    // }
+    public function confirmCheckout(Request $request)
+{
+    // Cập nhật size, color và product_sku cho từng cart item
+    if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
+        foreach ($request->cart_item_id as $index => $cartItemId) {
+            $cartItem = CartItem::find($cartItemId);
+    
+            if ($cartItem) {
+                // Lấy size và color từ request hoặc giữ nguyên giá trị cũ
+                $size = $request->size[$index] ?? $cartItem->size; // Lấy size từ request hoặc giữ nguyên
+                $color = $request->color[$index] ?? $cartItem->color; // Lấy color từ request hoặc giữ nguyên
+                $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
+    
+                // Cập nhật product_sku = product_id-size-color
+                $productSku = "{$cartItem->product_id}-{$size}-{$color}";
+    
+                // In ra giá trị để kiểm tra
+                // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị
+    
+                // Cập nhật các thông tin vào cơ sở dữ liệu
+                $cartItem->update([
+                    'size' => $size,
+                    'color' => $color,
+                    'quantity' => $quantity, // Cập nhật số lượng
+                    'product_sku' => $productSku,
+                ]);
+            }
+        }
     }
+    
+    
+
+    // Kiểm tra nếu không có sản phẩm nào được chọn để thanh toán
+    if (empty($request->cart_item_id)) {
+        return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
+    }
+
+    // Lấy danh sách các sản phẩm đã chọn
+    $cartItems = CartItem::whereIn('id', $request->cart_item_id)->get();
+
+    // Tính tổng tiền thanh toán
+    $totalAmount = $cartItems->sum(function ($item) {
+        return $item->price * $item->quantity;
+    });
+
+    // Lấy danh sách tỉnh, quận, và phường
+    $provinces = Province::all();
+    $districts = District::where('province_id', $request->provinceId)->get();
+    $wards = Ward::where('district_id', $request->districtId)->get();
+
+    // Trả về view xác nhận thanh toán
+    return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards'));
+}
+
     
     
 }
