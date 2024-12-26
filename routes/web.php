@@ -85,6 +85,8 @@ Route::get('/product/{id}', [\App\Http\Controllers\HomeController::class, 'detai
 // Route::post('/create-prd', [DashboardController::class, 'createProduct'])->middleware(['auth',IsAdmin::class]);
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
+    Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('admin-profile-edit');
+
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
@@ -107,7 +109,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::post('orders/{id}/update', [OrderController::class, 'update'])->name('orders.update');
-    
+
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
@@ -143,9 +145,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/user_orders/verify-phone', [UserOrderController::class, 'verifyPhone'])->name('user.orders.verify_phone');
 Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhone'])->name('user.orders.check_phone');
-
-
-
+Route::get('profile',[\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile-edit');
+Route::post('profile-edit', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile-update');
 
 
 
