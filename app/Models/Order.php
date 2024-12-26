@@ -13,6 +13,7 @@ class Order extends Model
         'status',
         'shipping_status',
         'payment_method',
+        'payment_status',
         'province',
         'district',
         'ward',

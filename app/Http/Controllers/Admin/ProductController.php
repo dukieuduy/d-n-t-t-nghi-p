@@ -37,17 +37,141 @@ public function create()
     return view('admin.product.createProduct', compact('colorValues', 'sizeValues', 'category'));
 }
 
+// public function store(Request $request)
+// {
+//     // dd($request->all());
+
+//     // Validate dữ liệu form
+//     $request->validate([
+//         'name' => 'required',
+//         'description' => 'required',
+//         'price_old' => 'required|numeric|min:0',  // Đã sửa thành 'required'
+//         'price_new' => [
+//             'required',  // Đã sửa thành 'required'
+//             'numeric',
+//             'min:0',
+//             function ($attribute, $value, $fail) use ($request) {
+//                 if ($request->price_old !== null && $value > $request->price_old) {
+//                     $fail('Giá khuyến mãi (price_new) không được lớn hơn giá gốc (price_old).');
+//                 }
+//             }
+//         ],
+//         'category' => 'required|exists:categories,id',
+//         'variations.*.price' => 'nullable|numeric|min:0',
+//         'variations.*.stock_quantity' => 'nullable|integer|min:0',
+//         'variations.*.attributes.*' => 'required|exists:product_attribute_values,id',
+//         'variations.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+//     ], [
+//         'name.required' => "Tên sản phẩm không được để trống.",
+//         'description.required' => "Mô tả không được để trống.",
+//         'category.required' => "Danh mục sản phẩm là bắt buộc.",
+//         'category.exists' => "Danh mục không hợp lệ.",
+//         'price_old.required' => "Giá gốc là bắt buộc.",
+//         'price_new.required' => "Giá khuyến mãi là bắt buộc.",
+//         'variations.*.attributes.*.required' => "Thuộc tính của biến thể là bắt buộc.",
+//         'variations.*.image.image' => "File ảnh biến thể phải là định dạng ảnh.",
+//         'variations.*.image.max' => "Dung lượng file ảnh không được vượt quá 2MB.",
+//     ]);
+    
+    
+//     // Tạo sản phẩm
+
+//     // lưa ảnh sản phẩm
+//     $img_prd = null;
+//     // Kiểm tra nếu có file ảnh được tải lên
+//     if ($request->hasFile('img_prd') && $request->file('img_prd') instanceof \Illuminate\Http\UploadedFile) {
+//         // Lưu ảnh vào thư mục 'products' và lấy đường dẫn của ảnh đã lưu
+//         $img_prd = $request->file('img_prd')->store('products', 'public');
+//     }
+//     // dd($img_prd);
+//     $product = Product::create([
+//         'name' => $request->name,
+//         'description' => $request->description,
+//         'image_prd'=>$img_prd,
+//         'category_id' => $request->category,
+//         'price_old' => $request->price_old ?? 0,
+//         'price_new' => $request->price_new ?? 0,
+//     ]);
+
+//     // Lưu biến thể
+//     foreach ($request->variations as $index => $variation) {
+//         // Tạo SKU theo cú pháp id_sanpham-color-size
+//         $attributes = [];
+        
+//         foreach ($variation['attributes'] as $attributeId => $valueId) {
+//             $attributeValue = ProductAttributeValue::find($valueId);
+//             if ($attributeValue) {
+//                 $attributes[] = $attributeValue->value;
+//             }
+//         }
+
+//         // Tạo SKU
+//         $sku = $product->id . '-' . implode('-', $attributes);
+
+//         // Kiểm tra SKU có tồn tại hay chưa
+//         if (ProductVariation::where('sku', $sku)->exists()) {
+//             return redirect()->back()->withErrors([
+//                 "variations.$index.attributes" => "Biến thể với SKU $sku đã tồn tại."
+//             ]);
+//         }
+
+//         // Lưu ảnh biến thể nếu có
+//         $variationImagePath = null;
+//         if (isset($variation['image']) && $variation['image'] instanceof \Illuminate\Http\UploadedFile) {
+//             $variationImagePath = $variation['image']->store('variations', 'public');
+//         }
+
+//         // Tạo biến thể
+//         $productVariation = ProductVariation::create([
+//             'product_id' => $product->id,
+//             'sku' => $sku,
+//             'price' => $variation['price'] ?? 0,
+//             'stock_quantity' => $variation['stock_quantity'] ?? 0,
+//             'image' => $variationImagePath,
+//         ]);
+
+//        // Lưu thuộc tính của biến thể
+//         foreach ($variation['attributes'] as $attributeName => $valueId) {
+//             // Tìm giá trị của thuộc tính (size, color, ...)
+//             $attributeValue = ProductAttributeValue::find($valueId);
+//             $attribute = ProductAttribute::where('name', $attributeName)->first(); // Tìm thuộc tính (size, color)
+//             if ($attributeValue && $attribute) {
+//                 // Chèn thuộc tính biến thể vào bảng product_variation_attributes
+//                 ProductVariationAttribute::create([
+//                     'product_variation_id' => $productVariation->id,
+//                     'product_attribute_value_id' => $valueId,  // Sử dụng valueId là ID của giá trị thuộc tính
+//                     'product_attribute_id' => $attribute->id,  // Sử dụng ID của thuộc tính (size, color)
+//                 ]);
+//             } else {
+//                 return redirect()->back()->withErrors([
+//                     "variations.$index.attributes" => "Giá trị thuộc tính không hợp lệ."
+//                 ]);
+//             }
+//         }
+
+//     }
+
+//     return redirect()->back()->with('success', 'Sản phẩm đã được thêm thành công!');
+// }
 public function store(Request $request)
 {
-    // Validate dữ liệu form
     $request->validate([
         'name' => 'required',
         'description' => 'required',
-        'price_old' => 'nullable|numeric|min:0',
-        'price_new' => 'nullable|numeric|min:0',
+        'price_old' => 'required|numeric|min:0',  // Đã sửa thành 'required'
+        'price_new' => [
+            'required',  // Đã sửa thành 'required'
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->price_old !== null && $value > $request->price_old) {
+                    $fail('Giá khuyến mãi (price_new) không được lớn hơn giá gốc (price_old).');
+                }
+            }
+        ],
         'category' => 'required|exists:categories,id',
         'variations.*.price' => 'nullable|numeric|min:0',
-        'variations.*.stock_quantity' => 'nullable|integer|min:0',
+        'variations.*.stock_quantity' => 'required|integer|min:0',
         'variations.*.attributes.*' => 'required|exists:product_attribute_values,id',
         'variations.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ], [
@@ -55,25 +179,25 @@ public function store(Request $request)
         'description.required' => "Mô tả không được để trống.",
         'category.required' => "Danh mục sản phẩm là bắt buộc.",
         'category.exists' => "Danh mục không hợp lệ.",
+        'price_old.required' => "Giá gốc là bắt buộc.",
+        'price_new.required' => "Giá khuyến mãi là bắt buộc.",
         'variations.*.attributes.*.required' => "Thuộc tính của biến thể là bắt buộc.",
         'variations.*.image.image' => "File ảnh biến thể phải là định dạng ảnh.",
         'variations.*.image.max' => "Dung lượng file ảnh không được vượt quá 2MB.",
+        'variations.*.stock_quantity.required'=>"Số lướng không được để trống"
     ]);
+    
 
     // Tạo sản phẩm
-
-    // lưa ảnh sản phẩm
     $img_prd = null;
-    // Kiểm tra nếu có file ảnh được tải lên
     if ($request->hasFile('img_prd') && $request->file('img_prd') instanceof \Illuminate\Http\UploadedFile) {
-        // Lưu ảnh vào thư mục 'products' và lấy đường dẫn của ảnh đã lưu
         $img_prd = $request->file('img_prd')->store('products', 'public');
     }
-    // dd($img_prd);
+
     $product = Product::create([
         'name' => $request->name,
         'description' => $request->description,
-        'image_prd'=>$img_prd,
+        'image_prd' => $img_prd,
         'category_id' => $request->category,
         'price_old' => $request->price_old ?? 0,
         'price_new' => $request->price_new ?? 0,
@@ -81,7 +205,6 @@ public function store(Request $request)
 
     // Lưu biến thể
     foreach ($request->variations as $index => $variation) {
-        // Tạo SKU theo cú pháp id_sanpham-color-size
         $attributes = [];
         foreach ($variation['attributes'] as $attributeId => $valueId) {
             $attributeValue = ProductAttributeValue::find($valueId);
@@ -90,42 +213,38 @@ public function store(Request $request)
             }
         }
 
-        // Tạo SKU
         $sku = $product->id . '-' . implode('-', $attributes);
 
-        // Kiểm tra SKU có tồn tại hay chưa
         if (ProductVariation::where('sku', $sku)->exists()) {
             return redirect()->back()->withErrors([
                 "variations.$index.attributes" => "Biến thể với SKU $sku đã tồn tại."
             ]);
         }
 
-        // Lưu ảnh biến thể nếu có
         $variationImagePath = null;
         if (isset($variation['image']) && $variation['image'] instanceof \Illuminate\Http\UploadedFile) {
             $variationImagePath = $variation['image']->store('variations', 'public');
         }
 
-        // Tạo biến thể
+        // Nếu price của biến thể rỗng, gán bằng price_new của sản phẩm chính
+        $variationPrice = $variation['price'] ?? $product->price_new;
+
         $productVariation = ProductVariation::create([
             'product_id' => $product->id,
             'sku' => $sku,
-            'price' => $variation['price'] ?? 0,
+            'price' => $variationPrice,
             'stock_quantity' => $variation['stock_quantity'] ?? 0,
             'image' => $variationImagePath,
         ]);
 
-       // Lưu thuộc tính của biến thể
         foreach ($variation['attributes'] as $attributeName => $valueId) {
-            // Tìm giá trị của thuộc tính (size, color, ...)
             $attributeValue = ProductAttributeValue::find($valueId);
-            $attribute = ProductAttribute::where('name', $attributeName)->first(); // Tìm thuộc tính (size, color)
+            $attribute = ProductAttribute::where('name', $attributeName)->first();
             if ($attributeValue && $attribute) {
-                // Chèn thuộc tính biến thể vào bảng product_variation_attributes
                 ProductVariationAttribute::create([
                     'product_variation_id' => $productVariation->id,
-                    'product_attribute_value_id' => $valueId,  // Sử dụng valueId là ID của giá trị thuộc tính
-                    'product_attribute_id' => $attribute->id,  // Sử dụng ID của thuộc tính (size, color)
+                    'product_attribute_value_id' => $valueId,
+                    'product_attribute_id' => $attribute->id,
                 ]);
             } else {
                 return redirect()->back()->withErrors([
@@ -133,11 +252,11 @@ public function store(Request $request)
                 ]);
             }
         }
-
     }
 
     return redirect()->back()->with('success', 'Sản phẩm đã được thêm thành công!');
 }
+
 
 public function index(Request $request)
 {

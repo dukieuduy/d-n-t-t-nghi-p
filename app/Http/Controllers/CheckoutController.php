@@ -69,7 +69,8 @@ class CheckoutController extends Controller
             $order = Order::find($vnp_TxnRef);
     
             if ($order) {
-                    $order->status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
+                    $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
+
                     $order->save();
     
                     return response()->json([
