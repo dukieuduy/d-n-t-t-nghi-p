@@ -23,6 +23,7 @@ use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -112,8 +113,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('categories',CategoryController::class);
+    Route::resource('reviews',ReviewController::class);
 
 });
+
+Route::get('/reviews/create/{id}', [ReviewController::class, 'add'])->name('client.reviews.create');
+Route::post('/reviews/store', [ReviewController::class, 'compare'])->name('client.reviews.store');
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
 Route::get('/shipping-fee/{province_id}/{district_id}', [ShippingFeeController::class, 'getShippingFeeByProvinceAndDistrict']);
 // Route::get('products/create', [ProductController::class, 'create'])->name('products.create');

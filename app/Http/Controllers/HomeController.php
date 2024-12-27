@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use App\Models\ProductVariation;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -49,6 +51,7 @@ class HomeController extends Controller
             //     'attributes' // Nếu có bảng pivot cho thuộc tính, tải các thuộc tính của sản phẩm
             // ])->findOrFail($id);
             $product = Product::findOrFail($id);
+            $reviews = Review::where('product_id',$id)->get();
 
             // Tính tổng số lượng tồn kho từ các biến thể
             $variations = $product->variations;
@@ -101,7 +104,7 @@ class HomeController extends Controller
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes','sizesWithColors'));
+            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes','sizesWithColors','reviews'));
         }
 
     
