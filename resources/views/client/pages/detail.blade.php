@@ -3,9 +3,9 @@
 @section('content')
 
 @if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
+<script>
+    alert("{{ session('error') }}");
+</script>
 @endif
 <div class="product_details mt-20">
     <div class="container">

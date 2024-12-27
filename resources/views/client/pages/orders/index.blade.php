@@ -100,6 +100,16 @@
                         <button type="submit" class="btn btn-primary">Đặt lại</button>
                     </form>
                     @endif
+
+                    @if ($order->status === 'completed') <!-- Chỉ hiển thị nút đánh giá khi trạng thái là đã xác nhận  -->
+
+                    <button type="submit" class="btn btn-warning"><a href="{{ route('client.reviews.create', $order->id) }}">
+                            Đánh giá
+                        </a>
+                    </button>
+
+                    @endif
+
                 </td>
                 
                 <td>

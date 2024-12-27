@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\ClientBlogController;
 use App\Http\Controllers\Auth\ContactusClientController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -131,6 +132,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::put('sales/{sale}/change-status', [SaleController::class, 'changeStatus'])->name('sales.changeStatus');
 
 });
+
+Route::get('/reviews/create/{id}', [ReviewController::class, 'add'])->name('client.reviews.create');
+Route::post('/reviews/store', [ReviewController::class, 'compare'])->name('client.reviews.store');
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
 Route::get('/shipping-fee/{province_id}/{district_id}', [ShippingFeeController::class, 'getShippingFeeByProvinceAndDistrict']);
 // Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
