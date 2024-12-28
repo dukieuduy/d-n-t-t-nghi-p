@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\ProductVariation;
 use App\Models\Review;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
+    public function index(Request $request)
     public function index(Request $request)
     {
         // $products = Product::query()
@@ -40,6 +42,9 @@ class HomeController extends Controller
         $products = Product::all();  // Lấy tất cả các sản phẩm
         // dd($products);
 
+        $categories = Category::query()->get();
+
+        return view('client.pages.home',compact('products','categories'));
         $categories = Category::query()->get();
 
         return view('client.pages.home',compact('products','categories'));
