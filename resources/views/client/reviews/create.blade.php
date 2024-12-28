@@ -4,8 +4,7 @@
 @if (session('success'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        alert('{{ session('
-            success ') }}');
+        alert('{{ session('success') }}');
         window.location.href = 'http://datncampuchia.test/'; // Thay '/desired-route' bằng đường dẫn trang đích
     });
 </script>
@@ -59,7 +58,7 @@
 
         <button class="btn btn-success mt-3">Đánh giá</button>
         <button class="btn btn-primary mt-3 ms-2"><a href="{{ route('user.orders.index')  }}">Quay lại</a></button>
-        </form>
+    </form>
 </div>
 
 @endsection
