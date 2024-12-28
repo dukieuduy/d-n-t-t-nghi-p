@@ -22,38 +22,51 @@
                             <ul>
                                 @guest
                                 @if (Route::has('login'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
-                                    </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
+                                </li>
                                 @endif
-    
+
                                 @if (Route::has('register'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
-                                    </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
+                                </li>
                                 @endif
-                            @else
+                                @else
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }}
                                     </a>
-    
+
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <div class="dropdown-header">
                                             <a>Thông tin tài khoản</a>
                                         </div>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
-                                           onclick="event.preventDefault();
+                                            onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
-    
+
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
+
+                                        <?php
+                                        if (auth()->check()) {
+                                            if (auth()->user()->type === 'admin') {
+                                                echo '<li>
+                                                    <a href="' .
+                                                    url('admin/products') .
+                                                    '" class="sub-menu-item">Admin</a>
+                                                    </li>';
+                                            }
+                                        }
+                                        ?>
+
                                     </div>
                                 </li>
-                            @endguest
+                                @endguest
 
                             </ul>
                         </div>
@@ -69,7 +82,9 @@
             <div class="row align-items-center">
                 <div class="col-lg-3 col-md-3">
                     <div class="logo">
-                        <a href="{{route('home')}}"><h1 style="color: #ff6300">CAMCAM</h1></a>
+                        <a href="{{route('home')}}">
+                            <h1 style="color: #ff6300">CAMCAM</h1>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-9">
@@ -95,11 +110,11 @@
                             <div class="mini_cart_wrapper">
                                 <a href="{{ route('user.orders.index') }}">
                                     <span class="lnr lnr-cart"></span>đơn hàng</a>
-                        
+
 
                                 <span class="cart_quantity">{{ $orderCount }}</span>
                             </div>
-                            
+
                         </div>
 
                     </div>
@@ -161,12 +176,12 @@
         <div class="mini_cart_footer">
             <div class="cart_button">
                 <a href="{{ route('cart.show') }}">View cart</a>
-            </div>
-            <div class="cart_button">
-                <a class="active" href="checkout.html">Checkout</a>
-            </div>
+    </div>
+    <div class="cart_button">
+        <a class="active" href="checkout.html">Checkout</a>
+    </div>
 
-        </div>
+    </div>
 
     </div> --}}
     <!--mini cart end-->

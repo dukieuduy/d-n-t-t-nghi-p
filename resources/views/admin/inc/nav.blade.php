@@ -54,8 +54,8 @@
             </div>
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Quản lý danh mục</h6>
-                <a class="collapse-item" href="buttons.html">Danh sách danh mục</a>
-                <a class="collapse-item" href="cards.html">Thêm danh mục</a>
+                <a class="collapse-item" href="{{route('admin.categories.index')}}">Danh sách danh mục</a>
+                <a class="collapse-item" href="{{route('admin.categories.create')}}">Thêm danh mục</a>
             </div>
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Quản lý phí vận chuyển</h6>
@@ -67,6 +67,7 @@
                 <a class="collapse-item" href="{{ route('admin.orders.index') }}">Danh sách đơn hàng</a>
                 {{-- <a class="collapse-item" href="{{route('admin.shipping_fees.create')}}">Thêm mới</a> --}}
             </div>
+           
         </div>
     </li>
 
