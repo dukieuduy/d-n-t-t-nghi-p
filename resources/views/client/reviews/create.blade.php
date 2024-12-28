@@ -28,19 +28,38 @@
         <div class="form-group mt-2">
             <label for="">Đánh giá</label>
             <textarea class="form-control" name="comment" id=""></textarea>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td><label for="">Đánh giá (sao)</label></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="rating">
+                            @for ($i = 5; $i >= 1; $i--) <!-- Đảo ngược số sao để dùng hover -->
+                            <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}">
+                            <label for="star{{ $i }}">&#9733;</label>
+                            @endfor
+                    </td>
+                </tr>
+
+            </table>
+
 
         </div>
-        <div class="form-group mt-2">
-            <label for="">Đánh giá (sao)</label>
-            <input class="form-control" name="rating" type="number" max="5" min="0">
 
-        </div>
+
+
+
+
         @error('rating')
         <div class="alert alert-danger mt-2">{{ $message }}</div>
         @enderror
 
         <button class="btn btn-success mt-3">Đánh giá</button>
-    </form>
+        <button class="btn btn-primary mt-3 ms-2"><a href="{{ route('user.orders.index')  }}">Quay lại</a></button>
+        </form>
 </div>
 
 @endsection

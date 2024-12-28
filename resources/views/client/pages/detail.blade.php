@@ -150,30 +150,33 @@
                     <h2 class="mb-3 font-semibold text-xl">Đánh giá </h2>
                     <hr>
                     <div class="mt-3">
-                    @if (count($reviews) > 0)
+
+                        @if (count($reviews) > 0)
                         @foreach ($reviews as $key => $item)
                         <table>
                             <tr>
                                 <th>
-                                   <p class="font-semibold text-base"> Khách hàng: {{ $item->user['name'] }}</p>
-
+                                    <p class="font-semibold text-base"> Khách hàng: {{ $item->user['name'] }}</p>
+                                   
                                 </th>
-                                </tr>
-                                <tr>
+                            </tr>
+                            <tr>
 
-                                    <td>
-                                        <p>{{ $item['comment'] }}</p>
-                                        <p class="text-xs text-gray-600">{{ $item['created_at'] }}</p>
-                                        
-                                    </td>
-                                </tr>
-                           
+                                <td>
+                                @for ($i = 0; $i < $item->rating; $i++)
+                                        <i class="fa fa-star text-warning"></i>
+                                        @endfor
+                                    <p>{{ $item['comment'] }}</p>
+                                    <p class="text-xs text-gray-600">{{ $item['created_at'] }}</p>
+                                </td>
+                            </tr>
+
                         </table>
                         @endforeach
 
                         @else
-                            <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho loại phòng này ***</p>
-                            @endif
+                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho loại phòng này ***</p>
+                        @endif
 
                     </div>
 

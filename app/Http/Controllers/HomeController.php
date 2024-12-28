@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\ProductVariation;
 use App\Models\Review;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // $products = Product::query()
         // ->with(['lowestVariation']) // Định nghĩa mối quan hệ lowestVariation bên dưới
@@ -39,7 +40,9 @@ class HomeController extends Controller
         $products = Product::all();  // Lấy tất cả các sản phẩm
         // dd($products);
 
-        return view('client.pages.home',compact('products'));
+        $categories = Category::query()->get();
+
+        return view('client.pages.home',compact('products','categories'));
     }
 
     public function detailProduct($id)
@@ -52,6 +55,7 @@ class HomeController extends Controller
             // ])->findOrFail($id);
             $product = Product::findOrFail($id);
             $reviews = Review::where('product_id',$id)->get();
+            $rating = Review::where('product_id', $id)->avg('rating');  // giá trị trung bình của rating
 
             // Tính tổng số lượng tồn kho từ các biến thể
             $variations = $product->variations;
@@ -104,7 +108,7 @@ class HomeController extends Controller
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes','sizesWithColors','reviews'));
+            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'colors', 'sizes','sizesWithColors','reviews','rating'));
         }
 
     
