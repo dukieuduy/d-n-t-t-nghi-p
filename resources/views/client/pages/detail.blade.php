@@ -140,8 +140,8 @@
                         @endforeach
 
                         @else
-                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho sản phẩm này ***</p>
-                        @endif
+                            <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho loại phòng này ***</p>
+                            @endif
 
                     </div>
 
