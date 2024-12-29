@@ -29,7 +29,12 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 =======
 use App\Http\Controllers\Auth\ClientBlogController;
 use App\Http\Controllers\Auth\ContactusClientController;
+<<<<<<< HEAD
 >>>>>>> 694d7d8 (Blogs and Search)
+=======
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+>>>>>>> 6a5b2f3 (Resolve conflict in routes/web.php)
 
 /*
 |--------------------------------------------------------------------------
