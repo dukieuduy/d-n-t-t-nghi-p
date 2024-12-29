@@ -2152,7 +2152,7 @@
                             </li>
                             <li>
                                 <a data-toggle="tab" href="#bestseller" role="tab" aria-controls="bestseller"
-                                    aria-selected="false"><span>Sản phẩm bán chạy</span> </a>
+                                    aria-selected="false"><span> Top 10 sản phẩm bán chạy</span> </a>
                             </li>
                         </ul>
                     </div>
@@ -2484,11 +2484,15 @@
                 {{-- kien - sp bán chạy --}}
                 <div class="tab-pane fade" id="bestseller" role="tabpanel">
                     <ul>
-                        @foreach ($products as $product)
-                            @if ($product->sales >= 1)
+                        @php
+                            $sortedProducts = $products->sortByDesc('sales'); //sắp xếp sp cột sales từ lớn đến nhỏ
+                            $count = 0;
+                        @endphp
+                        @foreach ($sortedProducts as $product)
+                            @if ($product->sales >= 1 && $count < 10)
                                 <li>
                                     <a href="{{ route('detail-product', ['id' => $product->id]) }}">
-                                        <img src="{{ asset($product->image_prd) }}" alt="" />
+                                        <img src="{{ asset($product->image_prd) }}" alt="ảnh" />
                                         <h2>{{ $product->name }}</h2>
                                         <p>{{ $product->description }}</p>
                                         <p>Giá: {{ number_format($product->price, 2) }} VNĐ</p>
@@ -2496,6 +2500,7 @@
                                         <hr>
                                     </a>
                                 </li>
+                                @php $count++; @endphp
                             @endif
                         @endforeach
                     </ul>

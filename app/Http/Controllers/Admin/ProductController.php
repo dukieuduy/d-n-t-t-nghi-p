@@ -246,17 +246,4 @@ class ProductController extends Controller
         ]);
     }
 
-    // Kiên - sản phẩm nổi bật(bán chạy)
-    // public function bestSelling()
-    // {
-    //     // Lấy sp đã bán theo cột sales
-    //     $products = Product::orderBy('sales', 'desc')
-    //         ->take(10)
-    //         ->get();
-
-    //     return view('products.best_selling', compact('products'));
-    // }
-
-
-
 }
