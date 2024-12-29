@@ -1,6 +1,7 @@
 <?php
 
-
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ContactusController;
 use App\Models\User;
 // use App\Http\Controllers\AdminCartController;
 use App\Http\Middleware\IsAdmin;
@@ -22,8 +23,18 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
+<<<<<<< HEAD
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+=======
+use App\Http\Controllers\Auth\ClientBlogController;
+use App\Http\Controllers\Auth\ContactusClientController;
+<<<<<<< HEAD
+>>>>>>> 694d7d8 (Blogs and Search)
+=======
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+>>>>>>> 6a5b2f3 (Resolve conflict in routes/web.php)
 
 /*
 |--------------------------------------------------------------------------
@@ -107,11 +118,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::post('orders/{id}/update', [OrderController::class, 'update'])->name('orders.update');
-    
+
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
+<<<<<<< HEAD
     Route::resource('categories',CategoryController::class);
+=======
+    //
+    Route::resource('contactus', ContactusController::class);
+
+    Route::resource('blogs', BlogController::class);
+>>>>>>> 694d7d8 (Blogs and Search)
 
 });
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
@@ -145,8 +163,19 @@ Route::get('/user_orders/verify-phone', [UserOrderController::class, 'verifyPhon
 Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhone'])->name('user.orders.check_phone');
 
 
+// Route tìm kiếm sản phẩm
+Route::get('/search', [ContactusClientController::class, 'search'])->name('products.search');
+
+Route::prefix('client')->name('client.')->group(function () {
+
+    Route::get('/aboutus', [ContactusClientController::class, 'listAboutus'])->name('aboutus.create');
+    Route::get('/purchase', [ContactusClientController::class, 'purChase'])->name('purchase.create');
+
+    Route::get('/blogs', [ClientBlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/{id}', [ClientBlogController::class, 'show'])->name('blogs.show');
 
 
+    });
 
 
 
