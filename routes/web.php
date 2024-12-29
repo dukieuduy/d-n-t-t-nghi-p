@@ -136,6 +136,7 @@ Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.r
 
 
 Route::post('/confirm_checkout', [CheckoutController::class, 'confirmCheckout'])->name('confirm_checkout');
+Route::get('get-data-discount/{discount}', [CheckoutController::class, 'getDataDiscount'])->name('get-data-discount');
 Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
 Route::GET('/vnpay-return', [CheckoutController::class, 'vnpayReturn'])->name('vnpay.return');
 

@@ -19,4 +19,8 @@ class Discount extends Model
         'quantity',
         'is_active',
     ];
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_discounts', 'discount_id', 'order_id');
+    }
 }

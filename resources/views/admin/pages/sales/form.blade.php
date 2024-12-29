@@ -47,6 +47,9 @@
                         </div>
                     @endforeach
                 </div>
+                @error('products')
+                <div class="text-danger">{{ $message }}</div>
+                @enderror
 
             </div>
 

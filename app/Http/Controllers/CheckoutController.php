@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Discount;
+use App\Models\OrderDiscount;
 use Carbon\Carbon;
 use App\Models\Cart;
 use App\Models\Ward;
@@ -99,6 +100,7 @@ class CheckoutController extends Controller
 
             // Debug dữ liệu nhận từ request
             $data = $request->all();
+//            dd($data);
             Log::info('Checkout Data:', $data);
 
             // Kiểm tra payment_method
@@ -124,6 +126,15 @@ class CheckoutController extends Controller
                         'ship' => $data['ship'],
                         'payment_expires_at' => Carbon::now(),
                     ]);
+                    if ($data['discount'] && $data['discount'] !== 0)
+                    {
+                        OrderDiscount::create([
+                            'order_id' => $order->id,
+                            'discount_id' => $data['discount'],
+                            'discount_amount' => $data['discount_value'],
+                            'applied_at' => Carbon::now(),
+                        ]);
+                    }
 
                     // Kiểm tra và xử lý mảng product_sku và quantity
                     if (isset($data['product_sku']) && is_array($data['product_sku']) && isset($data['quantity']) && is_array($data['quantity'])) {
@@ -287,8 +298,14 @@ class CheckoutController extends Controller
 
         $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
         // dd($cartItems);
-        $discounts = Discount::where('start_date', '<=', Carbon::now())->where('end_date', '>=', Carbon::now())->where('is_active', 1)->where('quantity', '>', 0)->get();
-
+        $discounts = Discount::where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->where('is_active', 1)
+            ->where('quantity', '>', 0)
+            ->whereDoesntHave('orders', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->get();
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
@@ -301,5 +318,13 @@ class CheckoutController extends Controller
         return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards', 'discounts'));
     }
 
+    public function getDataDiscount($id) {
+        $discount = Discount::findOrFail($id);
+        return response([
+            'result' => true,
+            'message' => "Success",
+            'data' => $discount
+        ], 200);
+    }
 
 }
