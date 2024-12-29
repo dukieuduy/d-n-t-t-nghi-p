@@ -22,10 +22,10 @@
                         </div>
 
                         <div class="single-zoom-thumb">
-                              
-                                
 
-                        
+
+
+
                             <ul class="s-tab-zoom owl-carousel single-product-active" id="gallery_01">
                                 <li>
                                     <a href="#" class="elevatezoom-gallery active" data-update="" data-image="{{ asset('storage/' .  $product->image_prd)}}" data-zoom-image="{{ asset('storage/' .  $product->image_prd)}}">
@@ -71,8 +71,8 @@
 
                             </div>
                             <div class="price_box">
-                                <span class="current_price">{{$product->price_new}}vnđ</span>
-                                <span class="old_price">{{$product->price_old}}</span>
+                                <span class="current_price">{{ number_format($product->price_new - ($product->price_new * $product->total_sale_percentage / 100)) }}vnđ</span>
+                                <span class="old_price">{{ number_format($product->price_old) }}</span>
 
                             </div>
                             <div class="product_desc">
@@ -82,7 +82,7 @@
                                 <h3>Chọn màu</h3>
                                 <ul>
                                         <!-- Checkbox để chọn màu biến thể -->
-                                        
+
                                         @foreach($colors as $value)
                                             {{-- <input type="checkbox" name="selectedColor[]" value="red" style="background-color: red; border: none;"> {{$value}} --}}
                                             <div class="form-check form-check-inline">
@@ -148,23 +148,23 @@
     </div>
     <script>
         var sizesWithColors = @json($sizesWithColors);  // Dữ liệu từ controller
-    
+
         // Khi chọn màu, lọc kích thước phù hợp
         document.querySelectorAll('input[name="selectedColor"]').forEach(function(colorInput) {
             colorInput.addEventListener('change', function() {
                 var selectedColor = this.value;  // Màu đã chọn
-    
+
                 // Ẩn tất cả các size trước
                 document.querySelectorAll('.size-option').forEach(function(sizeOption) {
                     sizeOption.parentElement.style.display = 'none'; // Ẩn cả input và label
                 });
-    
+
                 // Hiển thị size tương ứng với màu đã chọn
                 for (var size in sizesWithColors) {
                     if (sizesWithColors[size].includes(selectedColor)) {
                         // Tìm phần tử label tương ứng với size
                         var sizeOptionLabel = document.querySelector('.size-option[data-size="' + size + '"]');
-                        
+
                         // Kiểm tra sự tồn tại của phần tử sizeOption trước khi hiển thị
                         if (sizeOptionLabel) {
                             sizeOptionLabel.parentElement.style.display = 'inline-block';  // Hiển thị cả input và label
@@ -174,8 +174,8 @@
             });
         });
     </script>
-    
-    
-    
-    
+
+
+
+
 @endsection

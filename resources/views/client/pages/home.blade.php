@@ -100,7 +100,7 @@
     <!--shipping area end-->
     <!--product area start-->
 
-    
+
     <section class="product_area mb-50">
         <div class="container">
             <div class="row">
@@ -226,7 +226,7 @@
                                 </div>
                             </div>
                         </div> --}}
-                        @foreach ($products as $item)      
+                        @foreach ($products as $item)
 
                         <div class="single_product_list">
                             <div class="single_product">
@@ -235,13 +235,9 @@
                                     <p class="manufacture_product"><a href="#">Accessories</a></p>
                                 </div>
                                 <div class="product_thumb">
-                                    <a class="primary_img" href="#"> <img src="{{ asset('storage/' . $item->image_prd)}}" alt=""></a>
-                                    {{-- <a class="secondary_img" href="#"><img
-                                            src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""></a> --}}
-                                            {{-- <a class="secondary_img" href="#"> <img src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""> </a> --}}
-                                            
+                                    <a class="primary_img" href="{{ route('detail-product', ['id' => $item->id]) }}"> <img src="{{ \Illuminate\Support\Facades\Storage::url($item->image_prd)}}" alt=""></a>
                                     <div class="label_product">
-                                        <span class="label_sale">-57%</span>
+                                        <span class="label_sale">{{ $item->total_sale_percentage }}%</span>
                                     </div>
 
                                     <div class="action_links">
@@ -268,7 +264,8 @@
                                     </div>
                                     <div class="product_footer d-flex align-items-center">
                                         <div class="price_box">
-                                            <span class="regular_price">{{$item->price_new}}</span>
+                                            <small><del>{{number_format($item->price_old)}}</del></small>
+                                            <span class="regular_price">{{number_format($item->price_new - ($item->price_new * $item->total_sale_percentage / 100))}} đ</span>
                                         </div>
                                         <div class="add_to_cart">
                                             <a href="cart.html" title="add to cart"><span

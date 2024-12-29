@@ -74,7 +74,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -92,27 +92,22 @@
                                             <span style="margin-left: 10px;">Mã giảm giá</span>
                                         </div>
                                         <div class="card-body">
-                                            Nhập mã giảm giá của bạn:
-
-                                            <!-- Input cho mã giảm giá dạng văn bản -->
-                                            <input type="text" class="form-control mb-3" placeholder="Mã giảm giá"
-                                                   style="font-size: 18px;">
-
-                                            <!-- Thêm dòng mã giảm giá với các option -->
-                                            <label for="discount-options">Mã giảm giá đã lưu:</label>
+                                            <label for="discount-options">Mã giảm giá:</label>
                                             <select id="discount-options" class="form-control mb-3"
                                                     style="font-size: 17px;">
-                                                <option value="">Chọn mã giảm giá</option>
-                                                <option value="DISCOUNT10">DISCOUNT10 - Giảm 10%</option>
-                                                <option value="DISCOUNT20">DISCOUNT20 - Giảm 20%</option>
-                                                <option value="DISCOUNT30">DISCOUNT30 - Giảm 30%</option>
-                                            </select>
+                                                <option value="0">Chọn mã giảm giá</option>
+                                                @foreach($discounts as $discount)
+                                                    <option value="{{$discount->id}}">
+                                                        {{$discount->code}} -
+                                                        giảm {{ number_format($discount->value) }} {{$discount->type == 'percentage' ? ' %' : ' vnđ'}},
+                                                        đơn tối thiểu {{ number_format($discount->min_purchase_amount) }} vnđ
+                                                        @if($discount->max_purchase_amount)
+                                                            , giảm tối đa {{ number_format($discount->max_purchase_amount) }} vnđ
+                                                        @endif
+                                                    </option>
+                                                @endforeach
 
-                                            <!-- Button Áp dụng -->
-                                            <button type="submit" class="btn text-white" style="background-color: #00CC99;">
-                                                Áp
-                                                dụng
-                                            </button>
+                                            </select>
                                         </div>
 
                                     </div>
@@ -135,7 +130,7 @@
                                                         </select>
                                                         <span class="text-danger" id="error_province"></span>
                                                     </div>
-                                                    
+
                                                     <div class="mb-3">
                                                         <label for="district" class="form-label">Quận/Huyện:</label>
                                                         <select id="district" name="district" class="form-select" disabled>
@@ -143,7 +138,7 @@
                                                         </select>
                                                         <span class="text-danger" id="error_district"></span>
                                                     </div>
-                                                    
+
                                                     <div class="mb-3">
                                                         <label for="ward" class="form-label">Xã/Phường:</label>
                                                         <select id="ward" name="ward" class="form-select" disabled>
@@ -151,13 +146,13 @@
                                                         </select>
                                                         <span class="text-danger" id="error_ward"></span>
                                                     </div>
-                                                    
-                                                    
+
+
                                                 </div>
-                                                
+
                                             </div>
-                                            
-                                        
+
+
                                         <span class="text-danger mx-4" id="error_address"></span>
                                     </div>
                                 </div>
@@ -217,8 +212,8 @@
                                                 <p class="mb-0 fw-bold shipping-fee" data-shipping="0">0đ</p>
                                                 <input type="hidden" name="ship" id="ship">
                                             </div>
-                                            
-                                            
+
+
                                             {{-- <hr> --}}
                                             {{-- <div class="d-flex justify-content-between">
                                                 <p class="mb-0">Tổng cộng:</p>
@@ -250,7 +245,7 @@
             $('#province').change(function() {
                 let provinceId = $(this).val();
                 console.log('Province ID:', provinceId); // Kiểm tra giá trị provinceId
-                
+
                 if (provinceId) {
                     $.get(`/districts/${provinceId}`, function(data) {
                         $('#district').html('<option value="">-- Chọn --</option>');
@@ -267,8 +262,8 @@
                     $('#ward').prop('disabled', true).html('<option value="">-- Chọn --</option>');
                 }
             });
-            
-    
+
+
             // Lắng nghe sự kiện khi người dùng chọn Quận/Huyện
             $('#district').change(function() {
                 let districtId = $(this).val();
@@ -285,13 +280,13 @@
                     $('#ward').prop('disabled', true).html('<option value="">-- Chọn --</option>');
                 }
             });
-    
+
             // Xử lý sự kiện thanh toán
             $('#checkout').on('click', function () {
                 let paymentMethod = $('input[name="payment_method"]:checked').val();
                 let totalAmount = $('.total-amount').text().replace(/[^0-9]/g, ''); // Xử lý số tiền
                 let products = [];
-    
+
                 // Lấy thông tin sản phẩm trong giỏ hàng
                 $('.cart_item_id').each(function(index) {
                     let product = {
@@ -300,36 +295,36 @@
                         price: $('.price').eq(index).text().trim().replace(/[^0-9]/g, ''), // Loại bỏ ký tự không phải số
                         subtotal: $('.subtotal').eq(index).text().trim().replace(/[^0-9]/g, '') // Loại bỏ ký tự không phải số
                     };
-    
+
                     products.push(product);
                 });
-    
+
                 // Reset thông báo lỗi
                 $('#error_payment').text('');
                 $('#error_cart_items').text('');
                 $('#error_province').text('');
                 $('#error_district').text('');
                 $('#error_ward').text('');
-    
+
                 let isValid = true;
-    
+
                 // Kiểm tra thanh toán
                 if (!paymentMethod) {
                     $('#error_payment').text('Vui lòng chọn 1 phương thức thanh toán!');
                     isValid = false;
                 }
-    
+
                 // Kiểm tra giỏ hàng
                 if (products.length === 0) {
                     $('#error_cart_items').text('Vui lòng chọn ít nhất một sản phẩm!');
                     isValid = false;
                 }
-    
+
                 // Lấy giá trị Tỉnh/Thành phố, Quận/Huyện, Xã/Phường
                 let province = $('#province').val();
                 let district = $('#district').val();
                 let ward = $('#ward').val();
-    
+
                 // Kiểm tra xem đã chọn Tỉnh, Quận, Xã chưa
                 if (!province) {
                     $('#error_province').text('Vui lòng chọn Tỉnh/Thành phố!');
@@ -343,7 +338,7 @@
                     $('#error_ward').text('Vui lòng chọn Xã/Phường!');
                     isValid = false;
                 }
-    
+
                 // Nếu tất cả đều hợp lệ, hiển thị thông báo thanh toán thành công
                 if (isValid) {
                     alert('Thanh toán thành công, vui lòng kiểm tra đơn hàng của bạn trong phần "Đơn hàng của tôi"');
@@ -357,12 +352,12 @@
             // Đặt phí vận chuyển mặc định là 0đ
             $('.shipping-fee').text('0đ');
             $('.shipping-fee-container').hide(); // Ẩn phí vận chuyển khi chưa chọn gì
-    
+
             // Lắng nghe sự kiện khi người dùng chọn Tỉnh/Thành phố
             $('#province').change(function() {
                 let provinceId = $(this).val();
                 console.log('Province ID:', provinceId); // Kiểm tra giá trị provinceId
-    
+
                 // Tải danh sách quận/huyện cho tỉnh đã chọn
                 $.get(`/districts/${provinceId}`, function(data) {
                     $('#district').html('<option value="">-- Chọn --</option>');
@@ -373,7 +368,7 @@
                     // Reset và hiển thị xã/phường
                     $('#ward').html('<option value="">-- Chọn --</option>').prop('disabled', false);
                 });
-    
+
                 // Lấy phí vận chuyển khi chọn tỉnh
                 $.get(`/shipping-fee/${provinceId}`, function(data) {
                     if (data) {
@@ -388,13 +383,13 @@
                     }
                 });
             });
-            
-    
+
+
             // Lắng nghe sự kiện khi người dùng chọn Quận/Huyện
             $('#district').change(function() {
                 let districtId = $(this).val();
                 let provinceId = $('#province').val();
-    
+
                 // Lấy phí vận chuyển khi chọn Quận/Huyện
                 if (provinceId === '3' && districtId) {
                     // Nếu chọn Hà Nội và có district, lấy phí vận chuyển từ province_id và district_id
@@ -423,7 +418,7 @@
                         }
                     });
                 }
-    
+
                 // Tải danh sách xã/phường cho Quận/Huyện đã chọn
                 if (districtId) {
                     $.get(`/wards/${districtId}`, function(data) {
@@ -437,13 +432,13 @@
                     $('#ward').html('<option value="">-- Chọn --</option>').prop('disabled', true);
                 }
             });
-    
+
             // Xử lý sự kiện thanh toán
             $('#checkout').on('click', function () {
                 let paymentMethod = $('input[name="payment_method"]:checked').val();
                 let totalAmount = $('.total-amount').text().replace(/[^0-9]/g, ''); // Xử lý số tiền
                 let products = [];
-    
+
                 // Lấy thông tin sản phẩm trong giỏ hàng
                 $('.cart_item_id').each(function(index) {
                     let product = {
@@ -452,36 +447,36 @@
                         price: $('.price').eq(index).text().trim().replace(/[^0-9]/g, ''), // Loại bỏ ký tự không phải số
                         subtotal: $('.subtotal').eq(index).text().trim().replace(/[^0-9]/g, '') // Loại bỏ ký tự không phải số
                     };
-    
+
                     products.push(product);
                 });
-    
+
                 // Reset thông báo lỗi
                 $('#error_payment').text('');
                 $('#error_cart_items').text('');
                 $('#error_province').text('');
                 $('#error_district').text('');
                 $('#error_ward').text('');
-    
+
                 let isValid = true;
-    
+
                 // Kiểm tra thanh toán
                 if (!paymentMethod) {
                     $('#error_payment').text('Vui lòng chọn 1 phương thức thanh toán!');
                     isValid = false;
                 }
-    
+
                 // Kiểm tra giỏ hàng
                 if (products.length === 0) {
                     $('#error_cart_items').text('Vui lòng chọn ít nhất một sản phẩm!');
                     isValid = false;
                 }
-    
+
                 // Lấy giá trị Tỉnh/Thành phố, Quận/Huyện, Xã/Phường
                 let province = $('#province').val();
                 let district = $('#district').val();
                 let ward = $('#ward').val();
-    
+
                 // Kiểm tra xem đã chọn Tỉnh, Quận, Xã chưa
                 if (!province) {
                     $('#error_province').text('Vui lòng chọn Tỉnh/Thành phố!');
@@ -495,23 +490,18 @@
                     $('#error_ward').text('Vui lòng chọn Xã/Phường!');
                     isValid = false;
                 }
-    
+
                 // Nếu tất cả đều hợp lệ, hiển thị thông báo thanh toán thành công
                 if (isValid) {
                     alert('Thanh toán thành công, vui lòng kiểm tra đơn hàng của bạn trong phần "Đơn hàng của tôi"');
                 }
             });
         });
-        
+
     </script>
-    
-    
-    
-    
-    
 @endsection
-{{-- @section('script')
-<script src="/assets/js/checkout.js"></script>
-@endsection --}}
+{{--@section('script')--}}
+{{--    <script src="/assets/js/checkout.js"></script>--}}
+{{--@endsection--}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

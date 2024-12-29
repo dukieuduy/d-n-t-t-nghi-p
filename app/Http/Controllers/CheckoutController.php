@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
 use Carbon\Carbon;
 use App\Models\Cart;
 use App\Models\Ward;
@@ -67,11 +68,11 @@ class CheckoutController extends Controller
         if ($vnp_ResponseCode === "00") {
             // Lấy đơn hàng từ DB bằng vnp_TxnRef
             $order = Order::find($vnp_TxnRef);
-    
+
             if ($order) {
                     $order->status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
                     $order->save();
-    
+
                     return response()->json([
                         'message' => 'Thanh toán thành công!',
                         'order_id' => $order->id,
@@ -88,78 +89,77 @@ class CheckoutController extends Controller
             ], 400);
         }
     }
-    
-    
+
 
     public function checkout(Request $request)
-{
-    try {
-        // Bắt đầu transaction
-        DB::beginTransaction();
+    {
+        try {
+            // Bắt đầu transaction
+            DB::beginTransaction();
 
-        // Debug dữ liệu nhận từ request
-        $data = $request->all();
-        Log::info('Checkout Data:', $data);
+            // Debug dữ liệu nhận từ request
+            $data = $request->all();
+            Log::info('Checkout Data:', $data);
 
-        // Kiểm tra payment_method
-        if (!isset($data['payment_method'])) {
-            return response()->json(['message' => 'Vui lòng chọn phương thức thanh toán!'], 400);
-        }
+            // Kiểm tra payment_method
+            if (!isset($data['payment_method'])) {
+                return response()->json(['message' => 'Vui lòng chọn phương thức thanh toán!'], 400);
+            }
 
-        // Xử lý logic dựa trên phương thức thanh toán
-        switch ($data['payment_method']) {
-            case 'CASH':
-                // Xử lý logic cho thanh toán COD (Cash On Delivery)
-                Log::info('Thanh toán khi nhận hàng');
+            // Xử lý logic dựa trên phương thức thanh toán
+            switch ($data['payment_method']) {
+                case 'CASH':
+                    // Xử lý logic cho thanh toán COD (Cash On Delivery)
+                    Log::info('Thanh toán khi nhận hàng');
 
-                // Tạo Order
-                $order = Order::create([
-                    'user_id' => Auth::id(),
-                    'total_amount' => $data['total_amount'] ?? 0,
-                    'status' => 'pending',
-                    'payment_method' => $data['payment_method'],
-                    'province' => $data['province_id'] ?? null,
-                    'district' => $data['district'] ?? null,
-                    'ward' => $data['ward'] ?? null,
-                    'ship' => $data['ship'],
-                    'payment_expires_at' => Carbon::now(),
-                ]);
+                    // Tạo Order
+                    $order = Order::create([
+                        'user_id' => Auth::id(),
+                        'total_amount' => $data['total_amount'] ?? 0,
+                        'status' => 'pending',
+                        'payment_method' => $data['payment_method'],
+                        'province' => $data['province_id'] ?? null,
+                        'district' => $data['district'] ?? null,
+                        'ward' => $data['ward'] ?? null,
+                        'ship' => $data['ship'],
+                        'payment_expires_at' => Carbon::now(),
+                    ]);
 
-                // Kiểm tra và xử lý mảng product_sku và quantity
-                if (isset($data['product_sku']) && is_array($data['product_sku']) && isset($data['quantity']) && is_array($data['quantity'])) {
-                    foreach ($data['product_sku'] as $index => $sku) {
-                        // Tạo OrderItem
-                        OrderItem::create([
-                            'order_id' => $order->id,
-                            'product_sku' => $sku,
-                            'quantity' => $data['quantity'][$index],
-                        ]);
+                    // Kiểm tra và xử lý mảng product_sku và quantity
+                    if (isset($data['product_sku']) && is_array($data['product_sku']) && isset($data['quantity']) && is_array($data['quantity'])) {
+                        foreach ($data['product_sku'] as $index => $sku) {
+                            // Tạo OrderItem
+                            OrderItem::create([
+                                'order_id' => $order->id,
+                                'product_sku' => $sku,
+                                'quantity' => $data['quantity'][$index],
+                            ]);
 
-                        // Xóa sản phẩm khỏi giỏ hàng
-                        $cart = Cart::where('user_id', Auth::id())->first();
-                        if ($cart) {
-                            CartItem::where('cart_id', $cart->id)
-                                ->where('product_sku', $sku)
-                                ->delete();
+                            // Xóa sản phẩm khỏi giỏ hàng
+                            $cart = Cart::where('user_id', Auth::id())->first();
+                            if ($cart) {
+                                CartItem::where('cart_id', $cart->id)
+                                    ->where('product_sku', $sku)
+                                    ->delete();
+                            }
                         }
+                    } else {
+                        Log::error('Invalid product data:', ['product_sku' => $data['product_sku'], 'quantity' => $data['quantity']]);
+                        return response()->json(['message' => 'Invalid product data!'], 400);
                     }
-                } else {
-                    Log::error('Invalid product data:', ['product_sku' => $data['product_sku'], 'quantity' => $data['quantity']]);
-                    return response()->json(['message' => 'Invalid product data!'], 400);
-                }
 
-                // Commit transaction
-                DB::commit();
+                    // Commit transaction
+                    DB::commit();
 
-                return response()->json([
-                    'message' => 'Đơn hàng của bạn đã được tạo thành công!',
-                    'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
-                    'order_id' => $order->id
-                ], 200);
-                break;
+                    return response()->json([
+                        'message' => 'Đơn hàng của bạn đã được tạo thành công!',
+                        'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
+                        'order_id' => $order->id
+                    ], 200);
+                    break;
 
 
-            case 'VNPAY':
+                case 'VNPAY':
                     Log::info('Thanh toán khi nhận hàng');
 
                     // Tạo Order
@@ -174,7 +174,7 @@ class CheckoutController extends Controller
                         'ship' => $data['ship'],
                         'payment_expires_at' => Carbon::now()->addMinute(15), // Hết hạn sau 15 phút
                     ]);
-    
+
                     // Kiểm tra và xử lý mảng product_sku và quantity
                     if (isset($data['product_sku']) && is_array($data['product_sku']) && isset($data['quantity']) && is_array($data['quantity'])) {
                         foreach ($data['product_sku'] as $index => $sku) {
@@ -184,7 +184,7 @@ class CheckoutController extends Controller
                                 'product_sku' => $sku,
                                 'quantity' => $data['quantity'][$index],
                             ]);
-    
+
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
                             if ($cart) {
@@ -195,15 +195,15 @@ class CheckoutController extends Controller
                         }
                     }
                     DB::commit();
-                        // Thực hiện tạo URL thanh toán VNPAY
+                    // Thực hiện tạo URL thanh toán VNPAY
                     $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
                     $vnp_Returnurl = route('vnpay.return');
-                    $vnp_TmnCode = "0BQGSJLL";//Mã website tại VNPAY 
+                    $vnp_TmnCode = "0BQGSJLL";//Mã website tại VNPAY
                     $vnp_HashSecret = "YYDH932FZ19XBC6F79BXIG833K2UO7ON"; //Chuỗi bí mật
                     $vnp_TxnRef = $order->id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
                     $vnp_OrderInfo = 'thanh toán đơn hàng';
                     $vnp_OrderType = 'billpayment';
-                    $vnp_Amount = ($order->total_amount+$order->ship) * 10000;
+                    $vnp_Amount = ($order->total_amount + $order->ship) * 10000;
                     $vnp_Locale = 'vn';
                     $vnp_BankCode = 'NCB';
                     $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -221,14 +221,14 @@ class CheckoutController extends Controller
                         "vnp_ReturnUrl" => $vnp_Returnurl,
                         "vnp_TxnRef" => $vnp_TxnRef,
                     );
-                    
+
                     if (isset($vnp_BankCode) && $vnp_BankCode != "") {
                         $inputData['vnp_BankCode'] = $vnp_BankCode;
                     }
                     if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
                         $inputData['vnp_Bill_State'] = $vnp_Bill_State;
                     }
-                    
+
                     //var_dump($inputData);
                     ksort($inputData);
                     $query = "";
@@ -243,49 +243,40 @@ class CheckoutController extends Controller
                         }
                         $query .= urlencode($key) . "=" . urlencode($value) . '&';
                     }
-                    
+
                     $vnp_Url = $vnp_Url . "?" . $query;
                     if (isset($vnp_HashSecret)) {
                         $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
                         $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
                     }
-                    
+
                     $returnData = array('code' => '00'
-                        , 'message' => 'success'
-                        , 'data' => $vnp_Url);
-                        if (isset($_POST['redirect'])) {
-                            header('Location: ' . $vnp_Url);
-                            die();
-                        } else {
-                            echo json_encode($returnData);
-                        }
-                        break;
-    
+                    , 'message' => 'success'
+                    , 'data' => $vnp_Url);
+                    if (isset($_POST['redirect'])) {
+                        header('Location: ' . $vnp_Url);
+                        die();
+                    } else {
+                        echo json_encode($returnData);
+                    }
+                    break;
 
-    default:
-                return response()->json(['message' => 'Phương thức thanh toán không hợp lệ!'], 400);
+
+                default:
+                    return response()->json(['message' => 'Phương thức thanh toán không hợp lệ!'], 400);
+            }
+
+        } catch (Exception $e) {
+            // Rollback nếu có lỗi
+            DB::rollBack();
+            Log::error('Order creation failed:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Rất tiếc, đã có lỗi xảy ra khi tạo đơn hàng.',
+                'details' => 'Vui lòng thử lại sau. Nếu vấn đề vẫn tiếp tục, hãy liên hệ với chúng tôi để được hỗ trợ.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-    } catch (Exception $e) {
-        // Rollback nếu có lỗi
-        DB::rollBack();
-        Log::error('Order creation failed:', ['error' => $e->getMessage()]);
-        return response()->json([
-            'message' => 'Rất tiếc, đã có lỗi xảy ra khi tạo đơn hàng.',
-            'details' => 'Vui lòng thử lại sau. Nếu vấn đề vẫn tiếp tục, hãy liên hệ với chúng tôi để được hỗ trợ.',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
-
-    
-    
-    
-    
-    
-    
-    
-
 
     public function confirmCheckout(Request $request) {
         $cartItemIds = Arr::flatten($request->all());
@@ -296,6 +287,8 @@ class CheckoutController extends Controller
 
         $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
         // dd($cartItems);
+        $discounts = Discount::where('start_date', '<=', Carbon::now())->where('end_date', '>=', Carbon::now())->where('is_active', 1)->where('quantity', '>', 0)->get();
+
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
@@ -305,8 +298,8 @@ class CheckoutController extends Controller
         $districts = District::where('province_id', $request->provinceId)->get();
         $wards = Ward::where('district_id', $request->districtId)->get();
         // dd($wards);
-        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards'));
+        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards', 'discounts'));
     }
-    
-    
+
+
 }
