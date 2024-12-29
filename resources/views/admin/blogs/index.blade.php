@@ -46,7 +46,6 @@
                                     @endif
                                 </td>
                                 <td>
-
                                     <a href="{{ route('admin.blogs.edit', $blog->id) }}" class="btn btn-warning btn-sm">Sửa</a>
                                     <form action="{{ route('admin.blogs.destroy', $blog->id) }}" method="POST" style="display:inline;">
                                         @csrf
