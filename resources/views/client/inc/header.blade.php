@@ -22,38 +22,51 @@
                             <ul>
                                 @guest
                                 @if (Route::has('login'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
-                                    </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
+                                </li>
                                 @endif
-    
+
                                 @if (Route::has('register'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
-                                    </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
+                                </li>
                                 @endif
-                            @else
+                                @else
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->name }}
                                     </a>
-    
+
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <div class="dropdown-header">
                                             <a>Thông tin tài khoản</a>
                                         </div>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
-                                           onclick="event.preventDefault();
+                                            onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
-    
+
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
+
+                                        <?php
+                                        if (auth()->check()) {
+                                            if (auth()->user()->type === 'admin') {
+                                                echo '<li>
+                                                    <a href="' .
+                                                    url('admin/products') .
+                                                    '" class="sub-menu-item">Admin</a>
+                                                    </li>';
+                                            }
+                                        }
+                                        ?>
+
                                     </div>
                                 </li>
-                            @endguest
+                                @endguest
 
                             </ul>
                         </div>
@@ -69,15 +82,18 @@
             <div class="row align-items-center">
                 <div class="col-lg-3 col-md-3">
                     <div class="logo">
-                        <a href="{{route('home')}}"><h1 style="color: #ff6300">CAMCAM</h1></a>
+                        <a href="{{route('home')}}">
+                            <h1 style="color: #ff6300">CAMCAM</h1>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-9">
                     <div class="middel_right">
                         <div class="search-container search_two">
-                            <form action="#">
+                            <form action="{{ route('products.search') }}" method="GET">
+                                @csrf <!-- CSRF token for security -->
                                 <div class="search_box">
-                                    <input placeholder="Search entire store here ..." type="text">
+                                    <input name="query" placeholder="Search entire store here ..." type="text" required>
                                     <button type="submit"><i class="ion-ios-search-strong"></i></button>
                                 </div>
                             </form>
@@ -95,11 +111,11 @@
                             <div class="mini_cart_wrapper">
                                 <a href="{{ route('user.orders.index') }}">
                                     <span class="lnr lnr-cart"></span>đơn hàng</a>
-                        
+
 
                                 <span class="cart_quantity">{{ $orderCount }}</span>
                             </div>
-                            
+
                         </div>
 
                     </div>
@@ -161,12 +177,12 @@
         <div class="mini_cart_footer">
             <div class="cart_button">
                 <a href="{{ route('cart.show') }}">View cart</a>
-            </div>
-            <div class="cart_button">
-                <a class="active" href="checkout.html">Checkout</a>
-            </div>
+    </div>
+    <div class="cart_button">
+        <a class="active" href="checkout.html">Checkout</a>
+    </div>
 
-        </div>
+    </div>
 
     </div> --}}
     <!--mini cart end-->
@@ -429,26 +445,20 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li><a href="blog.html">blog<i class="fa fa-angle-down"></i></a>
+                                    <li><a href="{{route('client.blogs.index')}}">blog<i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="blog-details.html">blog details</a></li>
-                                            <li><a href="blog-fullwidth.html">blog fullwidth</a></li>
-                                            <li><a href="blog-sidebar.html">blog sidebar</a></li>
+                                            <li><a href="{{route('client.blogs.index')}}">Quản lý bài viết</a></li>
+
                                         </ul>
                                     </li>
                                     <li><a href="#">pages <i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="about.html">About Us</a></li>
-                                            <li><a href="services.html">services</a></li>
-                                            <li><a href="faq.html">Frequently Questions</a></li>
-                                            <li><a href="login.html">login</a></li>
-                                            <li><a href="compare.html">compare</a></li>
-                                            <li><a href="privacy-policy.html">privacy policy</a></li>
-                                            <li><a href="coming-soon.html">Coming Soon</a></li>
+                                            <li><a href="{{route('client.aboutus.create')}}">Chính Sách</a></li>
+                                            <li><a href="{{route('client.purchase.create')}}">Hướng Dẫn Mùa Hàng</a></li>
+
                                         </ul>
                                     </li>
-                                    <li><a href="about.html">about Us</a></li>
-                                    <li><a href="contact.html"> Contact Us</a></li>
+                                    {{-- <li><a href="{{route('client.contactus.create')}}"> Liên Hệ</a></li> --}}
                                 </ul>
                             </nav>
                         </div>

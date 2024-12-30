@@ -10,24 +10,25 @@ use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationAttribute;
-use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Storage;
 
-class ProductController extends Controller{
-//     public function create()
+class ProductController extends Controller
+{
+    //     public function create()
 // {
 //     // $attributes = ProductAttribute::all();  // Lấy tất cả các thuộc tính
 //     // return view('admin.products.create', compact('attributes'));
 //     return view("admin.product.createProduct");
 
 
-public function create()
-{
-    // Lấy tất cả các thuộc tính cùng giá trị liên quan
-    $attributes = ProductAttribute::with('values')->get();
+    public function create()
+    {
+        // Lấy tất cả các thuộc tính cùng giá trị liên quan
+        $attributes = ProductAttribute::with('values')->get();
 
-    // Lọc thuộc tính Color và Size
-    $colors = $attributes->where('name', 'color')->first();
-    $sizes = $attributes->where('name', 'size')->first();
+        // Lọc thuộc tính Color và Size
+        $colors = $attributes->where('name', 'color')->first();
+        $sizes = $attributes->where('name', 'size')->first();
 
     // Lấy danh sách giá trị của Color và Size
     $colorValues = $colors ? $colors->values : collect(); // Trả về mảng rỗng nếu không có
@@ -248,44 +249,75 @@ public function store(Request $request)
                 ]);
             } else {
                 return redirect()->back()->withErrors([
-                    "variations.$index.attributes" => "Giá trị thuộc tính không hợp lệ."
+                    "variations.$index.attributes" => "Biến thể với SKU $sku đã tồn tại."
                 ]);
             }
+
+            // Lưu ảnh biến thể nếu có
+            $variationImagePath = null;
+            if (isset($variation['image']) && $variation['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $variationImagePath = $variation['image']->store('variations', 'public');
+            }
+
+            // Tạo biến thể
+            $productVariation = ProductVariation::create([
+                'product_id' => $product->id,
+                'sku' => $sku,
+                'price' => $variation['price'] ?? 0,
+                'stock_quantity' => $variation['stock_quantity'] ?? 0,
+                'image' => $variationImagePath,
+            ]);
+
+            // Lưu thuộc tính của biến thể
+            foreach ($variation['attributes'] as $attributeName => $valueId) {
+                // Tìm giá trị của thuộc tính (size, color, ...)
+                $attributeValue = ProductAttributeValue::find($valueId);
+                $attribute = ProductAttribute::where('name', $attributeName)->first(); // Tìm thuộc tính (size, color)
+                if ($attributeValue && $attribute) {
+                    // Chèn thuộc tính biến thể vào bảng product_variation_attributes
+                    ProductVariationAttribute::create([
+                        'product_variation_id' => $productVariation->id,
+                        'product_attribute_value_id' => $valueId,  // Sử dụng valueId là ID của giá trị thuộc tính
+                        'product_attribute_id' => $attribute->id,  // Sử dụng ID của thuộc tính (size, color)
+                    ]);
+                } else {
+                    return redirect()->back()->withErrors([
+                        "variations.$index.attributes" => "Giá trị thuộc tính không hợp lệ."
+                    ]);
+                }
+            }
+
         }
     }
-
-    return redirect()->back()->with('success', 'Sản phẩm đã được thêm thành công!');
 }
 
+    public function index(Request $request)
+    {
+        $products = Product::with(['variations', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            return view('admin.product.indexProduct', compact('products'));
+    }
+// public function index(Request $request)
+// {
+//     $products = Product::with(['variations', 'category'])
+//         ->orderBy('created_at', 'desc')
+//         ->paginate(10);
 
-public function index(Request $request)
-{
-    $products = Product::with(['variations', 'category'])
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
+//                 return [
+//                     'id' => $product->id,
+//                     'name' => $product->name,
+//                     'description' => $product->description,
+//                     'price_old' => $product->price_old,
+//                     'price_new' => $product->price_new,
+//                     'category' => $product->category->name ?? null,
+//                     'image' => $image,
+//                     'total_stock' => $totalStock,
+//                     'is_active' => $product->is_active,
+//                 ];
 
-    // Sử dụng map để tùy chỉnh dữ liệu và duy trì phân trang
-    $products->setCollection(
-        $products->getCollection()->map(function ($product) {
-            $totalStock = $product->variations->sum('stock_quantity');
-            $image = $product->variations->first()->image ?? null;
-
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'description' => $product->description,
-                'price_old' => $product->price_old,
-                'price_new' => $product->price_new,
-                'category' => $product->category->name ?? null,
-                'image' => $image,
-                'total_stock' => $totalStock,
-                'is_active' => $product->is_active,
-            ];
-        })
-    );
-
-    return view('admin.product.indexProduct', compact('products'));
-}
+//     return view('admin.product.indexProduct', compact('products'));
+// }
 
 
 
@@ -373,52 +405,100 @@ public function detail($id)
 
 
 
-public function storeVariation(Request $request, $productId)
-{
-    $request->validate([
-        'size' => 'required|string',
-        'color' => 'required|string',
-        'price' => 'required|numeric',
-        'stock_quantity' => 'required|integer',
-        'image' => 'nullable|image|max:2048',
-    ]);
+// public function storeVariation(Request $request, $productId)
+// {
+//     $request->validate([
+//         'size' => 'required|string',
+//         'color' => 'required|string',
+//         'price' => 'required|numeric',
+//         'stock_quantity' => 'required|integer',
+//         'image' => 'nullable|image|max:2048',
+//     ]);
 
-    // Tạo SKU
-    $sku = $productId . '-' . $request->size . '-' . $request->color;
+//     // Tạo SKU
+//     $sku = $productId . '-' . $request->size . '-' . $request->color;
 
-    // Kiểm tra xem biến thể đã tồn tại chưa
-    if (ProductVariation::where('sku', $sku)->exists()) {
-        return response()->json(['success' => false, 'message' => 'Biến thể đã tồn tại.']);
+//     // Kiểm tra xem biến thể đã tồn tại chưa
+//     if (ProductVariation::where('sku', $sku)->exists()) {
+//         return response()->json(['success' => false, 'message' => 'Biến thể đã tồn tại.']);
+//     }
+// }
+
+
+
+    public function edit($id)
+    {
+        // Lấy thông tin sản phẩm và các biến thể của nó
+        $product = Product::with([
+            'variations', // Lấy tất cả biến thể của sản phẩm
+            'variations.variationAttributes.attributeValue', // Lấy giá trị thuộc tính của mỗi biến thể
+            'variations.variationAttributes.attributeValue.attribute' // Lấy tên thuộc tính của mỗi biến thể
+        ])->find($id);
+
+        // Kiểm tra nếu sản phẩm không tồn tại
+        if (!$product) {
+            return redirect()->route('home')->with('error', 'Sản phẩm không tồn tại');
+        }
+        // Lấy các giá trị của thuộc tính "Size" và "Color"
+        $sizes = ProductAttributeValue::whereHas('attribute', function ($query) {
+            $query->where('name', 'Size');
+        })->get();
+
+        $colors = ProductAttributeValue::whereHas('attribute', function ($query) {
+            $query->where('name', 'Color');
+        })->get();
+        //  dd($sizes);
+        // Trả về view với dữ liệu sản phẩm và các biến thể
+        return view('admin.product.detailProduct', compact('product', 'sizes', 'colors'));
     }
 
-    // Lưu ảnh nếu có
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('variations', 'public');
+
+
+    public function storeVariation(Request $request, $productId)
+    {
+        $request->validate([
+            'size' => 'required|string',
+            'color' => 'required|string',
+            'price' => 'required|numeric',
+            'stock_quantity' => 'required|integer',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        // Tạo SKU
+        $sku = $productId . '-' . $request->size . '-' . $request->color;
+
+        // Kiểm tra xem biến thể đã tồn tại chưa
+        if (ProductVariation::where('sku', $sku)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Biến thể đã tồn tại.']);
+        }
+
+        // Lưu ảnh nếu có
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('variations', 'public');
+        }
+
+        // Tạo biến thể mới
+        $variation = ProductVariation::create([
+            'product_id' => $productId,
+            'sku' => $sku,
+            'price' => $request->price,
+            'stock_quantity' => $request->stock_quantity,
+            'image' => $imagePath,
+        ]);
+
+        // Trả về dữ liệu biến thể mới
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'sku' => $variation->sku,
+                'price' => $variation->price,
+                'stock_quantity' => $variation->stock_quantity,
+                'size' => $request->size,
+                'color' => $request->color,
+                'image' => $imagePath ? asset('storage/' . $imagePath) : null,
+            ]
+        ]);
     }
-
-    // Tạo biến thể mới
-    $variation = ProductVariation::create([
-        'product_id' => $productId,
-        'sku' => $sku,
-        'price' => $request->price,
-        'stock_quantity' => $request->stock_quantity,
-        'image' => $imagePath,
-    ]);
-
-    // Trả về dữ liệu biến thể mới
-    return response()->json([
-        'success' => true,
-        'data' => [
-            'sku' => $variation->sku,
-            'price' => $variation->price,
-            'stock_quantity' => $variation->stock_quantity,
-            'size' => $request->size,
-            'color' => $request->color,
-            'image' => $imagePath ? asset('storage/' . $imagePath) : null,
-        ]
-    ]);
-}
-
 
 }

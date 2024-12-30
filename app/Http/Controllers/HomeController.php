@@ -101,6 +101,7 @@ class HomeController extends Controller
         {
             $product = Product::findOrFail($id);
 
+
             // Tính tổng số lượng tồn kho từ các biến thể
             $variations = $product->variations;
             $category = $product->category;

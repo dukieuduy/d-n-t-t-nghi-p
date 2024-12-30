@@ -1,6 +1,7 @@
 <?php
 
-
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ContactusController;
 use App\Models\User;
 // use App\Http\Controllers\AdminCartController;
 use App\Http\Middleware\IsAdmin;
@@ -22,7 +23,10 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Auth\ClientBlogController;
+use App\Http\Controllers\Auth\ContactusClientController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,10 +84,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
     Route::post('orders/{id}/update', [OrderController::class, 'update'])->name('orders.update');
-    
+
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
+    Route::resource('categories',CategoryController::class);
+    Route::resource('contactus', ContactusController::class);
+    Route::resource('blogs', BlogController::class);
 
 });
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
@@ -120,8 +127,19 @@ Route::get('/user_orders/verify-phone', [UserOrderController::class, 'verifyPhon
 Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhone'])->name('user.orders.check_phone');
 
 
+// Route tìm kiếm sản phẩm
+Route::get('/search', [ContactusClientController::class, 'search'])->name('products.search');
+
+Route::prefix('client')->name('client.')->group(function () {
+
+    Route::get('/aboutus', [ContactusClientController::class, 'listAboutus'])->name('aboutus.create');
+    Route::get('/purchase', [ContactusClientController::class, 'purChase'])->name('purchase.create');
+
+    Route::get('/blogs', [ClientBlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/{id}', [ClientBlogController::class, 'show'])->name('blogs.show');
 
 
+    });
 
 
 // route cũ không dùng
