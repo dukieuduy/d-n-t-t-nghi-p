@@ -26,11 +26,12 @@ class Order extends Model
     // {
     //     return $this->hasMany(OrderItem::class, 'order_id', 'id');
     // }
-
+    // Model Order
     public function orderItems()
-{
-    return $this->hasMany(OrderItem::class);
-}
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
 
     // Mối quan hệ với User
     public function user()
@@ -54,6 +55,11 @@ class Order extends Model
     protected $casts = [
         'payment_expires_at' => 'datetime',
     ];
+
+    public function productVariation()
+    {
+        return $this->belongsTo(ProductVariation::class);
+    }
 
 
 }

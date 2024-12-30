@@ -152,11 +152,12 @@ class CheckoutController extends Controller
                 // Commit transaction
                 DB::commit();
 
-                return response()->json([
+                return redirect()->route('user.orders.index')->with([
                     'message' => 'Đơn hàng của bạn đã được tạo thành công!',
                     'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
                     'order_id' => $order->id
-                ], 200);
+                ]);
+                
                 break;
 
 
@@ -287,29 +288,6 @@ class CheckoutController extends Controller
     
     
 
-
-    // public function confirmCheckout(Request $request) {
-    //     dd($request->color,$request->size);
-        
-    //     $cartItemIds = Arr::flatten($request->all());
-    //     // dd($cartItemIds);
-    //     if(empty($cartItemIds) || empty($request->cart_item_id)) {
-    //         return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
-    //     }
-
-    //     $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
-    //     // dd($cartItems);
-    //     $totalAmount = $cartItems->sum(function ($item) {
-    //         return $item->price * $item->quantity;
-    //     });
-    //     // $provinces=$this->getProvinces();
-    //     $provinces = Province::all();
-    //     // dd($provinces);
-    //     $districts = District::where('province_id', $request->provinceId)->get();
-    //     $wards = Ward::where('district_id', $request->districtId)->get();
-    //     // dd($wards);
-    //     return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards'));
-    // }
     public function confirmCheckout(Request $request)
 {
     // Cập nhật size, color và product_sku cho từng cart item
@@ -324,7 +302,7 @@ class CheckoutController extends Controller
                 $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
     
                 // Cập nhật product_sku = product_id-size-color
-                $productSku = "{$cartItem->product_id}-{$size}-{$color}";
+                $productSku = "{$cartItem->product_id}-{$color}-{$size}";
     
                 // In ra giá trị để kiểm tra
                 // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị

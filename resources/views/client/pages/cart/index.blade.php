@@ -31,9 +31,7 @@
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                     <tr>
-                                        <th scope="col">
-                                            <input type="checkbox" class="form-check-input" id="select-all">
-                                        </th>
+                                        <th scope="col"><input type="checkbox" class="form-check-input" id="select-all"></th>
                                         <th scope="col">Ảnh</th>
                                         <th scope="col">Tên sản phẩm</th>
                                         <th scope="col">Phân loại</th>

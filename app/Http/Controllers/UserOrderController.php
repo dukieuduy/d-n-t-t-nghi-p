@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ward;
 use App\Models\Order;
+use App\Models\District;
+use App\Models\Province;
 use App\Models\CancelOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +23,24 @@ class UserOrderController extends Controller
             // Nếu chưa đăng nhập, chuyển đến trang nhập số điện thoại
             return redirect()->route('user.orders.verify_phone');
         }
+    }
+    public function detail($id)
+    {
+        $order = Order::with([
+            'user',
+            'orderItems.productVariation',          // Eager load productVariation từ orderItems
+            'orderItems.productVariation.product',   // Eager load product từ productVariation
+            'province',
+            'district',
+            'ward'
+        ])->findOrFail($id);
+        
+        // Lấy tỉnh, huyện, xã từ ID
+        $province = Province::find($order->province);
+        $district = District::find($order->district);
+        $ward = Ward::find($order->ward);
+
+        return view('client.pages.orders.detail', compact('order', 'province', 'district', 'ward'));
     }
 
     // Hiển thị form nhập số điện thoại
@@ -80,5 +101,23 @@ class UserOrderController extends Controller
         // Quay lại trang danh sách đơn hàng với thông báo thành công
         return redirect()->route('user.orders.index')->with('success', 'Đơn hàng đã được hủy.');
     }
+    public function reorder($id)
+{
+    $order = Order::findOrFail($id);
+
+    // Kiểm tra nếu trạng thái hiện tại là 'cancelled'
+    if ($order->status === 'cancelled') {
+        // Cập nhật trạng thái thành 'pending'
+        $order->status = 'pending';
+        $order->save();
+
+        return redirect()->route('user.orders.index')->with('success', 'Đặt hàng lại thành công!');
+    }
+
+    // Nếu không phải trạng thái 'cancelled', báo lỗi
+    return redirect()->route('user.orders.index')->with('error', 'Chỉ có thể đặt lại đơn hàng đã hủy.');
+}
+
+
 }
 

@@ -15,10 +15,12 @@ class Product extends Model
     ];
 
         // Mối quan hệ với ProductVariation (một sản phẩm có nhiều biến thể)
+        // Model Product
         public function variations()
         {
             return $this->hasMany(ProductVariation::class);
         }
+
         public function category()
     {
         return $this->belongsTo(Category::class);

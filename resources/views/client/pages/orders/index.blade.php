@@ -12,8 +12,9 @@
                 {{-- <th>Trạng thái giao hàng</th> <!-- Cột mới cho shipping_status --> --}}
                 <th>Thanh toán</th> <!-- Cột mới cho payment_status -->
                 <th>Kiểu thanh toán</th> <!-- Cột mới cho payment_method -->
-                <th>Ngày tạo</th>
+                <th>Ngày đặt</th>
                 <th>Hành động</th>
+                <th>Chi tết</th>
             </tr>
         </thead>
         <tbody>
@@ -38,19 +39,6 @@
                         <span class="text-muted">Chưa xác định</span>
                     @endif
                 </td>
-                {{-- <td>
-                    @if ($order->shipping_status === 'pending')
-                        <span class="text-warning">Đang chờ</span>
-                    @elseif ($order->shipping_status === 'shipped')
-                        <span class="text-primary">Đang giao</span>
-                    @elseif ($order->shipping_status === 'delivered')
-                        <span class="text-success">Đã giao</span>
-                    @elseif ($order->shipping_status === 'cancelled')
-                        <span class="text-danger">Đã hủy</span>
-                    @else
-                        <span class="text-muted">Chưa xác định</span>
-                    @endif
-                </td> --}}
                 <td>
                     @if ($order->payment_status === 'pending')
                         <span class="text-warning">Đang chờ thanh toán</span>
@@ -99,14 +87,23 @@
                                         </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                     <button type="submit" class="btn btn-danger">Hủy đơn</button>
                                 </div>
                                     </form>
                             </div>
                         </div>
                     </div>
+                    @elseif ($order->status === 'cancelled')
+                    <!-- Nút "Đặt hàng lại" -->
+                    <form action="{{ route('orders.reorder', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Đặt lại</button>
+                    </form>
                     @endif
+                </td>
+                
+                <td>
+                    <a href="{{ route('user.orders.detail', $order->id) }}" class="btn btn-info btn-sm">Chi tết</a>
                 </td>
                 
             </tr>

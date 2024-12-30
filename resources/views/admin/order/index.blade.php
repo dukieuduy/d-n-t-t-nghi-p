@@ -83,7 +83,7 @@
                         
                         <td>{{ $order->created_at->format('d/m/Y') }}</td> <!-- Order Date -->
                         <td>
-                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('admin.orders.detail', $order->id) }}" class="btn btn-info btn-sm">Chi tết</a>
                             <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
