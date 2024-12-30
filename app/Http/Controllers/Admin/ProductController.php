@@ -289,7 +289,30 @@ public function index(Request $request)
 
 
 
-public function edit($id)
+// public function detail($id)
+// {
+//     // Lấy thông tin sản phẩm và các biến thể của nó
+//     $product = Product::with([
+//         'variations', // Lấy tất cả biến thể của sản phẩm // Lấy giá trị thuộc tính của mỗi biến thể
+//     ])->find($id);
+
+//     // Kiểm tra nếu sản phẩm không tồn tại
+//     if (!$product) {
+//         return redirect()->route('home')->with('error', 'Sản phẩm không tồn tại');
+//     }
+//      // Lấy các giá trị của thuộc tính "Size" và "Color"
+//      $sizes = ProductAttributeValue::whereHas('attribute', function ($query) {
+//         $query->where('name', 'Size');
+//     })->get();
+
+//     $colors = ProductAttributeValue::whereHas('attribute', function ($query) {
+//         $query->where('name', 'Color');
+//     })->get();
+// dd($sizes);
+//     // Trả về view với dữ liệu sản phẩm và các biến thể
+//     return view('admin.product.detailProduct', compact('product','sizes','colors'));
+// }
+public function detail($id)
 {
     // Lấy thông tin sản phẩm và các biến thể của nó
     $product = Product::with([
@@ -302,18 +325,51 @@ public function edit($id)
     if (!$product) {
         return redirect()->route('home')->with('error', 'Sản phẩm không tồn tại');
     }
-     // Lấy các giá trị của thuộc tính "Size" và "Color"
-     $sizes = ProductAttributeValue::whereHas('attribute', function ($query) {
+
+    // Lấy các giá trị của thuộc tính "Size" và "Color"
+    $sizes = ProductAttributeValue::whereHas('attribute', function ($query) {
         $query->where('name', 'Size');
     })->get();
 
     $colors = ProductAttributeValue::whereHas('attribute', function ($query) {
         $query->where('name', 'Color');
     })->get();
-//  dd($sizes);
-    // Trả về view với dữ liệu sản phẩm và các biến thể
-    return view('admin.product.detailProduct', compact('product','sizes','colors'));
+
+    // Lấy biến thể sản phẩm
+    $variations = $product->variations;
+    // dd($variations);
+
+    // Tạo mảng kết hợp Color => [Sizes]
+    $colorToSizes = [];
+
+    foreach ($variations as $variation) {
+        // Lấy giá trị thuộc tính màu sắc (Color) và kích thước (Size)
+        $colorAttribute = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'Color');
+        $sizeAttribute = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'Size');
+        dd($colorAttribute,$sizeAttribute);
+        if ($colorAttribute && $sizeAttribute) {
+            $color = $colorAttribute->attributeValue->value;
+            $size = $sizeAttribute->attributeValue->value;
+           
+
+            // Khởi tạo mảng màu sắc nếu chưa tồn tại
+            if (!isset($colorToSizes[$color])) {
+                $colorToSizes[$color] = [];
+            }
+
+            // Thêm kích thước vào danh sách của màu sắc, tránh trùng lặp
+            if (!in_array($size, $colorToSizes[$color])) {
+                $colorToSizes[$color][] = $size;
+            }
+        }
+    }
+    dd($colorToSizes);
+
+    // Trả về view với dữ liệu sản phẩm, kích thước, màu sắc, và mảng màu -> kích thước
+    return view('admin.product.detailProduct', compact('product', 'sizes', 'colors', 'colorToSizes'));
 }
+
+
 
 
 

@@ -53,7 +53,7 @@
                         </td>
                         <td>
                             <!-- Các hành động quản lý sản phẩm -->
-                            <a href="{{ route('admin.products.edit', $product['id']) }}" class="btn btn-outline-success">Chi Tiết</a>
+                            <a href="{{ route('admin.products.detail', $product['id']) }}" class="btn btn-outline-success">Chi Tiết</a>
                         </td>
                     </tr>
                 @endforeach
