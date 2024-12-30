@@ -58,8 +58,7 @@ class ReviewController extends Controller
         $reviews->rating = $request->rating;
         $reviews->comment = $request->comment;
         $reviews->save();
-        // session()->flash('success', 'Cảm ơn bạn đã đánh giá góp ý về sản phẩm của chúng tôi');
-        return back()->with('success');
+        return back()->with('success', 'Cảm ơn bạn đã đánh giá góp ý về sản phẩm của chúng tôi');
     }
     //
 
