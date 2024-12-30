@@ -4,30 +4,43 @@
 @if (session('success'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        alert('{{ session('success') }}');
-        window.location.href = 'http://datncampuchia.test/'; // Thay '/desired-route' bằng đường dẫn trang đích
+        var thankYouPopup = new bootstrap.Modal(document.getElementById('thankYouPopup'));
+        thankYouPopup.show();
+
+        document.getElementById('redirectHome').addEventListener('click', function() {
+            window.location.href = 'http://datncampuchia.test/';
+        });
     });
 </script>
 @endif
 
 
-
 <div class="container my-5">
-    <form action="{{ route('client.reviews.store')}}" method="POST">
+    <form action="{{ route('client.reviews.store') }}" method="POST" class="p-4 border rounded shadow-sm ">
         @csrf
-        <div class="form-group">
-            <label for="">Mã đơn hàng</label>
-            <input class="form-control" type="text" value="{{ $orderId }}" disabled>
+        <h3 class="text-center mb-4">Đánh giá sản phẩm</h3>
+        <hr>
+
+        <!-- Mã đơn hàng -->
+        <div class="form-group mb-3">
+            <label for="orderId" class="form-label">Mã đơn hàng</label>
+            <input type="text" class="form-control" id="orderId" value="{{ $orderId }}" disabled>
         </div>
-        <div class="form-group mt-2">
-            <label for="">Sản phẩm đã mua</label>
-            <input class="form-control" name="product" type="text" value="{{ $product_name }}" disabled>
-            <input class="form-control" name="product" type="hidden" value="{{ $productId }}">
+
+        <!-- Sản phẩm đã mua -->
+        <div class="form-group mb-3">
+            <label for="product" class="form-label">Sản phẩm đã mua</label>
+            <input type="text" class="form-control" id="product" value="{{ $product_name }}" disabled>
+            <input type="hidden" name="product" value="{{ $productId }}">
         </div>
-        <div class="form-group mt-2">
-            <label for="">Đánh giá</label>
-            <textarea class="form-control" name="comment" id=""></textarea>
+
+        <!-- Đánh giá -->
+        <div class="form-group mb-3">
+            <label for="comment" class="form-label">Đánh giá</label>
+            <textarea class="form-control" name="comment" id="comment" rows="4" placeholder="Hãy chia sẻ cảm nhận của bạn..."></textarea>
         </div>
+
+        <!-- Đánh giá (sao) -->
         <div>
             <table>
                 <tr>
@@ -46,19 +59,35 @@
             </table>
 
 
+
+            @error('rating')
+            <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
         </div>
 
-
-
-
-
-        @error('rating')
-        <div class="alert alert-danger mt-2">{{ $message }}</div>
-        @enderror
-
-        <button class="btn btn-success mt-3">Đánh giá</button>
-        <button class="btn btn-primary mt-3 ms-2"><a href="{{ route('user.orders.index')  }}">Quay lại</a></button>
+        <!-- Nút gửi đánh giá và quay lại -->
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-success me-2" id="submitReview">Gửi đánh giá</button>
+            <a href="{{ route('user.orders.index') }}" class="btn btn-primary">Quay lại</a>
+        </div>
     </form>
+</div>
+
+<div class="modal fade" id="thankYouPopup" tabindex="-1" aria-labelledby="thankYouLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="thankYouLabel">Cảm ơn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Cảm ơn bạn đã đánh giá sản phẩm của chúng tôi!!!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="redirectHome">OK</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
