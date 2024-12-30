@@ -71,13 +71,14 @@ class CheckoutController extends Controller
             $order = Order::find($vnp_TxnRef);
 
             if ($order) {
-                $order->status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
-                $order->save();
+                    $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
 
-                return response()->json([
-                    'message' => 'Thanh toán thành công!',
-                    'order_id' => $order->id,
-                ], 200);
+                    $order->save();
+    
+                    return response()->json([
+                        'message' => 'Thanh toán thành công!',
+                        'order_id' => $order->id,
+                    ], 200);
             } else {
                 return response()->json([
                     'message' => 'Không tìm thấy đơn hàng.',
@@ -164,12 +165,13 @@ class CheckoutController extends Controller
                     // Commit transaction
                     DB::commit();
 
-                    return response()->json([
-                        'message' => 'Đơn hàng của bạn đã được tạo thành công!',
-                        'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
-                        'order_id' => $order->id
-                    ], 200);
-                    break;
+                return redirect()->route('user.orders.index')->with([
+                    'message' => 'Đơn hàng của bạn đã được tạo thành công!',
+                    'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
+                    'order_id' => $order->id
+                ]);
+                
+                break;
 
 
                 case 'VNPAY':
@@ -307,36 +309,60 @@ class CheckoutController extends Controller
         }
     }
 
-
-
-
-
-
-
-
-
-
     public function confirmCheckout(Request $request)
-    {
-        $cartItemIds = Arr::flatten($request->all());
-        // dd($cartItemIds);
-        if (empty($cartItemIds) || empty($request->cart_item_id)) {
-            return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
+{
+    // Cập nhật size, color và product_sku cho từng cart item
+    if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
+        foreach ($request->cart_item_id as $index => $cartItemId) {
+            $cartItem = CartItem::find($cartItemId);
+    
+            if ($cartItem) {
+                // Lấy size và color từ request hoặc giữ nguyên giá trị cũ
+                $size = $request->size[$index] ?? $cartItem->size; // Lấy size từ request hoặc giữ nguyên
+                $color = $request->color[$index] ?? $cartItem->color; // Lấy color từ request hoặc giữ nguyên
+                $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
+    
+                // Cập nhật product_sku = product_id-size-color
+                $productSku = "{$cartItem->product_id}-{$color}-{$size}";
+    
+                // In ra giá trị để kiểm tra
+                // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị
+    
+                // Cập nhật các thông tin vào cơ sở dữ liệu
+                $cartItem->update([
+                    'size' => $size,
+                    'color' => $color,
+                    'quantity' => $quantity, // Cập nhật số lượng
+                    'product_sku' => $productSku,
+                ]);
+            }
         }
+    }
+    
+    
 
-        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
-        // dd($cartItems);
-        $totalAmount = $cartItems->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
-        // $provinces=$this->getProvinces();
-        $provinces = Province::all();
-        // dd($provinces);
-        $districts = District::where('province_id', $request->provinceId)->get();
-        $wards = Ward::where('district_id', $request->districtId)->get();
-        // dd($wards);
-        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards'));
+    // Kiểm tra nếu không có sản phẩm nào được chọn để thanh toán
+    if (empty($request->cart_item_id)) {
+        return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
     }
 
+    // Lấy danh sách các sản phẩm đã chọn
+    $cartItems = CartItem::whereIn('id', $request->cart_item_id)->get();
 
+    // Tính tổng tiền thanh toán
+    $totalAmount = $cartItems->sum(function ($item) {
+        return $item->price * $item->quantity;
+    });
+
+    // Lấy danh sách tỉnh, quận, và phường
+    $provinces = Province::all();
+    $districts = District::where('province_id', $request->provinceId)->get();
+    $wards = Ward::where('district_id', $request->districtId)->get();
+
+    // Trả về view xác nhận thanh toán
+    return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards'));
+}
+
+    
+    
 }

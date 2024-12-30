@@ -19,10 +19,16 @@ class OrderItem extends Model
     }
 
     // Mối quan hệ với Product (nếu có)
+    // Model OrderItem
+// Model OrderItem
     public function productVariation()
     {
-        return $this->belongsTo(ProductVariation::class, 'product_sku', 'sku');
+        return $this->belongsTo(ProductVariation::class, 'product_sku', 'sku'); // product_sku liên kết với sku trong product_variations
     }
+
+
+
+
 
 
 }

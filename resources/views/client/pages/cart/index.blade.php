@@ -31,9 +31,7 @@
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                     <tr>
-                                        <th scope="col">
-                                            <input type="checkbox" class="form-check-input" id="select-all">
-                                        </th>
+                                        <th scope="col"><input type="checkbox" class="form-check-input" id="select-all"></th>
                                         <th scope="col">Ảnh</th>
                                         <th scope="col">Tên sản phẩm</th>
                                         <th scope="col">Phân loại</th>
@@ -61,7 +59,7 @@
                                                 <!-- Dropdown cho kích cỡ -->
                                                 <div class="mb-2">
                                                     <label for="size" class="form-label mb-1">Kích cỡ</label>
-                                                    <select name="size" class="form-select form-select-sm size-select" 
+                                                    <select name="size[]" class="form-select form-select-sm size-select" 
                                                             data-product-id="{{ $key['product_id'] }}" 
                                                             data-sizes-colors="{{ json_encode($sizesWithColors[$key['product_id']] ?? []) }}">
                                                         <option value="">Chọn kích cỡ</option>
@@ -77,7 +75,7 @@
                                                 <!-- Dropdown cho màu sắc -->
                                                 <div class="mb-2">
                                                     <label for="color" class="form-label mb-1">Màu sắc</label>
-                                                    <select name="color" class="form-select form-select-sm color-select" 
+                                                    <select name="color[]" class="form-select form-select-sm color-select" 
                                                             data-product-id="{{ $key['product_id'] }}" 
                                                             data-sizes-colors="{{ json_encode($sizesWithColors[$key['product_id']] ?? []) }}">
                                                         <option value="">Chọn màu sắc</option>
@@ -99,7 +97,7 @@
                                         </td>         
                                         <td>{{ number_format($key->price, 0, ',', '.') }}đ</td>
                                         <td>
-                                            <input type="number" class="form-control w-50 quantity-input"
+                                            <input name ="quantity[]" type="number" class="form-control w-50 quantity-input"
                                                    value="{{ $key->quantity }}" min="1" max="100"
                                                    data-price="{{ $key->price }}" data-cart-item-id="{{ $key->id }}"
                                                    onchange="updateCart(this)">
@@ -111,10 +109,6 @@
                                             <a href="{{ route('cart.remove', ['id' => $key->id]) }}" class="btn btn-outline-danger btn-sm">
                                                 <i class="fa fa-trash"></i> Xóa
                                             </a>
-                                            <div class="mt-3">
-                                                <a href="{{ route('cart.edit', ['id' => $key->id]) }}" class="btn btn-primary"> Cập nhật giỏ hàng </a>
-                                                
-                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
