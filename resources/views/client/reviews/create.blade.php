@@ -24,7 +24,8 @@
         <!-- Mã đơn hàng -->
         <div class="form-group mb-3">
             <label for="orderId" class="form-label">Mã đơn hàng</label>
-            <input type="text" class="form-control" id="orderId" value="{{ $orderId }}" disabled>
+            <input type="text" class="form-control" id="order_id_display" value="{{ $orderId }}" disabled>
+            <input type="hidden" name="order_id" value="{{ $orderId }}">
         </div>
 
         <!-- Sản phẩm đã mua -->

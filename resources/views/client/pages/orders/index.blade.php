@@ -101,7 +101,7 @@
                     </form>
                     @endif
 
-                    @if ($order->status === 'completed') <!-- Chỉ hiển thị nút đánh giá khi trạng thái là đã xác nhận  -->
+                    @if ($order->status === 'completed' && !$order->is_reviewed) <!-- Chỉ hiển thị nút đánh giá khi trạng thái là đã xác nhận  -->
 
                     <button type="submit" class="btn btn-warning"><a href="{{ route('client.reviews.create', $order->id) }}">
                             Đánh giá
