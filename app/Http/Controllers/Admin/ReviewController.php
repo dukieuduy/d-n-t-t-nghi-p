@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Review;
@@ -57,7 +58,10 @@ class ReviewController extends Controller
         $reviews->user_id = auth()->id();
         $reviews->rating = $request->rating;
         $reviews->comment = $request->comment;
+        // dd($request->order_id);
         $reviews->save();
+
+        Order::where('id', $request->order_id)->update(['is_reviewed' => 1]);
         return back()->with('success', 'Cảm ơn bạn đã đánh giá góp ý về sản phẩm của chúng tôi');
     }
     //
