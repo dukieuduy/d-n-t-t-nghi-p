@@ -95,7 +95,7 @@
 
                 <!-- Thuộc tính của biến thể -->
                 <!-- Color -->
-                 <div class="form-group">
+                 {{-- <div class="form-group">
                      <label>Color</label>
                      <select name="variations[0][attributes][color]" class="form-control attribute-select color-select" data-type="color">
                          <option value="">Chọn màu</option>
@@ -114,7 +114,31 @@
 
                         @endforeach
                     </select>
+                </div> --}}
+
+                <div id="variations">
+                    <div class="variation">
+                        <div class="form-group">
+                            <label>Color</label>
+                            <select name="variations[0][attributes][color]" class="form-control attribute-select color-select">
+                                <option value="">Chọn màu</option>
+                                @foreach ($colorValues as $color)
+                                    <option value="{{ $color->id }}">{{ $color->value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select name="variations[0][attributes][size]" class="form-control attribute-select size-select">
+                                <option value="">Chọn size</option>
+                                @foreach ($sizeValues as $size)
+                                    <option value="{{ $size->id }}">{{ $size->value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
+                
 
 
 
@@ -185,7 +209,7 @@
     // Khởi tạo
     updateDisabledOptions();
 </script> --}}
-<script>
+{{-- <script>
     let selectedCombinations = [];
 
     // Khóa các tùy chọn đã được chọn trong các dropdown
@@ -246,5 +270,82 @@
 
     // Khởi tạo
     updateDisabledOptions();
+</script> --}}
+<script>
+    let selectedCombinations = [];
+
+// Hàm cập nhật danh sách các tùy chọn bị khóa
+function updateDisabledOptions() {
+    selectedCombinations = [];
+
+    // Duyệt qua tất cả các biến thể đã tồn tại
+    document.querySelectorAll('.variation').forEach(variation => {
+        const size = variation.querySelector('.size-select')?.value;
+        const color = variation.querySelector('.color-select')?.value;
+
+        if (size && color) {
+            selectedCombinations.push(`${size}-${color}`);
+        }
+    });
+
+    // Khóa các tùy chọn trùng lặp
+    document.querySelectorAll('.variation').forEach(variation => {
+        const sizeSelect = variation.querySelector('.size-select');
+        const colorSelect = variation.querySelector('.color-select');
+
+        if (sizeSelect && colorSelect) {
+            const currentSize = sizeSelect.value;
+            const currentColor = colorSelect.value;
+
+            // Khóa các tùy chọn trong dropdown Color
+            colorSelect.querySelectorAll('option').forEach(option => {
+                const combination = `${currentSize}-${option.value}`;
+                option.disabled = selectedCombinations.includes(combination) && option.value !== currentColor;
+            });
+
+            // Khóa các tùy chọn trong dropdown Size
+            sizeSelect.querySelectorAll('option').forEach(option => {
+                const combination = `${option.value}-${currentColor}`;
+                option.disabled = selectedCombinations.includes(combination) && option.value !== currentSize;
+            });
+        }
+    });
+}
+
+// Thêm biến thể mới
+document.getElementById('addVariation').addEventListener('click', () => {
+    const variationsContainer = document.getElementById('variations');
+    const newIndex = Date.now(); // Sử dụng timestamp để tạo chỉ số duy nhất
+    const firstVariation = document.querySelector('.variation');
+    
+    // Clone HTML của biến thể đầu tiên
+    const newVariationHTML = firstVariation.outerHTML.replace(/\[0\]/g, `[${newIndex}]`);
+    
+    // Thêm biến thể mới vào container
+    variationsContainer.insertAdjacentHTML('beforeend', newVariationHTML);
+
+    // Làm mới các dropdown và cập nhật trạng thái khóa
+    updateDisabledOptions();
+});
+
+// Xóa biến thể gần nhất
+document.getElementById('removeVariation').addEventListener('click', () => {
+    const variations = document.querySelectorAll('.variation');
+    if (variations.length > 1) {
+        variations[variations.length - 1].remove(); // Xóa biến thể cuối cùng
+        updateDisabledOptions();
+    }
+});
+
+// Lắng nghe thay đổi trên các dropdown
+document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('attribute-select')) {
+        updateDisabledOptions();
+    }
+});
+
+// Khởi tạo khi tải trang
+updateDisabledOptions();
+
 </script>
 @endsection

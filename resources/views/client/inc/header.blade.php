@@ -90,9 +90,10 @@
                 <div class="col-lg-9 col-md-9">
                     <div class="middel_right">
                         <div class="search-container search_two">
-                            <form action="#">
+                            <form action="{{ route('products.search') }}" method="GET">
+                                @csrf <!-- CSRF token for security -->
                                 <div class="search_box">
-                                    <input placeholder="Search entire store here ..." type="text">
+                                    <input name="query" placeholder="Search entire store here ..." type="text" required>
                                     <button type="submit"><i class="ion-ios-search-strong"></i></button>
                                 </div>
                             </form>
@@ -444,26 +445,20 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li><a href="blog.html">blog<i class="fa fa-angle-down"></i></a>
+                                    <li><a href="{{route('client.blogs.index')}}">blog<i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="blog-details.html">blog details</a></li>
-                                            <li><a href="blog-fullwidth.html">blog fullwidth</a></li>
-                                            <li><a href="blog-sidebar.html">blog sidebar</a></li>
+                                            <li><a href="{{route('client.blogs.index')}}">Quản lý bài viết</a></li>
+
                                         </ul>
                                     </li>
                                     <li><a href="#">pages <i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="about.html">About Us</a></li>
-                                            <li><a href="services.html">services</a></li>
-                                            <li><a href="faq.html">Frequently Questions</a></li>
-                                            <li><a href="login.html">login</a></li>
-                                            <li><a href="compare.html">compare</a></li>
-                                            <li><a href="privacy-policy.html">privacy policy</a></li>
-                                            <li><a href="coming-soon.html">Coming Soon</a></li>
+                                            <li><a href="{{route('client.aboutus.create')}}">Chính Sách</a></li>
+                                            <li><a href="{{route('client.purchase.create')}}">Hướng Dẫn Mùa Hàng</a></li>
+
                                         </ul>
                                     </li>
-                                    <li><a href="about.html">about Us</a></li>
-                                    <li><a href="contact.html"> Contact Us</a></li>
+                                    {{-- <li><a href="{{route('client.contactus.create')}}"> Liên Hệ</a></li> --}}
                                 </ul>
                             </nav>
                         </div>

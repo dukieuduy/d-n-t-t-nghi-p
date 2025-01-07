@@ -14,10 +14,13 @@ class ProductVariation extends Model
     ];
 
    // Mối quan hệ với Product (biến thể thuộc về một sản phẩm)
-   public function product()
-   {
-       return $this->belongsTo(Product::class);
-   }
+// Model ProductVariation
+public function product()
+{
+    return $this->belongsTo(Product::class, 'product_id');
+}
+
+
 
     // Mối quan hệ với ProductVariationAttribute (một biến thể có thể có nhiều thuộc tính)
     public function variationAttributes()

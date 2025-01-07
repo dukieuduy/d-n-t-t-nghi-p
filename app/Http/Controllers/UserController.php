@@ -31,7 +31,7 @@ class UserController extends Controller
         }
     }
     public function register(){
-        return view('client/pages.register');
+        return view('client/pages.home');
     }
     public function postRegister(Request $request){
         // dd($request->all());
