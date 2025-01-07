@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Review;
@@ -28,12 +29,23 @@ class ReviewController extends Controller
     {
         $orderId = $request->route('id');
 
-        $productId = DB::table('orders')
+        $product = DB::table('orders')
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->join('product_variations', 'order_items.product_sku', '=', 'product_variations.sku')
             ->where('orders.id', $orderId)
             ->distinct()
-            ->pluck('product_variations.product_id')
+            ->select('product_variations.product_id', 'product_variations.image')
+            // ->pluck('product_variations.product_id')
+            // ->get();
+            ->first();
+        // dd( $product);
+        $productId = $product->product_id;
+        $image = $product -> image;
+
+        $skus = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.id', $orderId)
+            ->pluck('order_items.product_sku')
             ->first();
 
         $product_name = DB::table('products')
@@ -41,7 +53,7 @@ class ReviewController extends Controller
             ->value('name');
 
 
-        return view('client.reviews.create', compact('orderId', 'productId', 'product_name'));
+        return view('client.reviews.create', compact('orderId', 'productId', 'product_name', 'skus', 'image'));
     }
 
     public function compare(Request $request)
@@ -100,6 +112,4 @@ class ReviewController extends Controller
 
         return redirect()->route('admin.reviews.index')->with('success', 'Review đã được xóa.');
     }
-
-
 }
