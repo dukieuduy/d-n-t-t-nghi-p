@@ -108,7 +108,7 @@ class HomeController extends Controller
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity','sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','rating'));
+            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity','sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','rating','reviews','rating'));
         }
 
     
