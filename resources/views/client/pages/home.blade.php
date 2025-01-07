@@ -227,61 +227,55 @@
                             </div>
                         </div> --}}
                         @foreach ($products as $item)
-                            <div class="single_product_list">
-                                <div class="single_product">
-                                    <div class="product_name">
-                                        <h3><a
-                                                href="{{ route('detail-product', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                                        </h3>
-                                        <p class="manufacture_product"><a href="#">Accessories</a></p>
-                                    </div>
-                                    <div class="product_thumb">
-                                        <a class="primary_img" href="#"> <img
-                                                src="{{ asset('storage/' . $item->image_prd) }}" alt=""></a>
-                                        {{-- <a class="secondary_img" href="#"><img
-                                            src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""></a> --}}
-                                        {{-- <a class="secondary_img" href="#"> <img src="{{ asset('storage/' . $item->lowest_price_image)}}" alt=""> </a> --}}
 
-                                        <div class="label_product">
-                                            <span class="label_sale">-57%</span>
-                                        </div>
-
-                                        <div class="action_links">
-                                            <ul>
-                                                <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#modal_box" title="quick view">
-                                                        <span class="lnr lnr-magnifier"></span></a></li>
-                                                <li class="wishlist"><a href="wishlist.html"
-                                                        title="Add to Wishlist"><span class="lnr lnr-heart"></span></a>
-                                                </li>
-                                                <li class="compare"><a href="compare.html" title="compare"><span
-                                                            class="lnr lnr-sync"></span></a></li>
-                                            </ul>
-                                        </div>
+                        <div class="single_product_list">
+                            <div class="single_product">
+                                <div class="product_name">
+                                    <h3><a href="{{ route('detail-product', ['id' => $item->id]) }}">{{ $item->name }}</a></h3>
+                                    <p class="manufacture_product"><a href="#">Accessories</a></p>
+                                </div>
+                                <div class="product_thumb">
+                                    <a class="primary_img" href="{{ route('detail-product', ['id' => $item->id]) }}"> <img src="{{ \Illuminate\Support\Facades\Storage::url($item->image_prd)}}" alt=""></a>
+                                    <div class="label_product">
+                                        <span class="label_sale">{{ $item->total_sale_percentage }}%</span>
                                     </div>
-                                    <div class="product_content">
-                                        <div class="product_ratings">
-                                            <ul>
-                                                <li><a href="#"><i class="ion-star"></i></a></li>
-                                                <li><a href="#"><i class="ion-star"></i></a></li>
-                                                <li><a href="#"><i class="ion-star"></i></a></li>
-                                                <li><a href="#"><i class="ion-star"></i></a></li>
-                                                <li><a href="#"><i class="ion-star"></i></a></li>
-                                            </ul>
+
+                                    <div class="action_links">
+                                        <ul>
+                                            <li class="quick_button"><a href="#" data-bs-toggle="modal"
+                                                                        data-bs-target="#modal_box" title="quick view">
+                                                    <span class="lnr lnr-magnifier"></span></a></li>
+                                            <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
+                                                        class="lnr lnr-heart"></span></a></li>
+                                            <li class="compare"><a href="compare.html" title="compare"><span
+                                                        class="lnr lnr-sync"></span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product_content">
+                                    <div class="product_ratings">
+                                        <ul>
+                                            <li><a href="#"><i class="ion-star"></i></a></li>
+                                            <li><a href="#"><i class="ion-star"></i></a></li>
+                                            <li><a href="#"><i class="ion-star"></i></a></li>
+                                            <li><a href="#"><i class="ion-star"></i></a></li>
+                                            <li><a href="#"><i class="ion-star"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="product_footer d-flex align-items-center">
+                                        <div class="price_box">
+                                            <small><del>{{number_format($item->price_old)}}</del></small>
+                                            <span class="regular_price">{{number_format($item->price_new - ($item->price_new * $item->total_sale_percentage / 100))}} đ</span>
                                         </div>
-                                        <div class="product_footer d-flex align-items-center">
-                                            <div class="price_box">
-                                                <span class="regular_price">{{ $item->price_new }}</span>
-                                            </div>
-                                            <div class="add_to_cart">
-                                                <a href="cart.html" title="add to cart"><span
-                                                        class="lnr lnr-cart"></span></a>
-                                            </div>
+                                        <div class="add_to_cart">
+                                            <a href="cart.html" title="add to cart"><span
+                                                    class="lnr lnr-cart"></span></a>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
+
+                        </div>
                         @endforeach
 
                         {{-- <div class="single_product_list">
@@ -792,7 +786,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -839,7 +833,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1473,7 +1467,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1520,7 +1514,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1570,7 +1564,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1617,7 +1611,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1667,7 +1661,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1715,7 +1709,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1765,7 +1759,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1812,7 +1806,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1861,7 +1855,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1908,7 +1902,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -1957,7 +1951,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -2004,7 +1998,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -2053,7 +2047,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -2100,7 +2094,7 @@
                                     <div class="action_links">
                                         <ul>
                                             <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal_box" title="quick view">
+                                                                        data-bs-target="#modal_box" title="quick view">
                                                     <span class="lnr lnr-magnifier"></span></a></li>
                                             <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                         class="lnr lnr-heart"></span></a></li>
@@ -2147,12 +2141,16 @@
                     <div class="product_tab_button tab_button2">
                         <ul class="nav" role="tablist" id="nav-tab2">
                             <li>
-                                <a class="active" data-toggle="tab" href="#featured" role="tab"
-                                    aria-controls="featured" aria-selected="true"><span>Lượt xem nhiều</span> </a>
+                                <a class="active" data-toggle="tab" href="#featured" role="tab" aria-controls="featured"
+                                   aria-selected="true"><span>Featured</span> Products</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#view" role="tab" aria-controls="view" aria-selected="false"><span>Most</span>
+                                    View Products</a>
                             </li>
                             <li>
                                 <a data-toggle="tab" href="#bestseller" role="tab" aria-controls="bestseller"
-                                    aria-selected="false"><span> Top 10 sản phẩm bán chạy</span> </a>
+                                   aria-selected="false"><span>Bestseller</span> Products</a>
                             </li>
                         </ul>
                     </div>
@@ -2160,57 +2158,990 @@
                 </div>
             </div>
 
-            {{-- kien - lượt xem sp --}}
+
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="featured" role="tabpanel">
-                    @php
-                        $viewsProducts = $products->sortByDesc('views'); //sắp xếp sp cột sales từ lớn đến nhỏ
-                        $count = 0;
-                    @endphp
-                    @foreach ($viewsProducts as $product)
-                        @if ($product->views >= 1 && $count < 10)
-                            <a href="{{ route('detail-product', ['id' => $product->id]) }}">
-                                <img src="{{ asset($product->image_prd) }}" alt="ảnh" />
-                                <h2>{{ $product->name }}</h2>
-                                <p>{{ $product->description }}</p>
-                                <p>Giá: {{ number_format($product->price, 2) }} VNĐ</p>
-                                <p>Lượt xem: {{ $product->views }}</p>
-                                <hr>
-                            </a>
-                            @php $count++; @endphp
-                        @endif
-                    @endforeach
-                </div>
+                    <div class="new_product_container">
+                        <div class="sample_product">
+                            <div class="product_name">
+                                <h3><a href="product-details.html">1. New and sale new badge product </a></h3>
+                                <div class="manufacture_product">
+                                    <p><a href="#">Hewlett-Packard</a></p>
+                                </div>
+                            </div>
+                            <div class="product_thumb">
+                                <a href="#"><img src="assets/img/product/product19.jpg" alt=""></a>
+                            </div>
+                            <div class="product_content">
+                                <div class="product_ratings">
+                                    <ul>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="price_box">
+                                    <span class="current_price">$160.00</span>
+                                    <span class="old_price">$180.00</span>
+                                </div>
+                                <div class="quantity_progress">
+                                    <p class="product_sold">Sold: <span>199</span></p>
+                                    <p class="product_available">Availabe: <span>9800</span></p>
+                                </div>
+                                <div class="bar_percent">
 
-                {{-- kien - sp bán chạy --}}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="product_carousel product_bg  product_column2 owl-carousel">
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product2.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product12.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product5.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$160.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product10.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product11.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product13.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product7.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product14.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product15.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product16.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JKodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product17.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$280.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product18.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="view" role="tabpanel">
+                    <div class="new_product_container">
+                        <div class="sample_product">
+                            <div class="product_name">
+                                <h3><a href="product-details.html">Beats EP Wired On-Ear Headphone-Black</a></h3>
+                                <div class="manufacture_product">
+                                    <p><a href="#">Canon</a></p>
+                                </div>
+                            </div>
+                            <div class="product_thumb">
+                                <a href="#"><img src="assets/img/product/product15.jpg" alt=""></a>
+                            </div>
+                            <div class="product_content">
+                                <div class="product_ratings">
+                                    <ul>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="price_box">
+                                    <span class="current_price">$160.00</span>
+                                    <span class="old_price">$180.00</span>
+                                </div>
+                                <div class="quantity_progress">
+                                    <p class="product_sold">Sold: <span>199</span></p>
+                                    <p class="product_available">Availabe: <span>9800</span></p>
+                                </div>
+                                <div class="bar_percent">
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="product_carousel product_bg  product_column2 owl-carousel">
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product10.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product11.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$280.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product12.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product13.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product11.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$280.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product14.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product15.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product16.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product17.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product18.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JKodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product19.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product2.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="bestseller" role="tabpanel">
-                    <ul>
-                        @php
-                            $sortedProducts = $products->sortByDesc('sales'); //sắp xếp sp cột sales từ lớn đến nhỏ
-                            $count = 0;
-                        @endphp
-                        @foreach ($sortedProducts as $product)
-                            @if ($product->sales >= 1 && $count < 10)
-                                <li>
-                                    <a href="{{ route('detail-product', ['id' => $product->id]) }}">
-                                        <img src="{{ asset($product->image_prd) }}" alt="ảnh" />
-                                        <h2>{{ $product->name }}</h2>
-                                        <p>{{ $product->description }}</p>
-                                        <p>Giá: {{ number_format($product->price, 2) }} VNĐ</p>
-                                        <p>Số lượng đã bán: {{ $product->sales }}</p>
-                                        <hr>
-                                    </a>
-                                </li>
-                                @php $count++; @endphp
-                            @endif
-                        @endforeach
-                    </ul>
+                    <div class="new_product_container">
+                        <div class="sample_product">
+                            <div class="product_name">
+                                <h3><a href="product-details.html">Koss KPH7 Lightweight Portable Headphone</a></h3>
+                                <div class="manufacture_product">
+                                    <p><a href="#">Accessories</a></p>
+                                </div>
+                            </div>
+                            <div class="product_thumb">
+                                <a href="#"><img src="assets/img/product/product3.jpg" alt=""></a>
+                            </div>
+                            <div class="product_content">
+                                <div class="product_ratings">
+                                    <ul>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                        <li><a href="#"><i class="ion-star"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="price_box">
+                                    <span class="current_price">$160.00</span>
+                                    <span class="old_price">$180.00</span>
+                                </div>
+                                <div class="quantity_progress">
+                                    <p class="product_sold">Sold: <span>199</span></p>
+                                    <p class="product_available">Availabe: <span>9800</span></p>
+                                </div>
+                                <div class="bar_percent">
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="product_carousel product_bg  product_column2 owl-carousel">
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product5.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product6.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$280.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product7.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$160.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product8.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product9.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$280.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product10.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Kodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product11.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JBL Flip 3 Splasroof Portable Bluetooth 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product12.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product13.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small_product">
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Lid Cover Cookware Steel Hybrid</a></h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product14.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">JKodak PIXPRO Astro Zoom AZ421 16 MP 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="regular_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product15.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="single_product">
+                                    <div class="product_content">
+                                        <h3><a href="product-details.html">Nonstick Dishwasher On-Ear Headphones 2</a>
+                                        </h3>
+                                        <div class="product_ratings">
+                                            <ul>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                                <li><a href="#"><i class="ion-star"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="price_box">
+                                            <span class="current_price">$160.00</span>
+                                            <span class="old_price">$180.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="product-details.html"><img
+                                                src="assets/img/product/product16.jpg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     <!--product area end-->
-
+    <!--banner area start-->
+    <section class="banner_area mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="banner_container">
+                        <div class="single_banner">
+                            <div class="banner_thumb">
+                                <a href="#"><img src="assets/img/bg/banner3.jpg" alt=""></a>
+                                <div class="banner_text">
+                                    <h3>Car Audio</h3>
+                                    <h2>Super Natural Sound</h2>
+                                    <a href="shop.html">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single_banner">
+                            <div class="banner_thumb">
+                                <a href="#"><img src="assets/img/bg/banner4.jpg" alt=""></a>
+                                <div class="banner_text">
+                                    <h3>All - New</h3>
+                                    <h2>Perfomance Parts</h2>
+                                    <a href="shop.html">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--banner area end-->
 
     <!--product area start-->
     <section class="product_area mb-50">
@@ -2238,7 +3169,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2284,7 +3215,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2331,7 +3262,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2377,7 +3308,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2423,7 +3354,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2470,7 +3401,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2517,7 +3448,7 @@
                                 <div class="action_links">
                                     <ul>
                                         <li class="quick_button"><a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#modal_box" title="quick view">
+                                                                    data-bs-target="#modal_box" title="quick view">
                                                 <span class="lnr lnr-magnifier"></span></a></li>
                                         <li class="wishlist"><a href="wishlist.html" title="Add to Wishlist"><span
                                                     class="lnr lnr-heart"></span></a></li>
@@ -2590,7 +3521,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product1.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2615,7 +3546,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product2.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2639,7 +3570,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product3.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2662,7 +3593,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product4.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2686,7 +3617,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product5.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2710,7 +3641,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product6.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2734,7 +3665,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product1.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2759,7 +3690,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product2.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2783,7 +3714,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product3.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2806,7 +3737,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product4.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2830,7 +3761,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product5.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2854,7 +3785,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product6.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2889,7 +3820,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product8.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2913,7 +3844,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product9.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2936,7 +3867,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product4.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2959,7 +3890,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product10.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -2983,7 +3914,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product11.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3007,7 +3938,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product12.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3031,7 +3962,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product8.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3055,7 +3986,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product9.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3078,7 +4009,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product4.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3101,7 +4032,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product10.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3125,7 +4056,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product11.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3149,7 +4080,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product12.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3184,7 +4115,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product10.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3209,7 +4140,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product11.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3233,7 +4164,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product12.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3256,7 +4187,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product13.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3280,7 +4211,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product14.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3304,7 +4235,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product15.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3328,7 +4259,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product10.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3353,7 +4284,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product11.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3377,7 +4308,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product12.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3400,7 +4331,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product13.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3424,7 +4355,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product14.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3448,7 +4379,7 @@
                             <div class="single_product_items">
                                 <div class="product_thumb">
                                     <a href="product-details.html"><img src="assets/img/product/product15.jpg"
-                                            alt=""></a>
+                                                                        alt=""></a>
                                 </div>
                                 <div class="product_content">
                                     <div class="product_name">
@@ -3508,4 +4439,7 @@
         </div>
     </div>
     <!--brand area end-->
-@endsection
+
+
+
+    @endsection

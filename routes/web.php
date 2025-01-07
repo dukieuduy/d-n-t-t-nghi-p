@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Admin\SaleController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\ContactusController;
 use App\Models\User;
@@ -42,10 +45,36 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 // client
 
 
+// Route::get('/locations', [LocationController::class, 'index']);
+// Route::get('/districts/{provinceId}', [LocationController::class, 'getDistricts']);
+// Route::get('/wards/{districtId}', [LocationController::class, 'getWards']);
+
 //home
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+// Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+
+// Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+// Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+// Route::post('/cart/update/{productId}', [CartController::class, 'updateItem'])->name('cart.update');
+// Route::delete('/cart/remove/{productId}', [CartController::class, 'removeItem'])->name('cart.remove');
+// Route::put('/cart/update/{productId}', [CartController::class, 'updateItem'])->name('cart.update');
+
+// Route::get('/hihi', [CartController::class, 'index'])->name('hihi');
+
+
+
+// // admin cart
+// Route::get('/carts', [AdminCartController::class, 'index'])->name('admin.carts.index');
+// Route::get('/cart/{id}', [AdminCartController::class, 'show'])->name('admin.cart.show');
+// Route::delete('/cart/{id}', [AdminCartController::class, 'destroy'])->name('admin.cart.destroy');
+
+
+
 // // whishlist
 
 Route::get('/wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
@@ -95,6 +124,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('contactus', ContactusController::class);
     Route::resource('blogs', BlogController::class);
 
+    Route::resource('discounts', DiscountController::class);
+    Route::put('discounts/{discount}/change-status', [DiscountController::class, 'changeStatus'])->name('discounts.changeStatus');
+
+    Route::resource('sales', SaleController::class);
+    Route::put('sales/{sale}/change-status', [SaleController::class, 'changeStatus'])->name('sales.changeStatus');
+
 });
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);
 Route::get('/shipping-fee/{province_id}/{district_id}', [ShippingFeeController::class, 'getShippingFeeByProvinceAndDistrict']);
@@ -110,6 +145,7 @@ Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.r
 
 
 Route::post('/confirm_checkout', [CheckoutController::class, 'confirmCheckout'])->name('confirm_checkout');
+Route::get('get-data-discount/{discount}', [CheckoutController::class, 'getDataDiscount'])->name('get-data-discount');
 Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
 Route::GET('/vnpay-return', [CheckoutController::class, 'vnpayReturn'])->name('vnpay.return');
 

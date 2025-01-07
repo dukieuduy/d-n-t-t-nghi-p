@@ -85,7 +85,7 @@ class HomeController extends Controller
     //             foreach ($availableVariations as $variation) {
     //                 $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
     //                 $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
-                    
+
     //                 // Thêm vào mảng sizesWithColors với size là key và màu sắc là value
     //                 if (!isset($sizesWithColors[$size])) {
     //                     $sizesWithColors[$size] = [];
@@ -145,24 +145,24 @@ class HomeController extends Controller
                  $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
                  $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
                  $stockQuantity = $variation->stock_quantity;
-             
+
                  // Thêm vào mảng sizesWithColors
                  if (!isset($sizesWithColors[$size])) {
                      $sizesWithColors[$size] = []; // Khởi tạo mảng cho size nếu chưa tồn tại
                  }
-             
+
                  // Lưu thông tin color và stock_quantity
                  $sizesWithColors[$size][] = [
                      'color' => $color,
                      'stock_quantity' => $stockQuantity,
                  ];
              }
-             
+
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
             return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors'));
         }
-    
+
 
 }

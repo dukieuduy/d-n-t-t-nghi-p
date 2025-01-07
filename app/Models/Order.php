@@ -52,6 +52,10 @@ class Order extends Model
     {
         return $this->belongsTo(Ward::class);
     }
+    public function discounts()
+    {
+        return $this->belongsToMany(Discount::class, 'order_discount', 'order_id', 'discount_id');
+    }
     protected $casts = [
         'payment_expires_at' => 'datetime',
     ];

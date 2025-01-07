@@ -1,3 +1,4 @@
+{{-- @dd($colors,$sizes) --}}
 @extends('app')
 @section('content')
 
@@ -9,12 +10,12 @@
 <div class="product_details mt-20">
     <div class="container">
         @if (session('message'))
-    <div class="alert alert-success">
-        <strong>{{ session('message') }}</strong>
-        <p>{{ session('details') }}</p>
-        <p>Mã đơn hàng: {{ session('order_id') }}</p>
-    </div>
-@endif
+            <div class="alert alert-success">
+                <strong>{{ session('message') }}</strong>
+                <p>{{ session('details') }}</p>
+                <p>Mã đơn hàng: {{ session('order_id') }}</p>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col-lg-6 col-md-6">

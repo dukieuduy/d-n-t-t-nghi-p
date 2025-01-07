@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
+use App\Models\OrderDiscount;
 use Carbon\Carbon;
 use App\Models\Cart;
 use App\Models\Ward;
@@ -74,7 +76,7 @@ class CheckoutController extends Controller
                     $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
 
                     $order->save();
-    
+
                     return response()->json([
                         'message' => 'Thanh toán thành công!',
                         'order_id' => $order->id,
@@ -127,6 +129,15 @@ class CheckoutController extends Controller
                         'ship' => $data['ship'],
                         'payment_expires_at' => Carbon::now(),
                     ]);
+                    if ($data['discount'] && $data['discount'] !== 0)
+                    {
+                        OrderDiscount::create([
+                            'order_id' => $order->id,
+                            'discount_id' => $data['discount'],
+                            'discount_amount' => $data['discount_value'],
+                            'applied_at' => Carbon::now(),
+                        ]);
+                    }
 
                     // Kiểm tra và xử lý mảng product_sku và quantity
                     if (isset($data['product_sku']) && is_array($data['product_sku']) && isset($data['quantity']) && is_array($data['quantity'])) {
@@ -170,7 +181,7 @@ class CheckoutController extends Controller
                     'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
                     'order_id' => $order->id
                 ]);
-                
+
                 break;
 
 
@@ -311,58 +322,75 @@ class CheckoutController extends Controller
 
     public function confirmCheckout(Request $request)
     {
-    // Cập nhật size, color và product_sku cho từng cart item
-    if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
-        foreach ($request->cart_item_id as $index => $cartItemId) {
-            $cartItem = CartItem::find($cartItemId);
-    
-            if ($cartItem) {
-                // Lấy size và color từ request hoặc giữ nguyên giá trị cũ
-                $size = $request->size[$index] ?? $cartItem->size; // Lấy size từ request hoặc giữ nguyên
-                $color = $request->color[$index] ?? $cartItem->color; // Lấy color từ request hoặc giữ nguyên
-                $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
-    
-                // Cập nhật product_sku = product_id-size-color
-                $productSku = "{$cartItem->product_id}-{$color}-{$size}";
-    
-                // In ra giá trị để kiểm tra
-                // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị
-    
-                // Cập nhật các thông tin vào cơ sở dữ liệu
-                $cartItem->update([
-                    'size' => $size,
-                    'color' => $color,
-                    'quantity' => $quantity, // Cập nhật số lượng
-                    'product_sku' => $productSku,
-                ]);
+        // Cập nhật size, color và product_sku cho từng cart item
+        if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
+            foreach ($request->cart_item_id as $index => $cartItemId) {
+                $cartItem = CartItem::find($cartItemId);
+
+                if ($cartItem) {
+                    // Lấy size và color từ request hoặc giữ nguyên giá trị cũ
+                    $size = $request->size[$index] ?? $cartItem->size; // Lấy size từ request hoặc giữ nguyên
+                    $color = $request->color[$index] ?? $cartItem->color; // Lấy color từ request hoặc giữ nguyên
+                    $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
+
+                    // Cập nhật product_sku = product_id-size-color
+                    $productSku = "{$cartItem->product_id}-{$color}-{$size}";
+
+                    // In ra giá trị để kiểm tra
+                    // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị
+
+                    // Cập nhật các thông tin vào cơ sở dữ liệu
+                    $cartItem->update([
+                        'size' => $size,
+                        'color' => $color,
+                        'quantity' => $quantity, // Cập nhật số lượng
+                        'product_sku' => $productSku,
+                    ]);
+                }
             }
         }
+
+
+
+        // Kiểm tra nếu không có sản phẩm nào được chọn để thanh toán
+        if (empty($request->cart_item_id)) {
+            return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
+        }
+
+        // Lấy danh sách các sản phẩm đã chọn
+        $cartItems = CartItem::whereIn('id', $request->cart_item_id)->get();
+        $discounts = Discount::where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->where('is_active', 1)
+            ->where('quantity', '>', 0)
+            ->whereDoesntHave('orders', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->get();
+        // Tính tổng tiền thanh toán
+        $totalAmount = $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+
+        // Lấy danh sách tỉnh, quận, và phường
+        $provinces = Province::all();
+        $districts = District::where('province_id', $request->provinceId)->get();
+        $wards = Ward::where('district_id', $request->districtId)->get();
+
+        // Trả về view xác nhận thanh toán
+        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards', 'discounts'));
     }
-    
-    
 
-    // Kiểm tra nếu không có sản phẩm nào được chọn để thanh toán
-    if (empty($request->cart_item_id)) {
-        return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+     */
+    public function getDataDiscount($id) {
+        $discount = Discount::findOrFail($id);
+        return response([
+            'result' => true,
+            'message' => "Success",
+            'data' => $discount
+        ], 200);
     }
-
-    // Lấy danh sách các sản phẩm đã chọn
-    $cartItems = CartItem::whereIn('id', $request->cart_item_id)->get();
-
-    // Tính tổng tiền thanh toán
-    $totalAmount = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
-
-    // Lấy danh sách tỉnh, quận, và phường
-    $provinces = Province::all();
-    $districts = District::where('province_id', $request->provinceId)->get();
-    $wards = Ward::where('district_id', $request->districtId)->get();
-
-    // Trả về view xác nhận thanh toán
-    return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards'));
-}
-
-    
-    
 }
