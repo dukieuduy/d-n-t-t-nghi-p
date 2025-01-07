@@ -33,7 +33,12 @@
             <label for="product" class="form-label">Sản phẩm đã mua</label>
             <input type="text" class="form-control" id="product" value="{{ $product_name }}" disabled>
             <input type="hidden" name="product" value="{{ $productId }}">
+
+            <img src="{{ \Storage::url($image) }}" alt="">
+            <p class="fst-italic"> {{ $skus }}</p>
+
         </div>
+
 
         <!-- Đánh giá -->
         <div class="form-group mb-3">
