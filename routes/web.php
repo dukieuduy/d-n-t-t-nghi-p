@@ -62,6 +62,8 @@ Route::get('/product/{id}', [\App\Http\Controllers\HomeController::class, 'detai
 // Route::post('/create-prd', [DashboardController::class, 'createProduct'])->middleware(['auth',IsAdmin::class]);
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
+    Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('admin-profile-edit');
+
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
@@ -125,6 +127,29 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/user_orders/verify-phone', [UserOrderController::class, 'verifyPhone'])->name('user.orders.verify_phone');
 Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhone'])->name('user.orders.check_phone');
+Route::get('profile',[\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile-edit');
+Route::post('profile-edit', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile-update');
+
+
+
+
+// admin
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// });
+
+
+//checkout
+// Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('checkout.index');
+// Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+
+// Route::get('/order/success', function () {
+//     return view('checkout.success');
+// })->name('order.success');
+
+
+// //mini cart
 
 
 // Route tìm kiếm sản phẩm

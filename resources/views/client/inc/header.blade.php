@@ -40,7 +40,7 @@
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <div class="dropdown-header">
-                                            <a>Thông tin tài khoản</a>
+                                            <a href="{{route('profile')}}">Thông tin tài khoản</a>
                                         </div>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
