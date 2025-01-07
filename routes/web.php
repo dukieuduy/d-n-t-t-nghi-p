@@ -131,6 +131,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('sales', SaleController::class);
     Route::put('sales/{sale}/change-status', [SaleController::class, 'changeStatus'])->name('sales.changeStatus');
 
+    Route::resource('reviews',ReviewController::class);
 });
 
 Route::get('/reviews/create/{id}', [ReviewController::class, 'add'])->name('client.reviews.create');
