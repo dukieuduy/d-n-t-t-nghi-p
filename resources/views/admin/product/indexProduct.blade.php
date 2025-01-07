@@ -34,10 +34,10 @@
                         <td>{{ $product['description'] }}</td>
                         <td>{{ number_format($product['price_old'], 0, ',', '.') }} VNĐ</td>
                         <td>{{ number_format($product['price_new'], 0, ',', '.') }} VNĐ</td>
-                        <td>{{ $product['category'] }}</td>
+                        <td>{{ $product['category']['name'] }}</td>
                         <td>
-                            @if($product['image'])
-                                <img src="{{ asset('storage/' . $product['image']) }}" alt="{{ $product['name'] }}" width="50">
+                            @if($product['image_prd'])
+                                <img src="{{ Storage::url($product['image_prd']) }}" alt="{{ $product['name'] }}" width="50">
                             @else
                                 <span>Không có ảnh</span>
                             @endif

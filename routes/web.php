@@ -103,7 +103,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
      //  cập nhật trạng thái sản phẩm
     Route::post('products/{id}/update-status', [ProductController::class, 'updateStatus'])->name('products.updateStatus');
     // thêm mới biến thể sản phẩm
-    Route::post('/product/{productId}/variations', [ProductController::class, 'storeVariation']);
+    Route::post('/products/{product}/variations', [ProductController::class, 'storeVariation'])->name('products.variations.store');
+
     // quản lý phí ship
     Route::get('/shipping-fees', [ShippingFeeController::class, 'index'])->name('shipping_fees.index'); // Danh sách
     Route::get('/shipping-fees/create', [ShippingFeeController::class, 'create'])->name('shipping_fees.create'); // Tạo mới

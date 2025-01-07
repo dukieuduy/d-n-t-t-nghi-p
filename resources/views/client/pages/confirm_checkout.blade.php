@@ -17,7 +17,11 @@
                                 <img
                                     src="https://static.vecteezy.com/system/resources/thumbnails/021/491/887/small_2x/shopping-cart-element-for-delivery-concept-png.png"
                                     alt="cart_icon" width="40" height="40">
-                                <span style="margin-left: 10px;">Giỏ hàng của: <b>{{ Auth::user()->name }}</b> </span>
+                                    @if (Auth::check())
+                                        <span style="margin-left: 10px;">Giỏ hàng của: <b>{{ Auth::user()->name }}</b></span>
+                                    @else
+                                        <span style="margin-left: 10px;">Giỏ hàng của bạn</span>
+                                    @endif
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -35,42 +39,42 @@
                                         <tbody>
                                             @foreach($cartItems as $key)
                                             <!-- Gửi product_sku như một mảng -->
-                                            <input type="hidden" name="product_sku[]" value="{{ $key->product_sku }}">
+                                            <input type="hidden" name="product_sku[]" value="{{ $key['product_sku'] ?? $key->product_sku }}">
                                             <tr>
                                                 <td>
-                                                    <span class="d-none cart_item_id">{{ $key->id }}</span>
-                                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($key->image) }}"
+                                                    <span class="d-none cart_item_id">{{ $key['id'] ?? $key->id }}</span>
+                                                    <img src="{{ isset($key['image']) ? \Illuminate\Support\Facades\Storage::url($key['image']) : \Illuminate\Support\Facades\Storage::url($key->image) }}"
                                                          class="img-thumbnail"
                                                          style="width: 100px; height: 100px;" alt="Product">
                                                 </td>
-                                                <td>{{ $key->product_name }}</td>
+                                                <td>{{ $key['product_name'] ?? $key->product_name }}</td>
                                                 <td>
                                                     <div class="d-flex flex-column align-items-start">
                                                         <!-- Dropdown cho kích cỡ -->
                                                         <div class="mb-2">
                                                             <label for="size" class="form-label mb-1">Kích cỡ</label>
                                                             <select id="size" class="form-select form-select-sm" disabled>
-                                                                <option value="">{{ $key->size }}</option>
+                                                                <option value="">{{ $key['size'] ?? $key->size }}</option>
                                                             </select>
                                                         </div>
                                                         <!-- Dropdown cho màu sắc -->
                                                         <div>
                                                             <label for="color" class="form-label mb-1">Màu sắc</label>
                                                             <select id="color" class="form-select form-select-sm" disabled>
-                                                                <option value="">{{ $key->color }}</option>
+                                                                <option value="">{{ $key['color'] ?? $key->color }}</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{{ number_format($key->price, 0, ',', '.') }}đ</td>
+                                                <td>{{ number_format($key['price'] ?? $key->price, 0, ',', '.') }}đ</td>
                                                 <td>
                                                     <!-- Sửa lại name cho quantity thành mảng -->
                                                     <input name="quantity[]" type="number" class="form-control w-50 quantity-input" readonly
-                                                           value="{{ $key->quantity }}" min="1" max="100">
+                                                           value="{{ $key['quantity'] ?? $key->quantity }}" min="1" max="100">
                                                 </td>
                                                 <td class="product_total">
-                                                    <span class="d-none price">{{ number_format($key->price, 0, ',', '.') }}</span>
-                                                    <span class="subtotal">{{ number_format($key->quantity * $key->price, 0, ',', '.') }}</span>đ
+                                                    <span class="d-none price">{{ number_format($key['price'] ?? $key->price, 0, ',', '.') }}</span>
+                                                    <span class="subtotal">{{ number_format(($key['quantity'] ?? $key->quantity) * ($key['price'] ?? $key->price), 0, ',', '.') }}</span>đ
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -216,6 +220,8 @@
                                                 <input type="hidden" name="total_amount" id="total_amount" value="{{ $totalAmount}}">
                                             </div>
                                             <div class="mt-3">
+                                                {{-- <a id="checkout" data-url="{{ route('checkout') }}" class="btn text-white w-100" style="background-color: #ff6600;">Thanh toán</a> --}}
+                                                {{-- <input type="hidden" name="redirect" value="true"> --}}
                                                 <button type="submit" name="redirect" class="btn text-white w-100" style="background-color: #ff6600;">Thanh toán</button>
 
                                             </div>

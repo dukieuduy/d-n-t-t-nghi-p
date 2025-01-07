@@ -149,16 +149,16 @@ class CheckoutController extends Controller
                                 'quantity' => $data['quantity'][$index],
                             ]);
 
-                            // kiên - Cập nhật số lượng cho sản phẩm đã bán
-                            $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
-                            if ($productVariation) {
+                            // // kiên - Cập nhật số lượng cho sản phẩm đã bán
+                            // $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
+                            // if ($productVariation) {
 
-                                $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
-                                if ($product) {
-                                    $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
-                                    $product->save(); // Lưu thay đổi
-                                }
-                            }
+                            //     $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
+                            //     if ($product) {
+                            //         $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
+                            //         $product->save(); // Lưu thay đổi
+                            //     }
+                            // }
 
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
@@ -212,16 +212,16 @@ class CheckoutController extends Controller
                             ]);
 
 
-                            // kiên - Cập nhật số lượng cho sản phẩm đã bán
-                            $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
-                            if ($productVariation) {
+                            // // kiên - Cập nhật số lượng cho sản phẩm đã bán
+                            // $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
+                            // if ($productVariation) {
 
-                                $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
-                                if ($product) {
-                                    $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
-                                    $product->save(); // Lưu thay đổi
-                                }
-                            }
+                            //     $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
+                            //     if ($product) {
+                            //         // $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
+                            //         $product->save(); // Lưu thay đổi
+                            //     }
+                            // }
 
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
