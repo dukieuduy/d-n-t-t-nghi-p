@@ -13,6 +13,8 @@ use App\Models\CartItem;
 use App\Models\District;
 use App\Models\Province;
 use App\Models\OrderItem;
+use App\Models\Product;
+use App\Models\ProductVariation;
 use App\Models\ShippingFee;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -30,24 +32,24 @@ class CheckoutController extends Controller
     // }
 
     public function index()
-{
-    // Lấy danh sách đơn hàng của người dùng
-    $userOrders = Order::where('user_id', Auth::id())->get();
+    {
+        // Lấy danh sách đơn hàng của người dùng
+        $userOrders = Order::where('user_id', Auth::id())->get();
 
-    // Kiểm tra và cập nhật trạng thái
-    foreach ($userOrders as $order) {
-        if (
-            $order->status === 'pending' &&
-            $order->payment_method === 'VNPAY' && // Chỉ kiểm tra đơn hàng VNPAY
-            $order->payment_expires_at < now()
-        ) {
-            $order->update(['status' => 'cancelled']);
+        // Kiểm tra và cập nhật trạng thái
+        foreach ($userOrders as $order) {
+            if (
+                $order->status === 'pending' &&
+                $order->payment_method === 'VNPAY' && // Chỉ kiểm tra đơn hàng VNPAY
+                $order->payment_expires_at < now()
+            ) {
+                $order->update(['status' => 'cancelled']);
+            }
         }
-    }
 
-    // Trả về view với danh sách đơn hàng
-    return view('client.pages.orders.index', compact('userOrders'));
-}
+        // Trả về view với danh sách đơn hàng
+        return view('client.pages.orders.index', compact('userOrders'));
+    }
 
     public function getDistricts($provinceId)
     {
@@ -71,7 +73,8 @@ class CheckoutController extends Controller
             $order = Order::find($vnp_TxnRef);
 
             if ($order) {
-                    $order->status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
+                    $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
+
                     $order->save();
 
                     return response()->json([
@@ -92,6 +95,7 @@ class CheckoutController extends Controller
     }
 
 
+
     public function checkout(Request $request)
     {
         try {
@@ -100,7 +104,6 @@ class CheckoutController extends Controller
 
             // Debug dữ liệu nhận từ request
             $data = $request->all();
-//            dd($data);
             Log::info('Checkout Data:', $data);
 
             // Kiểm tra payment_method
@@ -146,6 +149,17 @@ class CheckoutController extends Controller
                                 'quantity' => $data['quantity'][$index],
                             ]);
 
+                            // kiên - Cập nhật số lượng cho sản phẩm đã bán
+                            $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
+                            if ($productVariation) {
+
+                                $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
+                                if ($product) {
+                                    $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
+                                    $product->save(); // Lưu thay đổi
+                                }
+                            }
+
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
                             if ($cart) {
@@ -162,12 +176,13 @@ class CheckoutController extends Controller
                     // Commit transaction
                     DB::commit();
 
-                    return response()->json([
-                        'message' => 'Đơn hàng của bạn đã được tạo thành công!',
-                        'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
-                        'order_id' => $order->id
-                    ], 200);
-                    break;
+                return redirect()->route('user.orders.index')->with([
+                    'message' => 'Đơn hàng của bạn đã được tạo thành công!',
+                    'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
+                    'order_id' => $order->id
+                ]);
+
+                break;
 
 
                 case 'VNPAY':
@@ -195,6 +210,18 @@ class CheckoutController extends Controller
                                 'product_sku' => $sku,
                                 'quantity' => $data['quantity'][$index],
                             ]);
+
+
+                            // kiên - Cập nhật số lượng cho sản phẩm đã bán
+                            $productVariation = ProductVariation::where('sku', $sku)->first(); // Tìm biến thể sản phẩm theo SKU
+                            if ($productVariation) {
+
+                                $product = Product::find($productVariation->product_id);// Lấy id sp từ biến thể
+                                if ($product) {
+                                    $product->sales += $data['quantity'][$index]; // Tăng số lượng bán
+                                    $product->save(); // Lưu thay đổi
+                                }
+                            }
 
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
@@ -261,9 +288,13 @@ class CheckoutController extends Controller
                         $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
                     }
 
-                    $returnData = array('code' => '00'
-                    , 'message' => 'success'
-                    , 'data' => $vnp_Url);
+                    $returnData = array(
+                        'code' => '00'
+                        ,
+                        'message' => 'success'
+                        ,
+                        'data' => $vnp_Url
+                    );
                     if (isset($_POST['redirect'])) {
                         header('Location: ' . $vnp_Url);
                         die();
@@ -289,15 +320,45 @@ class CheckoutController extends Controller
         }
     }
 
-    public function confirmCheckout(Request $request) {
-        $cartItemIds = Arr::flatten($request->all());
-        // dd($cartItemIds);
-        if(empty($cartItemIds) || empty($request->cart_item_id)) {
+    public function confirmCheckout(Request $request)
+    {
+        // Cập nhật size, color và product_sku cho từng cart item
+        if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
+            foreach ($request->cart_item_id as $index => $cartItemId) {
+                $cartItem = CartItem::find($cartItemId);
+
+                if ($cartItem) {
+                    // Lấy size và color từ request hoặc giữ nguyên giá trị cũ
+                    $size = $request->size[$index] ?? $cartItem->size; // Lấy size từ request hoặc giữ nguyên
+                    $color = $request->color[$index] ?? $cartItem->color; // Lấy color từ request hoặc giữ nguyên
+                    $quantity = $request->quantity[$index] ?? $cartItem->quantity; // Lấy quantity từ request hoặc giữ nguyên
+
+                    // Cập nhật product_sku = product_id-size-color
+                    $productSku = "{$cartItem->product_id}-{$color}-{$size}";
+
+                    // In ra giá trị để kiểm tra
+                    // dd($request->size[$index], $request->color[$index], $request->quantity[$index], $productSku, $cartItem->product_id, $index); // Kiểm tra giá trị
+
+                    // Cập nhật các thông tin vào cơ sở dữ liệu
+                    $cartItem->update([
+                        'size' => $size,
+                        'color' => $color,
+                        'quantity' => $quantity, // Cập nhật số lượng
+                        'product_sku' => $productSku,
+                    ]);
+                }
+            }
+        }
+
+
+
+        // Kiểm tra nếu không có sản phẩm nào được chọn để thanh toán
+        if (empty($request->cart_item_id)) {
             return redirect()->back()->with('message', 'Chưa chọn sản phẩm nào để thanh toán!');
         }
 
-        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
-        // dd($cartItems);
+        // Lấy danh sách các sản phẩm đã chọn
+        $cartItems = CartItem::whereIn('id', $request->cart_item_id)->get();
         $discounts = Discount::where('start_date', '<=', Carbon::now())
             ->where('end_date', '>=', Carbon::now())
             ->where('is_active', 1)
@@ -306,18 +367,24 @@ class CheckoutController extends Controller
                 $query->where('user_id', Auth::id());
             })
             ->get();
+        // Tính tổng tiền thanh toán
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-        // $provinces=$this->getProvinces();
+
+        // Lấy danh sách tỉnh, quận, và phường
         $provinces = Province::all();
-        // dd($provinces);
         $districts = District::where('province_id', $request->provinceId)->get();
         $wards = Ward::where('district_id', $request->districtId)->get();
-        // dd($wards);
-        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount','provinces','districts','wards', 'discounts'));
+
+        // Trả về view xác nhận thanh toán
+        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards', 'discounts'));
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+     */
     public function getDataDiscount($id) {
         $discount = Discount::findOrFail($id);
         return response([
@@ -326,5 +393,4 @@ class CheckoutController extends Controller
             'data' => $discount
         ], 200);
     }
-
 }

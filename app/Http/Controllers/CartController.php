@@ -214,7 +214,6 @@ class CartController extends Controller
             
 
                 $imagePrd = $cartItem->product->name;
-// dd($imagePrd);
             
                 // Kiểm tra xem sản phẩm có tồn tại không
                 if (!$cartItem) {
@@ -259,14 +258,6 @@ class CartController extends Controller
                 return view('client.pages.cart.edit',compact('cartItem','sizesWithColors','imagePrd'));
             }
             
-// public function edit($id)
-//     {
-//         // Tìm sản phẩm trong giỏ hàng theo ID
-//         $cartItem = CartItem::find($id);
-
-       
-//         return view('client.pages.cart.edit', compact('cartItem'));
-//     }
 
 public function remove($id)
 {

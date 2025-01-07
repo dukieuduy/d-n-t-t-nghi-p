@@ -10,10 +10,10 @@
 
         <div class="row mb-3">
             <!-- Order Number -->
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <label for="order_number" class="form-label">Con số</label>
                 <input type="text" class="form-control" id="order_number" name="order_number" value="{{ $order->order_number }}" readonly>
-            </div>
+            </div> --}}
 
             <!-- Customer Name -->
             <div class="col-md-6">
@@ -96,8 +96,9 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Mã sản phẩm</th>
                         <th>Tên sản phẩm</th>
+                        <th>ảnh sản phẩm</th>
                         <th>Số lượng</th>
                         <th>Giá</th>
                         <th>Thành tiền</th>
@@ -106,9 +107,11 @@
                 <tbody>
                     @foreach ($order->orderItems as $index => $item)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->productVariation->sku }}</td>
+                            <td>{{  $item->productVariation->sku }}</td>
+                            <td>{{ $item->productVariation->product->name }}</td>
+                            <td><img src="{{ asset('storage/' . $item->productVariation->image)}}" alt="" width="150px"></td>
                             <td>{{ $item->quantity }}</td>
+                            
                             <td>{{ number_format($item->productVariation->price, 0, ',', '.') }}đ</td>
                             <td>{{ number_format($item->quantity * $item->productVariation->price, 0, ',', '.') }}đ</td>
                         </tr>

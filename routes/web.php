@@ -3,6 +3,8 @@
 
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\SaleController;
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ContactusController;
 use App\Models\User;
 // use App\Http\Controllers\AdminCartController;
 use App\Http\Middleware\IsAdmin;
@@ -24,6 +26,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Auth\ClientBlogController;
+use App\Http\Controllers\Auth\ContactusClientController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
@@ -87,10 +91,12 @@ Route::get('/product/{id}', [\App\Http\Controllers\HomeController::class, 'detai
 // Route::post('/create-prd', [DashboardController::class, 'createProduct'])->middleware(['auth',IsAdmin::class]);
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
+    Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('admin-profile-edit');
+
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
-    Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::get('products/{product}/detail', [ProductController::class, 'detail'])->name('products.detail');
     Route::post('products/{product}/update', [ProductController::class, 'update'])->name('products.update');
     Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');
 
@@ -107,13 +113,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::delete('/shipping-fees/{shippingFee}', [ShippingFeeController::class, 'destroy'])->name('shipping_fees.destroy'); // Xóa
     // quản lý đơn hàng
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+    Route::get('orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
     Route::post('orders/{id}/update', [OrderController::class, 'update'])->name('orders.update');
 
     Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('categories',CategoryController::class);
+    Route::resource('contactus', ContactusController::class);
+    Route::resource('blogs', BlogController::class);
 
     Route::resource('discounts', DiscountController::class);
     Route::put('discounts/{discount}/change-status', [DiscountController::class, 'changeStatus'])->name('discounts.changeStatus');
@@ -147,14 +155,17 @@ Route::get('/wards/{districtId}', [CheckoutController::class, 'getWards']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user_orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+    Route::get('/user_orders/{id}/detail', [UserOrderController::class, 'detail'])->name('user.orders.detail');
     Route::post('/user_orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');
+    // Route đặt hàng lại
+    Route::post('/orders/reorder/{id}', [UserOrderController::class, 'reorder'])->name('orders.reorder');
 });
 
 Route::get('/user_orders/verify-phone', [UserOrderController::class, 'verifyPhone'])->name('user.orders.verify_phone');
 Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhone'])->name('user.orders.check_phone');
-
-
-
+Route::get('profile',[\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile-edit');
+Route::post('profile-edit', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile-update');
 
 
 
@@ -177,13 +188,19 @@ Route::post('/user_orders/verify-phone', [UserOrderController::class, 'checkPhon
 // //mini cart
 
 
+// Route tìm kiếm sản phẩm
+Route::get('/search', [ContactusClientController::class, 'search'])->name('products.search');
+
+Route::prefix('client')->name('client.')->group(function () {
+
+    Route::get('/aboutus', [ContactusClientController::class, 'listAboutus'])->name('aboutus.create');
+    Route::get('/purchase', [ContactusClientController::class, 'purChase'])->name('purchase.create');
+
+    Route::get('/blogs', [ClientBlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/{id}', [ClientBlogController::class, 'show'])->name('blogs.show');
 
 
-
-
-
-
-
+    });
 
 
 // route cũ không dùng

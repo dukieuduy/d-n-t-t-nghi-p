@@ -23,3 +23,6 @@
 
 <!--modernizr min js here-->
 <script src="assets/js/vendor/modernizr-3.7.1.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+

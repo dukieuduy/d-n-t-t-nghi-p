@@ -110,15 +110,15 @@
                         <ul class="product_tab_button nav" role="tablist" id="nav-tab">
                             <li>
                                 <a class="active" data-toggle="tab" href="#brake" role="tab" aria-controls="brake"
-                                   aria-selected="true">Brake Parts</a>
+                                    aria-selected="true">Brake Parts</a>
                             </li>
                             <li>
                                 <a data-toggle="tab" href="#wheels" role="tab" aria-controls="wheels"
-                                   aria-selected="false">Wheels & Tires</a>
+                                    aria-selected="false">Wheels & Tires</a>
                             </li>
                             <li>
                                 <a data-toggle="tab" href="#turbo" role="tab" aria-controls="turbo"
-                                   aria-selected="false">Turbo System</a>
+                                    aria-selected="false">Turbo System</a>
                             </li>
                         </ul>
                     </div>

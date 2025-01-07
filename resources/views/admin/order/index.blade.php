@@ -11,22 +11,24 @@
                 <label for="status" class="form-label">Filter by Status</label>
                 <select name="status" id="status" class="form-control form-control-sm" onchange="this.form.submit()">
                     <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Tất cả</option>
-                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Mới</option>
-                    <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Đang chờ xử lý</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Đang chờ xử lý</option>
+                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
+                    <option value="shipping" {{ request('status') == 'shipping' ? 'selected' : '' }}>Đang giao</option>
+                    <option value="returned" {{ request('status') == 'returned' ? 'selected' : '' }}>Đã trả lại</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Đã hoàn thành</option>
                     <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
-                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Đã thanh toán</option>
                 </select>
             </div>
         </form>
+        
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>STT</th>
+                    <th>Mã Đơn </th>
                     <th>Họ Tên Khách Hàng</th>
                     <th>Số Điện Thoại</th>
                     <th>Tổng tiền</th>
-                    <th>Phí Vận Chuyển</th>
+                    <th>Thanh toán</th>
                     <th>Trạng thái</th>
                     <th>Ngày Đặt</th>
                     <th>Chức Năng</th>
@@ -35,65 +37,111 @@
             <tbody>
                 @foreach($orders as $order)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $order->id }}</td>
                         <td>{{ $order->user->name }}</td> <!-- Customer Name -->
                         <td>{{ $order->user->phone }}</td> <!-- Customer Phone -->
                         <td>{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
-                        <td>{{ number_format($order->ship, 0, ',', '.') }}đ</td>
+                        {{-- <td>{{ number_format($order->ship, 0, ',', '.') }}đ</td> --}}
+                        <td>
+                            @if ($order->payment_status === 'pending')
+                                <span class="text-warning">Đang chờ thanh toán</span>
+                            @elseif ($order->payment_status === 'paid')
+                                <span class="text-success">Đã thanh toán</span>
+                            @elseif ($order->payment_status === 'unpaid')
+                                <span class="text-danger">Thanh toán thất bại</span>
+                            @else
+                                <span class="text-muted">Chưa xác định</span>
+                            @endif
+                        </td>
 
                         <td>
                             @switch($order->status)
                                 @case('pending')
-                                    {{ 'Đang chờ xử lý' }}
-                                    @break
-                                @case('completed')
-                                    {{ 'Đã hoàn thành' }}
-                                    @break
-                                @case('cancelled')
-                                    {{ 'Đã hủy' }}
-                                    @break
-                                @case('paid')
-                                    {{ 'Đã thanh toán' }}
+                                    <span class="text-warning">{{ 'Đang chờ xác nhận' }}</span>
                                     @break
                                 @case('confirmed')
-                                    {{ 'Đã xác nhận' }}
+                                    <span class="text-primary">{{ 'Đã xác nhận' }}</span>
+                                    @break
+                                @case('shipping')
+                                    <span class="text-info">{{ 'Đang giao' }}</span>
+                                    @break
+                                @case('delivered')
+                                    <span class="text-success">{{ 'Đã giao' }}</span>
+                                    @break
+                                @case('completed')
+                                    <span class="text-success">{{ 'Hoàn thành' }}</span>
+                                    @break
+                                @case('cancelled')
+                                    <span class="text-danger">{{ 'Đã hủy' }}</span>
                                     @break
                                 @default
-                                    {{ 'Chưa xác định' }}
+                                    <span class="text-muted">{{ 'Chưa xác định' }}</span>
                             @endswitch
+
+
                         </td>
                         
                         <td>{{ $order->created_at->format('d/m/Y') }}</td> <!-- Order Date -->
                         <td>
-                            <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('admin.orders.detail', $order->id) }}" class="btn btn-info btn-sm">Chi tết</a>
                             <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" style="display:inline;">
                                 @csrf
-                                <select name="status" class="form-control form-control-sm" onchange="this.form.submit()"
-                                        {{ $order->status == 'cancelled' || $order->status == 'completed' ? 'disabled' : '' }}>
-                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                                    <!-- Đang chờ (pending) -->
+                                    <option value="pending" 
+                                            {{ $order->status == 'pending' ? 'selected' : '' }} 
+                                            {{ in_array($order->status, ['completed', 'returned', 'shipping', 'cancelled', 'confirmed']) ? 'disabled' : '' }}>
+                                        Đang chờ
+                                    </option>
+                                    
+                                    <!-- Đã xác nhận (confirmed) -->
+                                    <option value="confirmed" 
+                                            {{ $order->status == 'confirmed' ? 'selected' : '' }} 
+                                            {{ in_array($order->status, ['completed', 'returned', 'shipping', 'cancelled', 'confirmed']) ? 'disabled' : '' }}>
+                                        Xác nhận
+                                    </option>
+                                
+                                    <!-- Đang giao (shipping) -->
+                                    <option value="shipping" 
+                                            {{ $order->status == 'shipping' ? 'selected' : '' }} 
+                                            disabled>
+                                        Đang giao
+                                    </option>
+                                
+                                    <!-- Hoàn đơn (returned) -->
+                                    <option value="returned" 
+                                            {{ $order->status == 'returned' ? 'selected' : '' }} 
+                                            disabled>
+                                        Đã trả lại
+                                    </option>
+                                
+                                    <!-- Hoàn thành (completed) -->
                                     <option value="completed" 
                                             {{ $order->status == 'completed' ? 'selected' : '' }} 
-                                            {{ $order->status == 'completed' ? 'disabled' : '' }}>
-                                        Completed
+                                            disabled>
+                                        Hoàn thành
                                     </option>
+                                
+                                    <!-- Đã hủy (cancelled) -->
                                     <option value="cancelled" 
                                             {{ $order->status == 'cancelled' ? 'selected' : '' }} 
-                                            {{ $order->status != 'pending' ? 'disabled' : '' }}>
-                                        Cancelled
+                                            {{ in_array($order->status, ['completed', 'returned', 'shipping', 'confirmed']) ? 'disabled' : '' }}>
+                                        Hủy
                                     </option>
-                                    <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>Paid</option>
-                                    <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
                                 </select>
+                                
+                                
+                                
+                                
+                            
+                            
+
+            
+                            
                             </form>
                             
                             
-                            
-                            
-                            <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
+                        
                         </td>
                     </tr>
                 @endforeach
