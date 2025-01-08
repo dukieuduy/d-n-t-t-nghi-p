@@ -37,15 +37,28 @@ class Product extends Model
         return $this->belongsToMany(Sale::class);
     }
 
+    // public function getTotalSalePercentageAttribute()
+    // {
+    //     $now = now();
+    //     return $this->sales
+    //         ->filter(function ($sale) use ($now) {
+    //             return $sale->issue_date <= $now && $sale->expired_date >= $now;
+    //         })
+    //         ->sum('percentage');
+    // }
     public function getTotalSalePercentageAttribute()
     {
         $now = now();
-        return $this->sales
-            ->filter(function ($sale) use ($now) {
+        $sales = $this->sales;
+    
+        if ($sales instanceof \Illuminate\Support\Collection) {
+            return $sales->filter(function ($sale) use ($now) {
                 return $sale->issue_date <= $now && $sale->expired_date >= $now;
-            })
-            ->sum('percentage');
+            })->sum('percentage');
+        }
+    
+        return 0; // Không có sale hợp lệ
     }
-
+    
 
 }
