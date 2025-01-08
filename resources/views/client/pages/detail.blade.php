@@ -3,9 +3,12 @@
 @section('content')
 
 @if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
+<script>
+    alert("{{ session('error') }}");
+</script>
+<script>
+    alert("{{ session('error') }}");
+</script>
 @endif
 <div class="product_details mt-20">
     <div class="container">
@@ -90,6 +93,58 @@
                             <label>Số lượng sản phẩm trong kho: {{ $sumQuantity }}</label>
                         </div>
                     </div>
+                </div>
+
+                </form>
+                <div class="priduct_social">
+                    <ul>
+                        <li><a class="facebook" href="#" title="facebook"><i class="fa fa-facebook"></i> Like</a></li>
+                        <li><a class="twitter" href="#" title="twitter"><i class="fa fa-twitter"></i> tweet</a></li>
+                        <li><a class="pinterest" href="#" title="pinterest"><i class="fa fa-pinterest"></i> save</a></li>
+                        <li><a class="google-plus" href="#" title="google +"><i class="fa fa-google-plus"></i> share</a></li>
+                        <li><a class="linkedin" href="#" title="linkedin"><i class="fa fa-linkedin"></i> linked</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+            <div class="border-2 rounded mt-6">
+                <div class="m-3">
+                    <h2 class="mb-3 font-semibold text-xl">Đánh giá </h2>
+                    <hr>
+                    <div class="mt-3">
+
+                        @if (count($reviews) > 0)
+                        @foreach ($reviews as $key => $item)
+                        <table>
+                            <tr>
+                                <th>
+                                    <p class="font-semibold text-base"> Khách hàng: {{ $item->user['name'] }}</p>
+                                   
+                                </th>
+                            </tr>
+                            <tr>
+
+                                <td>
+                                @for ($i = 0; $i < $item->rating; $i++)
+                                        <i class="fa fa-star text-warning"></i>
+                                        @endfor
+                                    <p>{{ $item['comment'] }}</p>
+                                    <p class="text-xs text-gray-600">{{ $item['created_at'] }}</p>
+                                </td>
+                            </tr>
+
+                        </table>
+                        @endforeach
+
+                        @else
+                            <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho loại phòng này ***</p>
+                            @endif
+
+                    </div>
+
                 </div>
             </div>
         </div>

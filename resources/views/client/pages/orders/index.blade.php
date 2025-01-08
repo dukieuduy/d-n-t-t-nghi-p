@@ -100,6 +100,16 @@
                         <button type="submit" class="btn btn-primary">Đặt lại</button>
                     </form>
                     @endif
+
+                    @if ($order->status === 'completed' && !$order->is_reviewed) <!-- Chỉ hiển thị nút đánh giá khi trạng thái là đã xác nhận  -->
+
+                    <button type="submit" class="btn btn-warning"><a href="{{ route('client.reviews.create', $order->id) }}">
+                            Đánh giá
+                        </a>
+                    </button>
+
+                    @endif
+
                 </td>
                 
                 <td>
@@ -120,5 +130,5 @@
     <!-- Thêm Bootstrap JS vào phần cuối của <body> trước thẻ đóng </body> -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+ 
 @endsection
