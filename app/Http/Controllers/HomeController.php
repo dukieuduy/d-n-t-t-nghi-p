@@ -17,26 +17,6 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        // $products = Product::query()
-        // ->with(['lowestVariation']) // Định nghĩa mối quan hệ lowestVariation bên dưới
-        // ->get();
-        // $products = Product::query()
-        //     ->select('products.id', 'products.name')
-        //     ->addSelect([
-        //         'lowest_price_variation' => ProductVariation::select('price')
-        //             ->whereColumn('product_variations.product_id', 'products.id')
-        //             ->orderBy('price', 'asc')
-        //             ->limit(1),
-        //         'lowest_price_image' => ProductVariation::select('image')  // Lấy ảnh của biến thể có giá thấp nhất
-        //             ->whereColumn('product_variations.product_id', 'products.id')
-        //             ->orderBy('price', 'asc')
-        //             ->limit(1),
-        //     ])
-        //     ->with(['variations' => function ($query) {
-        //         $query->orderBy('price', 'asc');
-        //     }])
-        //     ->get();
-        // dd($products);
         $products = Product::all();  // Lấy tất cả các sản phẩm
         // dd($products);
 
@@ -151,27 +131,29 @@ class HomeController extends Controller
             $sizes = $sizeAttributes->map(function ($attribute) {
                 return $attribute->attributeValue->value; // Giá trị của kích thước
             })->unique()->values(); // Loại bỏ trùng lặp và đánh chỉ số lại
+   
+        // Lưu thông tin kích thước với các màu sắc, giá và số lượng tương ứng
+        $sizesWithColors = [];
+        foreach ($availableVariations as $variation) {
+            // Lấy size, color, price và stock_quantity từ mỗi biến thể
+            $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
+            $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
+            $price = $variation->price; // Giả sử cột giá là 'price'
+            $stockQuantity = $variation->stock_quantity;
 
-             // Lưu thông tin kích thước với các màu sắc tương ứng
-             $sizesWithColors = [];
-             foreach ($availableVariations as $variation) {
-                 // Lấy size, color và stock_quantity từ mỗi biến thể
-                 $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
-                 $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
-                 $stockQuantity = $variation->stock_quantity;
-             
-                 // Thêm vào mảng sizesWithColors
-                 if (!isset($sizesWithColors[$size])) {
-                     $sizesWithColors[$size] = []; // Khởi tạo mảng cho size nếu chưa tồn tại
-                 }
-             
-                 // Lưu thông tin color và stock_quantity
-                 $sizesWithColors[$size][] = [
-                     'color' => $color,
-                     'stock_quantity' => $stockQuantity,
-                 ];
-             }
-             
+            // Thêm vào mảng sizesWithColors
+            if (!isset($sizesWithColors[$size])) {
+                $sizesWithColors[$size] = []; // Khởi tạo mảng cho size nếu chưa tồn tại
+            }
+
+            // Lưu thông tin color, price và stock_quantity
+            $sizesWithColors[$size][] = [
+                'color' => $color,
+                'price' => $price,
+                'stock_quantity' => $stockQuantity,
+            ];
+        }
+
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu

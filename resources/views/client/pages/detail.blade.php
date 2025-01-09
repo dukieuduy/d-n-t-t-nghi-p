@@ -151,7 +151,7 @@
     </div>
 </div>
 
-<script>
+{{-- <script>
     var sizesWithColors = @json($sizesWithColors);
 
     // Khi chọn màu, lọc kích thước phù hợp
@@ -199,5 +199,74 @@
             }
         });
     });
+</script> --}}
+<script>
+    var sizesWithColors = @json($sizesWithColors);
+
+    // Khi chọn màu, lọc kích thước phù hợp
+    document.querySelectorAll('.color-option').forEach(function (colorInput) {
+        colorInput.addEventListener('change', function () {
+            var selectedColor = this.value;
+
+            // Ẩn tất cả các size trước
+            document.querySelectorAll('.size-option').forEach(function (sizeOption) {
+                sizeOption.parentElement.style.display = 'none'; // Ẩn cả input và label
+                sizeOption.checked = false; // Hủy chọn size
+            });
+
+            // Hiển thị size tương ứng với màu đã chọn
+            for (var size in sizesWithColors) {
+                sizesWithColors[size].forEach(function (variant) {
+                    if (variant.color === selectedColor) {
+                        var sizeOption = document.querySelector('.size-option[data-size="' + size + '"]');
+                        if (sizeOption) {
+                            sizeOption.parentElement.style.display = 'inline-block';
+                        }
+                    }
+                });
+            }
+
+            // Reset giá khi chọn màu
+            updatePrice(null);
+        });
+    });
+
+    // Cập nhật max của input quantity và giá khi chọn size và màu
+    document.querySelectorAll('.size-option').forEach(function (sizeInput) {
+        sizeInput.addEventListener('change', function () {
+            var selectedSize = this.value;
+            var selectedColor = document.querySelector('.color-option:checked')?.value;
+
+            if (selectedColor) {
+                var variant = sizesWithColors[selectedSize]?.find(function (v) {
+                    return v.color === selectedColor;
+                });
+
+                if (variant) {
+                    var stockQuantity = variant.stock_quantity;
+                    var price = variant.price; // Giá của biến thể
+                    var quantityInput = document.getElementById('quantityInput');
+                    
+                    // Cập nhật max của input quantity
+                    quantityInput.max = stockQuantity;
+                    quantityInput.value = Math.min(quantityInput.value, stockQuantity); // Đảm bảo giá trị không vượt quá tồn kho
+
+                    // Cập nhật giá
+                    updatePrice(price);
+                }
+            }
+        });
+    });
+
+    // Hàm cập nhật giá
+    function updatePrice(price) {
+        var priceBox = document.querySelector('.price_box .current_price');
+        if (price !== null) {
+            priceBox.textContent = price + "vnđ"; // Hiển thị giá biến thể
+        } else {
+            priceBox.textContent = "{{ $product->price_new }}vnđ"; // Giá mặc định
+        }
+    }
 </script>
+
 @endsection
