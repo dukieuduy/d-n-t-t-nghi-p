@@ -38,11 +38,7 @@
             <p class="fst-italic"> {{ $skus }}</p>
 
         </div>
-        <div class="form-group mt-2">
-            <label for="">Đánh giá (sao)</label>
-            <input class="form-control" name="rating" type="number" max="5" min="0">
-
-
+       
         <!-- Đánh giá -->
         <div class="form-group mb-3">
             <label for="comment" class="form-label">Đánh giá</label>
