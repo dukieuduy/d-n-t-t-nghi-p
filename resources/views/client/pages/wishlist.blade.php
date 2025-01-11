@@ -59,7 +59,7 @@
                                                     action="{{ route('wishlist.destroy', ['id' => $product->id]) }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm">xóa y
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">xóa yêu
                                                         thích</button>
                                                 </form>
                                             </td>
