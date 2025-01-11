@@ -103,25 +103,31 @@
 
     <section class="product_area mb-50">
         <div class="container">
-            <div class="row">
+        <div class="row">
                 <div class="col-12">
                     <div class="section_title">
-                        <h2><span> <strong>Our</strong>Products</span></h2>
+                        <h2><span><strong>Our</strong> Products</span></h2>
                         <ul class="product_tab_button nav" role="tablist" id="nav-tab">
-                            <li>
-                                <a class="active" data-toggle="tab" href="#brake" role="tab" aria-controls="brake"
-                                    aria-selected="true">Brake Parts</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#wheels" role="tab" aria-controls="wheels"
-                                    aria-selected="false">Wheels & Tires</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#turbo" role="tab" aria-controls="turbo"
-                                    aria-selected="false">Turbo System</a>
-                            </li>
+                            @foreach ($categories as $index => $category)
+                                <li>
+                                {{ $category->name }}
+                                    @if ($category->is_active == 1)
+                                        <a 
+                                        class="nav-link {{ $index === 0 ? 'active' : '' }}" 
+                                        data-bs-toggle="tab" 
+                                        href="#category-{{ $category->id }}" 
+                                        role="tab" 
+                                        aria-controls="category-{{ $category->id }}" 
+                                        aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
+                                      
+                                    </a>
+                                    @endif
+                                </li>
+                            @endforeach
                         </ul>
+
                     </div>
+
 
                 </div>
             </div>

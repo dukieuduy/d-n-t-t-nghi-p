@@ -134,6 +134,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('reviews',ReviewController::class);
 });
 
+Route::post('/reviews/reply-comment', [ReviewController::class, 'reply_comment'])->name('reviews.reply-comment');
 Route::get('/reviews/create/{id}', [ReviewController::class, 'add'])->name('client.reviews.create');
 Route::post('/reviews/store', [ReviewController::class, 'compare'])->name('client.reviews.store');
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);

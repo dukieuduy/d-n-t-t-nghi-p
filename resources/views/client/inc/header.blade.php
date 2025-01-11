@@ -198,15 +198,37 @@
                                 <h2 class="categori_toggle">Danh mục</h2>
                             </div>
 
-                            
-
-
-                            <!-- <div class="categories_menu_toggle">
+                        
+                            <div class="categories_menu_toggle">
                                 <ul>
+                                    @if (isset($categories))
+                                        
+                                    
+                                        <!-- Hiển thị các danh mục chính -->
+                                    @foreach ($categories->take(4) as $category) <!-- Lấy 4 danh mục đầu -->
+                                        @if ($category->is_active == "1")
+                                            <li><a href="#">{{ $category->name }}</a></li>
+                                        @endif
+                                    @endforeach
 
-                                    <li><a href="#" id="more-btn"><i class="fa fa-plus" aria-hidden="true"></i> More Categories</a></li>
+                                    <!-- Danh mục ẩn -->
+                                    @foreach ($categories->skip(4) as $category) <!-- Bỏ 4 danh mục đầu -->
+                                        @if ($category->is_active == "1")
+                                            <li class="hidden-category" style="display: none;"><a href="#">{{ $category->name }}</a></li>
+                                        @endif
+                                    @endforeach
+
+                                    <!-- Nút More Categories -->
+                                    @if ($categories->count() > 4)
+                                        <li>
+                                            <a href="#" id="more-btn">
+                                                <i class="fa fa-plus" aria-hidden="true"></i> More Categories
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @endif
                                 </ul>
-                            </div> -->
+                            </div>
 
 
                         </div>

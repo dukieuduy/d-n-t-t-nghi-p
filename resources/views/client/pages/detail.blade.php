@@ -13,11 +13,11 @@
 <div class="product_details mt-20">
     <div class="container">
         @if (session('message'))
-            <div class="alert alert-success">
-                <strong>{{ session('message') }}</strong>
-                <p>{{ session('details') }}</p>
-                <p>Mã đơn hàng: {{ session('order_id') }}</p>
-            </div>
+        <div class="alert alert-success">
+            <strong>{{ session('message') }}</strong>
+            <p>{{ session('details') }}</p>
+            <p>Mã đơn hàng: {{ session('order_id') }}</p>
+        </div>
         @endif
 
         <div class="row">
@@ -36,11 +36,11 @@
                                 </a>
                             </li>
                             @foreach($variations as $item)
-                                <li>
-                                    <a href="#" class="elevatezoom-gallery" data-update="" data-image="{{ asset('storage/' . $item->image) }}" data-zoom-image="{{ asset('storage/' . $item->image) }}">
-                                        <img src="{{ asset('storage/' . $item->image) }}" alt="zo-th-1" />
-                                    </a>
-                                </li>
+                            <li>
+                                <a href="#" class="elevatezoom-gallery" data-update="" data-image="{{ asset('storage/' . $item->image) }}" data-zoom-image="{{ asset('storage/' . $item->image) }}">
+                                    <img src="{{ asset('storage/' . $item->image) }}" alt="zo-th-1" />
+                                </a>
+                            </li>
                             @endforeach
                         </ul>
                     </div>
@@ -63,20 +63,20 @@
                             <h3>Chọn màu</h3>
                             <ul>
                                 @foreach($colors as $value)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input color-option" type="radio" name="selectedColor" id="{{ $value }}" value="{{ $value }}">
-                                        <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
-                                    </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input color-option" type="radio" name="selectedColor" id="{{ $value }}" value="{{ $value }}">
+                                    <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
+                                </div>
                                 @endforeach
                             </ul>
                         </div>
                         <div class="product_variant size mb-4">
                             <h3>Chọn kích cỡ</h3>
                             @foreach($sizes as $value)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input size-option" data-size="{{ $value }}" type="radio" name="selectedSize" id="{{ $value }}" value="{{ $value }}">
-                                    <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
-                                </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input size-option" data-size="{{ $value }}" type="radio" name="selectedSize" id="{{ $value }}" value="{{ $value }}">
+                                <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
+                            </div>
                             @endforeach
                         </div>
                         <div class="product_variant quantity">
@@ -116,32 +116,56 @@
                     <hr>
                     <div class="mt-3">
 
+
                         @if (count($reviews) > 0)
-                        @foreach ($reviews as $key => $item)
-                        <table>
-                            <tr>
-                                <th>
-                                    <p class="font-semibold text-base"> Khách hàng: {{ $item->user['name'] }}</p>
-                                   
-                                </th>
-                            </tr>
-                            <tr>
-
-                                <td>
-                                @for ($i = 0; $i < $item->rating; $i++)
-                                        <i class="fa fa-star text-warning"></i>
-                                        @endfor
-                                    <p>{{ $item['comment'] }}</p>
-                                    <p class="text-xs text-gray-600">{{ $item['created_at'] }}</p>
-                                </td>
-                            </tr>
-
-                        </table>
-                        @endforeach
+                        <div class="container my-4"> @foreach ($reviews as $comment)
+                            <div class="card mb-4 border-0 shadow">
+                                <div class="card-body">
+                                    <!-- Header của bình luận -->
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-primary fw-bold">Khách hàng: {{ $comment->user->name }}</span>
+                                        <small class="text-muted">{{ $comment->created_at->format('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <!-- Nội dung bình luận -->
+                                    <p class="fw-normal text-dark">{{ $comment->comment }}</p>
+                                    <!-- Hiển thị số sao (rating) -->
+                                    @if (isset($comment->rating) && $comment->rating > 0)
+                                    <div class="mb-2">
+                                        @for ($i = 0; $i < $comment->rating; $i++)
+                                            <i class="fa fa-star text-warning"></i>
+                                            @endfor
+                                    </div>
+                                    @else
+                                    <p class="text-muted mb-2">Không có đánh giá.</p>
+                                    @endif
+                                    <!-- Hiển thị danh sách trả lời -->
+                                    @if ($comment->replies->isNotEmpty())
+                                    <div class="mt-4">
+                                        <h6 class="text-success fw-bold">Trả lời:</h6>
+                                        @foreach ($comment->replies as $reply)
+                                        <div class="card my-2 border-start border-3 border-success">
+                                            <div class="card-body">
+                                                <!-- Header của trả lời -->
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="text-dark fw-bold">Admin</span>
+                                                    <!-- <span class="text-dark fw-bold">{{ $reply->user->name }}</span> -->
+                                                    <small class="text-muted">{{ $reply->created_at->format('d/m/Y H:i') }}</small>
+                                                </div>
+                                                <!-- Nội dung trả lời -->
+                                                <p class="fw-light text-secondary mb-0">{{ $reply->comment }}</p>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
 
                         @else
-                            <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho loại phòng này ***</p>
-                            @endif
+                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho sản phẩm này ***</p>
+                        @endif
 
                     </div>
 
@@ -155,19 +179,19 @@
     var sizesWithColors = @json($sizesWithColors);
 
     // Khi chọn màu, lọc kích thước phù hợp
-    document.querySelectorAll('.color-option').forEach(function (colorInput) {
-        colorInput.addEventListener('change', function () {
+    document.querySelectorAll('.color-option').forEach(function(colorInput) {
+        colorInput.addEventListener('change', function() {
             var selectedColor = this.value;
 
             // Ẩn tất cả các size trước
-            document.querySelectorAll('.size-option').forEach(function (sizeOption) {
+            document.querySelectorAll('.size-option').forEach(function(sizeOption) {
                 sizeOption.parentElement.style.display = 'none'; // Ẩn cả input và label
                 sizeOption.checked = false; // Hủy chọn size
             });
 
             // Hiển thị size tương ứng với màu đã chọn
             for (var size in sizesWithColors) {
-                sizesWithColors[size].forEach(function (variant) {
+                sizesWithColors[size].forEach(function(variant) {
                     if (variant.color === selectedColor) {
                         var sizeOption = document.querySelector('.size-option[data-size="' + size + '"]');
                         if (sizeOption) {
@@ -180,13 +204,13 @@
     });
 
     // Cập nhật max của input quantity khi chọn size và màu
-    document.querySelectorAll('.size-option').forEach(function (sizeInput) {
-        sizeInput.addEventListener('change', function () {
+    document.querySelectorAll('.size-option').forEach(function(sizeInput) {
+        sizeInput.addEventListener('change', function() {
             var selectedSize = this.value;
             var selectedColor = document.querySelector('.color-option:checked')?.value;
 
             if (selectedColor) {
-                var variant = sizesWithColors[selectedSize]?.find(function (v) {
+                var variant = sizesWithColors[selectedSize]?.find(function(v) {
                     return v.color === selectedColor;
                 });
 
