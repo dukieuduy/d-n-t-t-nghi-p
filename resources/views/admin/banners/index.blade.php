@@ -6,27 +6,14 @@
             {{ session('error') }}
         </div>
     @endif
+   
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 
     <!-- Begin Page Content -->
     <div class="container-fluid">
 
-        {{-- <form method="GET" action="{{ route('admin.categories.index') }}" class="row g-3">
-            <div class="col-md-8">
-                <input type="text" name="search" placeholder="Tìm kiếm danh mục" value="{{ request('search') }}"
-                    class="form-control">
-            </div>
-            <div class="col-md-4">
-                <select name="sort_by" class="custom-select">
-                    <option value="asc" {{ request('sort_by') == 'asc' ? 'selected' : '' }}>A-Z</option>
-                    <option value="desc" {{ request('sort_by') == 'desc' ? 'selected' : '' }}>Z-A</option>
-                </select>
-            </div>
-            <div class="col-md-12 mt-3">
-                <button type="submit" class="btn btn-primary mb-3">Tìm kiếm</button>
-            </div>
-        </form> --}}
-        <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -35,7 +22,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="datatable-buttons" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -54,13 +41,13 @@
                                     <td>{{ $d->title }}</td>
                                     <td>{!! $d->content !!}</td>
                                     <td>
-                                      <img src="{{ asset('storage/banners/'.$d->image) }}" width="250px" alt="">
+                                        <img src="{{ asset('storage/banners/' . $d->image) }}" width="250px"
+                                            alt="">
                                     </td>
                                     <td>{{ $d->product->name }}</td>
                                     <td>
                                         <a href="{{ route('admin.banners.edit', $d->id) }}"
-                                            class="btn btn-warning btn-sm"
-                                          >Sửa</a>
+                                            class="btn btn-warning btn-sm">Sửa</a>
                                         <form action="{{ route('admin.banners.destroy', $d->id) }}" method="POST"
                                             style="display:inline;">
                                             @csrf
@@ -79,5 +66,16 @@
     </div>
     <!-- /.container-fluid -->
     </div>
-    <!-- End of Main Content -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $('#datatable-buttons').DataTable({
+              lengthChange: true, 
+          });
+      });
+  </script>
+  
 @endsection

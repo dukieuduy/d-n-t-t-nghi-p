@@ -1,4 +1,6 @@
 <!-- Sidebar -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <ul
     class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
     id="accordionSidebar"

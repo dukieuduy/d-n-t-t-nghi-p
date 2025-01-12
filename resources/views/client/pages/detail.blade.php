@@ -48,7 +48,7 @@
             </div>
 
             <div class="col-lg-6 col-md-6">
-                <div class="product_d_right">
+                {{-- <div class="product_d_right">
                     <form action="{{ route('cart.add') }}" method="POST">
                         @csrf
                         <h1>{{ $product->name }}</h1>
@@ -93,7 +93,7 @@
                             <label>Số lượng sản phẩm trong kho: {{ $sumQuantity }}</label>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="col-lg-6 col-md-6">
                     <div class="product_d_right">
@@ -208,8 +208,8 @@
                             @endforeach
                         </div>
 
-                        @else
-                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho sản phẩm này ***</p>
+                        {{-- @else
+                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho sản phẩm này ***</p> --}}
                         @endif
 
                     </form>

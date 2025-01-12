@@ -95,6 +95,8 @@ class HomeController extends Controller
 
     public function detailProduct($id)
     {
+        $categories = Category::all();
+
         $product = Product::findOrFail($id);
         // $reviews = Review::where('product_id', $id)->get();
         $reviews = Review::where('product_id', $id)
@@ -213,7 +215,7 @@ class HomeController extends Controller
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews'));
+            return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','categories'));
             // Lưu thông tin color và stock_quantity
             $sizesWithColors[$size][] = [
                 'color' => $color,
@@ -224,6 +226,6 @@ class HomeController extends Controller
         // dd($sizesWithColors);
 
         // Trả về view với dữ liệu
-        return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'sumQuantity', 'colors', 'sizes', 'sizesWithColors', 'reviews'));
+        return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'sumQuantity', 'colors', 'sizes', 'sizesWithColors', 'reviews','categories'));
     }
 }
