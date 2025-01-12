@@ -21,51 +21,54 @@
                         <div class="top_right text-end">
                             <ul>
                                 @guest
-                                @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
-                                </li>
-                                @endif
+                                    @if (Route::has('login'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('login') }}">{{ __('đăng nhập') }}</a>
+                                        </li>
+                                    @endif
 
-                                @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
-                                </li>
-                                @endif
+                                    @if (Route::has('register'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('register') }}">{{ __('đăng ký') }}</a>
+                                        </li>
+                                    @endif
                                 @else
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ Auth::user()->name }}
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <div class="dropdown-header">
-                                            <a href="{{route('profile')}}">Thông tin tài khoản</a>
-                                        </div>
-                                        <a class="dropdown-item" href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
-                                                         document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                            role="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false" v-pre>
+                                            {{ Auth::user()->name }}
                                         </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                            @csrf
-                                        </form>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            <div class="dropdown-header">
+                                                <a href="{{ route('profile') }}">Thông tin tài khoản</a>
+                                            </div>
+                                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                                onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
+                                            </a>
 
-                                        <?php
-                                        if (auth()->check()) {
-                                            if (auth()->user()->type === 'admin') {
-                                                echo '<li>
-                                                    <a href="' .
-                                                    url('admin/products') .
-                                                    '" class="sub-menu-item">Admin</a>
-                                                    </li>';
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                class="d-none">
+                                                @csrf
+                                            </form>
+
+                                            <?php
+                                            if (auth()->check()) {
+                                                if (auth()->user()->type === 'admin') {
+                                                    echo '<li>
+                                                                                                <a href="' .
+                                                        url('admin/products') .
+                                                        '" class="sub-menu-item">Admin</a>
+                                                                                                </li>';
+                                                }
                                             }
-                                        }
-                                        ?>
+                                            ?>
 
-                                    </div>
-                                </li>
+                                        </div>
+                                    </li>
                                 @endguest
 
                             </ul>
@@ -82,7 +85,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-3 col-md-3">
                     <div class="logo">
-                        <a href="{{route('home')}}">
+                        <a href="{{ route('home') }}">
                             <h1 style="color: #ff6300">CAMCAM</h1>
                         </a>
                     </div>
@@ -93,7 +96,8 @@
                             <form action="{{ route('products.search') }}" method="GET">
                                 @csrf <!-- CSRF token for security -->
                                 <div class="search_box">
-                                    <input name="query" placeholder="Search entire store here ..." type="text" required>
+                                    <input name="query" placeholder="Search entire store here ..." type="text"
+                                        required>
                                     <button type="submit"><i class="ion-ios-search-strong"></i></button>
                                 </div>
                             </form>
@@ -105,8 +109,8 @@
                                 <span class="wishlist_quantity">3</span>
                             </div> --}}
                             <div class="mini_cart_wrapper">
-                                <a href="{{route('cart.index')}}"><span class="lnr lnr-cart"></span>giỏ hàng </a>
-                                <span class="cart_quantity">{{$cartCount}}</span>
+                                <a href="{{ route('cart.index') }}"><span class="lnr lnr-cart"></span>giỏ hàng </a>
+                                <span class="cart_quantity">{{ $cartCount }}</span>
                             </div>
                             <div class="mini_cart_wrapper">
                                 <a href="{{ route('user.orders.index') }}">
@@ -235,7 +239,7 @@
                         <div class="main_menu">
                             <nav>
                                 <ul>
-                                    <li><a href="{{route('home')}}">Trang chủ<i class="fa fa-angle-down"></i></a>
+                                    <li><a href="{{ route('home') }}">Trang chủ<i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu">
                                             <li><a href="index.html">Home 1</a></li>
                                             <li><a href="index-2.html">Home 2</a></li>
@@ -248,8 +252,7 @@
                                         </ul>
 
                                     </li>
-                                    <li class="mega_items"><a href="shop.html">shop<i
-                                                class="fa fa-angle-down"></i></a>
+                                    <li class="mega_items"><a href="shop.html">shop<i class="fa fa-angle-down"></i></a>
                                         <div class="mega_menu">
                                             <ul class="mega_menu_inner">
                                                 <li><a href="#">Shop Layouts</a>
@@ -299,19 +302,22 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li><a href="{{route('client.blogs.index')}}">blog<i class="fa fa-angle-down"></i></a>
+                                    <li><a href="{{ route('client.blogs.index') }}">blog<i
+                                                class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="{{route('client.blogs.index')}}">Quản lý bài viết</a></li>
+                                            <li><a href="{{ route('client.blogs.index') }}">Quản lý bài viết</a></li>
 
                                         </ul>
                                     </li>
                                     <li><a href="#">pages <i class="fa fa-angle-down"></i></a>
                                         <ul class="sub_menu pages">
-                                            <li><a href="{{route('client.aboutus.create')}}">Chính Sách</a></li>
-                                            <li><a href="{{route('client.purchase.create')}}">Hướng Dẫn Mùa Hàng</a></li>
+                                            <li><a href="{{ route('client.aboutus.create') }}">Chính Sách</a></li>
+                                            <li><a href="{{ route('client.purchase.create') }}">Hướng Dẫn Mùa Hàng</a>
+                                            </li>
 
                                         </ul>
                                     </li>
+                                    <li><a href="{{route('wishlist.show')}}"> yêu thích</a></li>
                                     {{-- <li><a href="{{route('client.contactus.create')}}"> Liên Hệ</a></li> --}}
                                 </ul>
                             </nav>
@@ -396,7 +402,7 @@
                     <div id="menu" class="text-left ">
                         <ul class="offcanvas_main_menu">
                             <li class="menu-item-has-children">
-                                <a href="{{route('home')}}">Trang chủ</a>
+                                <a href="{{ route('home') }}">Trang chủ</a>
 
                             </li>
                             <li class="menu-item-has-children">

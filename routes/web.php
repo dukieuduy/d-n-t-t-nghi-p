@@ -76,10 +76,6 @@ Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->nam
 
 
 
-// // whishlist
-
-Route::get('/wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
-
 
 
 // KIỀU DUY DU
@@ -209,6 +205,14 @@ Route::prefix('client')->name('client.')->group(function () {
 
 
     });
+
+
+//kien - wishlist -
+
+Route::get('/wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
+Route::post('/addWishlist/{product_id}', [WishlistController::class, 'create'])->name('wishlist.create');
+Route::delete('/wishlist/delete/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
 
 
 // route cũ không dùng
