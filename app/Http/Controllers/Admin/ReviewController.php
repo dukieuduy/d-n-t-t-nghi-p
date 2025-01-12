@@ -38,7 +38,7 @@ class ReviewController extends Controller
             // ->pluck('product_variations.product_id')
             // ->get();
             ->first();
-        // dd( $product);
+        // dd($product);
         $productId = $product->product_id;
         $image = $product -> image;
 
@@ -76,7 +76,37 @@ class ReviewController extends Controller
         Order::where('id', $request->order_id)->update(['is_reviewed' => 1]);
         return back()->with('success', 'Cảm ơn bạn đã đánh giá góp ý về sản phẩm của chúng tôi');
     }
-    //
+    
+
+    public function reply_comment(Request $request)
+    {
+        \Log::info('Incoming Request:', $request->all()); // Debugging log
+    
+        try {
+            $request->validate([
+                'comment' => 'required|string',
+                'id' => 'required|integer',
+                'comment_product_id' => 'required|integer',
+            ]);
+    
+            // Save the reply (update this logic as per your DB structure)
+            $reply = new Review();
+            // $reply->id = $request->id;
+            $reply->product_id = $request->comment_product_id;
+            $reply->comment = $request->comment;
+            $reply->comment_parent = $request->id;
+            $reply->rating = '5';
+            $reply->user_id = auth()->id();
+            $reply->save();
+    
+            return response()->json(['message' => 'Reply saved successfully!'], 200);
+        } catch (\Exception $e) {
+            \Log::error('Error in replyComment:', ['exception' => $e->getMessage()]);
+            return response()->json(['error' => 'An error occurred.'], 500);
+        }
+    }
+    
+
 
 
     // Hiển thị form tạo review mới

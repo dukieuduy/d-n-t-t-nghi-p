@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\SaleController;
 use App\Http\Controllers\Admin\BlogController;
@@ -132,8 +132,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::put('sales/{sale}/change-status', [SaleController::class, 'changeStatus'])->name('sales.changeStatus');
 
     Route::resource('reviews',ReviewController::class);
+    Route::resource('banners',BannerController::class);
 });
 
+Route::post('/reviews/reply-comment', [ReviewController::class, 'reply_comment'])->name('reviews.reply-comment');
 Route::get('/reviews/create/{id}', [ReviewController::class, 'add'])->name('client.reviews.create');
 Route::post('/reviews/store', [ReviewController::class, 'compare'])->name('client.reviews.store');
 Route::get('/shipping-fee/{province_id}', [ShippingFeeController::class, 'getShippingFeeByProvince']);

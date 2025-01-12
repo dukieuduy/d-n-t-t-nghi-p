@@ -14,7 +14,7 @@
             
             <form method="GET" action="{{ route('admin.categories.index') }}" class="row g-3">
         <div class="col-md-8">
-            <input type="text" name="search" placeholder="Search categories" value="{{ request('search') }}" class="form-control">
+            <input type="text" name="search" placeholder="Tìm kiếm danh mục" value="{{ request('search') }}" class="form-control">
         </div>
         <div class="col-md-4">
             <select name="sort_by" class="custom-select">
@@ -54,7 +54,7 @@
                       <tr>
                         <td>{{$category->name}}</td>
                     
-                        <td>{{$category->is_active == 1 ?"show":"hide"}}</td>
+                        <td>{{$category->is_active == 1 ?"Hiển thị":"Ẩn"}}</td>
                         <td>
                             <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-warning btn-sm" onclick="return confirm('Bạn có chắc chắn muốn sửa danh mục này không ?')" >Sửa</a>
                             <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline;">

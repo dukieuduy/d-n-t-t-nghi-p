@@ -63,6 +63,11 @@
                 <a class="collapse-item" href="{{route('admin.shipping_fees.create')}}">Thêm mới</a>
             </div>
             <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Quản lý banner</h6>
+                <a class="collapse-item" href="{{ route('admin.banners.index') }}">Danh sách banner</a>
+                <a class="collapse-item" href="{{route('admin.banners.create')}}">Thêm mới</a>
+            </div>
+            <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Quản lý khuyến mãi</h6>
                 <a class="collapse-item" href="{{ route('admin.discounts.index') }}">Mã giảm giá</a>
                 <a class="collapse-item" href="{{route('admin.sales.index')}}">Chương trình khuyến mãi</a>
