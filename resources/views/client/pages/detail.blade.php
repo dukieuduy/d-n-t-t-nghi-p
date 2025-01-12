@@ -162,6 +162,56 @@
                             </div>
                     </div>
 
+                        @if (count($reviews) > 0)
+                        <div class="container my-4"> @foreach ($reviews as $comment)
+                            <div class="card mb-4 border-0 shadow">
+                                <div class="card-body">
+                                    <!-- Header của bình luận -->
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-primary fw-bold">Khách hàng: {{ $comment->user->name }}</span>
+                                        <small class="text-muted">{{ $comment->created_at->format('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <!-- Nội dung bình luận -->
+                                    <p class="fw-normal text-dark">{{ $comment->comment }}</p>
+                                    <!-- Hiển thị số sao (rating) -->
+                                    @if (isset($comment->rating) && $comment->rating > 0)
+                                    <div class="mb-2">
+                                        @for ($i = 0; $i < $comment->rating; $i++)
+                                            <i class="fa fa-star text-warning"></i>
+                                            @endfor
+                                    </div>
+                                    @else
+                                    <p class="text-muted mb-2">Không có đánh giá.</p>
+                                    @endif
+                                    <!-- Hiển thị danh sách trả lời -->
+                                    @if ($comment->replies->isNotEmpty())
+                                    <div class="mt-4">
+                                        <h6 class="text-success fw-bold">Trả lời:</h6>
+                                        @foreach ($comment->replies as $reply)
+                                        <div class="card my-2 border-start border-3 border-success">
+                                            <div class="card-body">
+                                                <!-- Header của trả lời -->
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="text-dark fw-bold">Admin</span>
+                                                    <!-- <span class="text-dark fw-bold">{{ $reply->user->name }}</span> -->
+                                                    <small class="text-muted">{{ $reply->created_at->format('d/m/Y H:i') }}</small>
+                                                </div>
+                                                <!-- Nội dung trả lời -->
+                                                <p class="fw-light text-secondary mb-0">{{ $reply->comment }}</p>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        @else
+                        <p class="text-red-500 italic mt-8">*** Chưa có đánh giá nào cho sản phẩm này ***</p>
+                        @endif
+
                     </form>
                     <div class="priduct_social">
                         <ul>

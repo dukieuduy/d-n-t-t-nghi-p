@@ -108,6 +108,7 @@ class HomeController extends Controller
         // // Group reviews into parents and their replies
         // $reviews = $review->groupBy('parent_id');
 
+
         // dd($reviews);
 
         // Tính tổng số lượng tồn kho từ các biến thể
@@ -213,6 +214,11 @@ class HomeController extends Controller
 
             // Trả về view với dữ liệu
             return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews'));
+            // Lưu thông tin color và stock_quantity
+            $sizesWithColors[$size][] = [
+                'color' => $color,
+                'stock_quantity' => $stockQuantity,
+            ];
         }
 
         // dd($sizesWithColors);
