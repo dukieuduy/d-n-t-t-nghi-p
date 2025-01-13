@@ -59,4 +59,9 @@ class User extends Authenticatable
     public function isMember(){
         return $this->type ==self::TYPE_MEMBER;
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -117,6 +117,31 @@
             class="nav-link collapsed"
             href="#"
             data-toggle="collapse"
+            data-target="#collapseUtilities2"
+            aria-expanded="true"
+            aria-controls="collapseUtilities2"
+        >
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Người dùng</span>
+        </a>
+        <div
+            id="collapseUtilities2"
+            class="collapse"
+            aria-labelledby="headingUtilities2"
+            data-parent="#accordionSidebar"
+        >
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.users.index', ['role' => 'member']) }}">Quản lý khách hàng</a>
+                <a class="collapse-item" href="{{ route('admin.users.index', ['role' => 'admin']) }}">Quản lý quản trị viên</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
             data-target="#collapsePages"
             aria-expanded="true"
             aria-controls="collapsePages"
