@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -55,7 +56,7 @@ class CategoryController extends Controller
             // 'is_active' =>$request->is_active,
         ]);
 
-        
+
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
 
@@ -76,7 +77,7 @@ class CategoryController extends Controller
         if (!$category) {
             return redirect()->route('admin.categories.index')->with('error', 'Category not found');
         }
-        $categories = Category::all(); 
+        $categories = Category::all();
         return view('admin.categories.edit', compact('category', 'categories'));
     }
 
@@ -103,14 +104,21 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $category = Category::findOrFail($id);
-        $category->delete();
-        $catefories = Category::all();
-        foreach($catefories as $x ){
-            if($x->parent_id==$id){
-                $x->delete();
+        $hash = Product::where('category_id', $id)->exists();
+        if (!$hash) {
+            $category->delete();
+            $catefories = Category::all();
+            foreach ($catefories as $x) {
+                if ($x->parent_id == $id) {
+                    $x->delete();
+                }
             }
+            return redirect()->route('admin.categories.index')->with('success', 'Xoá danh mục thành công !');
+
+        }else{
+            return redirect()->route('admin.categories.index')->with('error', 'Vui lòng chuyển các sản phẩm sang danh mục khác để tiền hành xoá danh mục này.');
+
         }
         // Trả về danh sách danh mục sau khi xóa
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
     }
 }

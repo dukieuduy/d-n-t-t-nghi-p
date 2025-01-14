@@ -40,7 +40,7 @@ class ReviewController extends Controller
             ->first();
         // dd($product);
         $productId = $product->product_id;
-        $image = $product -> image;
+        $image = $product->image;
 
         $skus = DB::table('order_items')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -76,36 +76,38 @@ class ReviewController extends Controller
         Order::where('id', $request->order_id)->update(['is_reviewed' => 1]);
         return back()->with('success', 'Cảm ơn bạn đã đánh giá góp ý về sản phẩm của chúng tôi');
     }
-    
+
 
     public function reply_comment(Request $request)
     {
-        \Log::info('Incoming Request:', $request->all()); // Debugging log
-    
+        \Log::info('Incoming Request:', $request->all()); 
+
         try {
             $request->validate([
                 'comment' => 'required|string',
                 'id' => 'required|integer',
                 'comment_product_id' => 'required|integer',
             ]);
-    
+
             // Save the reply (update this logic as per your DB structure)
             $reply = new Review();
-            // $reply->id = $request->id;
+
             $reply->product_id = $request->comment_product_id;
             $reply->comment = $request->comment;
             $reply->comment_parent = $request->id;
             $reply->rating = '5';
             $reply->user_id = auth()->id();
             $reply->save();
-    
+
             return response()->json(['message' => 'Reply saved successfully!'], 200);
+            // return response()->json(['data' => $request->all()], 200);
+
         } catch (\Exception $e) {
             \Log::error('Error in replyComment:', ['exception' => $e->getMessage()]);
-            return response()->json(['error' => 'An error occurred.'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
+
 
 
 
