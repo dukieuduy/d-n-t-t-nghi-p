@@ -1,8 +1,6 @@
 @extends('admin.app')
 
 @section('content')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
     <div class="container mt-4">
         <h2>Danh sách đánh giá</h2>
 
@@ -14,7 +12,7 @@
 
 
 
-        <table class="table table-bordered" id="datatable-category">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -34,9 +32,11 @@
                         <td>{{ $review->rating }}</td>
                         <td>{{ $review->comment }}
                             <hr>
-                            <textarea rows="5" id="reply-comment-{{ $review->id }}" class="form-control reply-comment"></textarea>
-                            <button class="btn btn-success mt-2 btn-reply-comment" data-comment_id="{{ $review->id }}"
-                                data-product_id="{{ $review->product_id }}">Trả lời bình luận</button>
+                            @if ($review->user->id != Auth::id())
+                                <textarea rows="5" id="reply-comment-{{ $review->id }}" class="form-control reply-comment"></textarea>
+                                <button class="btn btn-success mt-2 btn-reply-comment" data-comment_id="{{ $review->id }}"
+                                    data-product_id="{{ $review->product_id }}">Trả lời bình luận</button>
+                            @endif
                         </td>
                         <td>
                             <!-- <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn ẩn bình luận này không?')">Ẩn bình luận</button> -->
@@ -82,25 +82,18 @@
             </tbody>
         </table>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#datatable-category').DataTable({
-                lengthChange: true,
-            });
-        });
-    </script>
 @endsection
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
     $(document).on('click', '.btn-reply-comment', function() {
         var comment_id = $(this).data('comment_id');
         var comment_product_id = $(this).data('product_id');
         var comment = $('#reply-comment-' + comment_id).val();
 
+       if(comment == ''){
+        alert( 'Vui lòng nhập comment !');
+       }else{
         $.ajax({
             url: "{{ url('/reviews/reply-comment') }}",
             method: "POST",
@@ -114,13 +107,15 @@
             },
             success: function(response) {
                 $('#reply-comment-' + comment_id).val(''); // Clear input field
-                alert('Reply submitted successfully!');
+                alert('Trả lời thành công!');
+                window.location.reload();
             },
             error: function(xhr) {
                 console.error('Error:', xhr.responseText);
-                alert('An error occurred. Please try again.');
+                alert('Có lỗi xảy ra . Vui lòng thử lại ');
             }
         });
+       }
     });
 
 

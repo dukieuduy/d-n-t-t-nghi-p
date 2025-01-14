@@ -1,11 +1,7 @@
 @extends('admin.app')
 
 @section('content')
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+  
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 
@@ -35,6 +31,16 @@
                 </h6>
             </div>
             <div class="card-body">
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
                 <div class="table-responsive">
                     <table class="table table-bordered" id="datatable-category" width="100%" cellspacing="0">
                         <thead>
@@ -53,8 +59,7 @@
                                     <td>{{ $category->is_active == 1 ? 'Hiển thị' : 'Ẩn' }}</td>
                                     <td>
                                         <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                            class="btn btn-warning btn-sm"
-                                            onclick="return confirm('Bạn có chắc chắn muốn sửa danh mục này không ?')">Sửa</a>
+                                            class="btn btn-warning btn-sm">Sửa</a>
                                         <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST"
                                             style="display:inline;">
                                             @csrf
@@ -105,7 +110,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#datatable-category').DataTable({

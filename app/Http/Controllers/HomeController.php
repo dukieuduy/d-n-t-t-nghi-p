@@ -43,9 +43,11 @@ class HomeController extends Controller
         $categories = Category::all();
 
         $product = Product::findOrFail($id);
+
+        $productRelates = Product::where('category_id', $product->category_id)->limit(5)->get();
         // $reviews = Review::where('product_id', $id)->get();
         $reviews = Review::where('product_id', $id)
-            ->where('comment_parent', 0) // Chỉ lấy bình luận cha (khách hàng)
+//            ->where('comment_parent', 0) // Chỉ lấy bình luận cha (khách hàng)
             ->with('replies') // Lấy kèm các câu trả lời (admin)
             ->get();
         //     $review = Review::with('user')
@@ -134,7 +136,7 @@ class HomeController extends Controller
             $sizes = $sizeAttributes->map(function ($attribute) {
                 return $attribute->attributeValue->value; // Giá trị của kích thước
             })->unique()->values(); // Loại bỏ trùng lặp và đánh chỉ số lại
-   
+
         // Lưu thông tin kích thước với các màu sắc, giá và số lượng tương ứng
         $sizesWithColors = [];
         foreach ($availableVariations as $variation) {
@@ -160,7 +162,7 @@ class HomeController extends Controller
                 // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','categories'));
+            return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','categories','productRelates'));
             // Lưu thông tin color và stock_quantity
             $sizesWithColors[$size][] = [
                 'color' => $color,

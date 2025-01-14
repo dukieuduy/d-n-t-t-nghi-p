@@ -150,12 +150,19 @@ $(document).ready(function () {
     $('#discount-options').on('change', function () {
         let selectedOption = $(this).val();
 
-        // Gửi yêu cầu AJAX lấy thông tin mã giảm giá
+        if (selectedOption === '0') {
+            let originalTotal = parseInt($('#total_amount_product').text().replace(/\./g, '').replace('đ', ''));
+            $('.discount_value').text('0');
+            $('.total').text(originalTotal.toLocaleString());
+            $('#discount').val('');
+            return;
+        }
+
         $.ajax({
             url: '/get-data-discount/' + selectedOption,
             method: 'GET',
             success: function (response) {
-                let total = parseInt($('.total').text().replace(/\./g, '').replace('đ', ''));
+                let originalTotal = parseInt($('#total_amount_product').text().replace(/\./g, '').replace('đ', ''));
                 let minAmount = parseInt(response.data.min_purchase_amount);
                 let discountValue = parseInt(response.data.value);
                 let discountType = response.data.type;
@@ -163,26 +170,27 @@ $(document).ready(function () {
                     ? parseInt(response.data.max_purchase_amount)
                     : null;
 
-                if (total < minAmount) {
+                if (originalTotal < minAmount) {
                     alert(`Không áp dụng cho đơn hàng có tổng tiền nhỏ hơn ${minAmount.toLocaleString()} đ`);
                     $('#discount-options').val('0');
                     return;
                 }
 
-                let discountAmount = discountType === 'percentage' ? (total * discountValue) / 100 : discountValue;
+                let discountAmount = discountType === 'percentage'
+                    ? (originalTotal * discountValue) / 100
+                    : discountValue;
 
                 if (maxDiscount && discountAmount > maxDiscount) {
                     discountAmount = maxDiscount;
                 }
 
-                let newTotal = total - discountAmount;
+                let newTotal = originalTotal - discountAmount;
 
                 $('.discount_value').text(discountAmount.toLocaleString());
                 $('.total').text(newTotal.toLocaleString());
-                $('#discount').val(discountAmount.toLocaleString())
-                $('#total_amount').val(newTotal)
+                $('#discount').val(discountAmount.toLocaleString());
+                $('#total_amount').val(newTotal);
 
-                // Thông báo thành công
                 alert(`Áp mã giảm giá thành công, giảm ${discountAmount.toLocaleString()} đ`);
             },
             error: function (xhr, status, error) {

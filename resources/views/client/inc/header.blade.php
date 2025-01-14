@@ -86,7 +86,7 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="logo">
                         <a href="{{ route('home') }}">
-                            <h1 style="color: #ff6300">CAMCAM</h1>
+                        <img src="assets/img/Logohome/Cam.png" alt="">
                         </a>
                     </div>
                 </div>

@@ -4444,6 +4444,10 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   border-radius: 4px;
   overflow: hidden;
 }
+.shipping_inner img {
+  width: 70px;  /* Điều chỉnh chiều rộng ảnh */
+
+}
 
 .single_shipping {
   display: flex;

@@ -131,6 +131,11 @@ class CheckoutController extends Controller
                             'discount_amount' => $data['discount_value'],
                             'applied_at' => Carbon::now(),
                         ]);
+                        $discount = Discount::where('id', $data['discount'])->first();
+                        if ($discount) {
+                            $discount->quantity -= 1;
+                            $discount->save();
+                        }
                     }
 
                     // Kiểm tra và xử lý mảng product_sku và quantity
