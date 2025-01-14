@@ -42,14 +42,14 @@
                 <small class="text-danger">{{ $message }}</small>
                 @enderror
 
-                <!-- Phone -->
+                <!-- Phone
                 <div class="mb-3">
                     {!! Form::label('phone', 'Phone', ['class' => 'form-label']) !!}
                     {!! Form::text('phone', old('phone', $user->phone ?? ''), ['class' => 'form-control', 'placeholder' => 'Enter your phone number']) !!}
                 </div>
                 @error('phone')
                 <small class="text-danger">{{ $message }}</small>
-                @enderror
+                @enderror -->
 
                 <!-- Date of Birth -->
                 <div class="mb-3">
