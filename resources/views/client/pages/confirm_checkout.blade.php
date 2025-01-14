@@ -198,7 +198,7 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between">
                                                 <p class="mb-0">Tổng tiền sản phẩm:</p>
-                                                <p class="mb-0 fw-bold cart_amount"><span>{{ $totalAmount}}</span>đ</p>
+                                                <p class="mb-0 fw-bold cart_amount"><span id="total_amount_product">{{ $totalAmount}}</span>đ</p>
                                             </div>
                                             <hr>
                                             <div class="d-flex justify-content-between shipping-fee-container" style="display: none;">
