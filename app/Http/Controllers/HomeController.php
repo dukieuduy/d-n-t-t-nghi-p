@@ -189,7 +189,7 @@ class HomeController extends Controller
             $sizes = $sizeAttributes->map(function ($attribute) {
                 return $attribute->attributeValue->value; // Giá trị của kích thước
             })->unique()->values(); // Loại bỏ trùng lặp và đánh chỉ số lại
-   
+
         // Lưu thông tin kích thước với các màu sắc, giá và số lượng tương ứng
         $sizesWithColors = [];
         foreach ($availableVariations as $variation) {

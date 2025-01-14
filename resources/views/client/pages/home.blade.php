@@ -20,7 +20,7 @@
 
         </div>
            @endforeach
-          
+
         </div>
     </section>
     <!--slider area end-->
@@ -87,14 +87,14 @@
                                 <li>
                                 {{ $category->name }}
                                     @if ($category->is_active == 1)
-                                        <a 
-                                        class="nav-link {{ $index === 0 ? 'active' : '' }}" 
-                                        data-bs-toggle="tab" 
-                                        href="#category-{{ $category->id }}" 
-                                        role="tab" 
-                                        aria-controls="category-{{ $category->id }}" 
+                                        <a
+                                        class="nav-link {{ $index === 0 ? 'active' : '' }}"
+                                        data-bs-toggle="tab"
+                                        href="#category-{{ $category->id }}"
+                                        role="tab"
+                                        aria-controls="category-{{ $category->id }}"
                                         aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
-                                      
+
                                     </a>
                                     @endif
                                 </li>
