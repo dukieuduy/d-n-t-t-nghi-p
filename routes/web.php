@@ -133,6 +133,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::get('/users/order/{user}', [\App\Http\Controllers\Admin\UserController::class, 'orderByUser'])->name('user.orderByUser');
     Route::get('/users/detail_order/{order}', [\App\Http\Controllers\Admin\UserController::class, 'detail'])->name('user.detail_order');
+    Route::get('/earnings-data', [DashboardController::class, 'getEarningsData']);
 });
 
 Route::post('/reviews/reply-comment', [ReviewController::class, 'reply_comment'])->name('reviews.reply-comment');
