@@ -35,19 +35,16 @@ class ContactusClientController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
-
-        $listProduct = Product::where('name', 'like', '%' . $query . '%')
-                               ->orWhere('description', 'like', '%' . $query . '%')
+        $key_word = $request->input('query');
+        $listProduct = Product::where('name', 'like', '%' . $key_word . '%')
+                               ->orWhere('description', 'like', '%' . $key_word . '%')
                                ->get();
-                               return view('client.pages.search_results', compact('listProduct', 'query'));
+
+        return view('client.pages.search_results', compact('listProduct', 'key_word'));
+                               
 
 
     }
-
-
-
-
     public function listAboutus()
     {
         return view('client.pages.about');

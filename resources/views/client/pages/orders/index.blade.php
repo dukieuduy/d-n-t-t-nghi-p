@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="container">
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
     <h1>Lịch sử mua hàng</h1>
     <table class="table">
         <thead>

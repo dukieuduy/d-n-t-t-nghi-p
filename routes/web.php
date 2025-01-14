@@ -1,15 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\Admin\DiscountController;
-use App\Http\Controllers\Admin\SaleController;
-use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\ContactusController;
 use App\Models\User;
-// use App\Http\Controllers\AdminCartController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsMember;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
@@ -20,16 +13,24 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\WishlistController;
+// use App\Http\Controllers\AdminCartController;
 use App\Http\Controllers\AdminCartController;
 use App\Http\Controllers\UserOrderController;
+
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\SaleController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\ShippingFeeController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\Admin\ContactusController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\ClientBlogController;
 use App\Http\Controllers\Auth\ContactusClientController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -94,8 +95,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
     Route::get('products/{product}/detail', [ProductController::class, 'detail'])->name('products.detail');
+    Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::post('products/{product}/update', [ProductController::class, 'update'])->name('products.update');
     Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');
+
+    // Route để chỉnh sửa biến thể sản phẩm
+    Route::get('product-variants/{productVariant}/edit', [ProductVariantController::class, 'edit'])->name('product-variants.edit');
+
+    // Route để cập nhật biến thể sản phẩm
+    Route::post('product-variants/{productVariant}/update', [ProductVariantController::class, 'update'])->name('product-variants.update');
+
 
      //  cập nhật trạng thái sản phẩm
     Route::post('products/{id}/update-status', [ProductController::class, 'updateStatus'])->name('products.updateStatus');
