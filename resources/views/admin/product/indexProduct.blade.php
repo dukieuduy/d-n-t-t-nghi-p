@@ -1,7 +1,7 @@
 @extends("admin.app")
 @section("content")
 <div class="container mt-4">
-    <h1 class="mb-4">Quản Lý Sản Phẩm</h1>
+    <h1 class="mb-4 text-center text-primary">Quản Lý Sản Phẩm</h1>
 
     {{-- Thông báo thành công --}}
     @if(session('success'))
@@ -10,8 +10,8 @@
 
     {{-- Bảng danh sách sản phẩm --}}
     <div class="table-responsive">
-        <table class="table">
-            <thead>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>Tên Sản Phẩm</th>
@@ -37,23 +37,29 @@
                         <td>{{ $product['category']['name'] }}</td>
                         <td>
                             @if($product['image_prd'])
-                                <img src="{{ Storage::url($product['image_prd']) }}" alt="{{ $product['name'] }}" width="50">
+                                <img src="{{ Storage::url($product['image_prd']) }}" alt="{{ $product['name'] }}" width="50" class="img-fluid">
                             @else
                                 <span>Không có ảnh</span>
                             @endif
                         </td>
                         <td>{{ $product['total_stock'] }}</td>
                         <td>300</td>
-                        <td>
+                        {{-- <td>
                             <!-- Toggle Switch -->
                             <label class="switch">
                                 <input type="checkbox" class="toggle-status" data-product-id="{{ $product['id'] }}" {{ $product['is_active'] ? 'checked' : '' }}>
                                 <span class="slider round"></span>
                             </label>
+                        </td> --}}
+                        <td>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="variantStatus"{{ $product['is_active'] ? 'checked' : '' }}>
+                                <label class="form-check-label" for="variantStatus">Kích hoạt biến thể sản phẩm</label>
+                            </div>
                         </td>
                         <td>
                             <!-- Các hành động quản lý sản phẩm -->
-                            <a href="{{ route('admin.products.detail', $product['id']) }}" class="btn btn-outline-success">Chi Tiết</a>
+                            <a href="{{ route('admin.products.detail', $product['id']) }}" class="btn btn-outline-success btn-sm">Chi Tiết</a>
                         </td>
                     </tr>
                 @endforeach
@@ -68,9 +74,10 @@
      
     {{-- Thêm sản phẩm --}}
     <a href="{{ route('admin.products.create') }}" class="btn btn-primary mt-3">Thêm Sản Phẩm</a>
-    </div>
+</div>
 
-{{-- <script>
+{{-- Cập nhật trạng thái sản phẩm --}}
+<script>
     // Khi người dùng thay đổi trạng thái của toggle switch
     document.querySelectorAll('.toggle-status').forEach(function(toggle) {
         toggle.addEventListener('change', function() {
@@ -109,5 +116,5 @@
               });
         });
     });
-</script> --}}
+</script>
 @endsection

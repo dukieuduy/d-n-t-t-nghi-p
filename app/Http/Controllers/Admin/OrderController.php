@@ -100,32 +100,6 @@ public function update(Request $request, $id)
     return redirect()->route('admin.orders.index')->with('success', 'Đơn hàng đã được cập nhật thành công!');
 }
 
-//     public function updateStatus(Request $request, $id)
-// {
-//     // Lấy đơn hàng từ DB
-//     $order = Order::findOrFail($id);
-
-//     // Cập nhật trạng thái đơn hàng
-//     $order->status = $request->input('status');
-
-//     // Kiểm tra nếu status là 'confirmed', cập nhật shipping_status thành 'shipped'
-//     if ($order->status === 'confirmed') {
-//         $order->shipping_status = 'shipped'; // Đang giao
-//     }
-//     // Kiểm tra nếu status là 'completed', cập nhật shipping_status thành 'delivered'
-//     elseif ($order->status === 'completed') {
-//         $order->shipping_status = 'delivered'; // Đã giao thành công
-//     }elseif ($order->status === 'cancelled') {
-//         // Nếu status là cancelled, cập nhật shipping_status thành 'cancelled' (đã hủy đơn hàng)
-//         $order->shipping_status = 'cancelled';
-//     }
-    
-
-//     // Lưu lại thay đổi
-//     $order->save();
-
-//     return redirect()->route('admin.orders.index')->with('success', 'Order status updated successfully!');
-// }
 public function updateStatus(Request $request, $id)
 {
     // Lấy đơn hàng từ DB
