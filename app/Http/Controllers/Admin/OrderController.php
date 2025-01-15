@@ -23,7 +23,8 @@ class OrderController extends Controller
     public function index(Request $request)
         {
             // Lấy tất cả đơn hàng của người dùng hiện tại với khả năng lọc theo trạng thái
-            $query = Order::where('user_id', Auth::id());
+            $query = Order::query();
+            
 
             if ($request->has('status') && $request->status != 'all') {
                 $query->where('status', $request->status);

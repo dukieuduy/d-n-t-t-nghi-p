@@ -25,15 +25,15 @@ class HomeController extends Controller
         $categories = Category::all();
         // dd($categories);
         $banner = Banner::all();
-        $topProducts = OrderItem::join('product_variations', 'order_items.product_sku', '=', 'product_variations.sku')
-            ->join('products', 'product_variations.product_id', '=', 'products.id')
-            ->select('products.*', DB::raw('SUM(order_items.quantity) as total_quantity_sold'))
-            ->groupBy('products.id')
-            ->orderByDesc(DB::raw('SUM(order_items.quantity)'))
-            ->limit(2)
-            ->get();
-        // dd($topProducts);
-            return view('client.pages.home', compact('products', 'categories', 'banner','topProducts'));
+        // $topProducts = OrderItem::join('product_variations', 'order_items.product_sku', '=', 'product_variations.sku')
+        //     ->join('products', 'product_variations.product_id', '=', 'products.id')
+        //     ->select('products.*', DB::raw('SUM(order_items.quantity) as total_quantity_sold'))
+        //     ->groupBy('products.id')
+        //     ->orderByDesc(DB::raw('SUM(order_items.quantity)'))
+        //     ->limit(2)
+        //     ->get();
+        // // dd($topProducts);
+            return view('client.pages.home', compact('products', 'categories', 'banner'));
     }
 
    
