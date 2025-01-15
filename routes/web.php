@@ -19,11 +19,13 @@ use App\Http\Controllers\UserOrderController;
 
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\SaleController;
+use App\Http\Controllers\GuestOrderController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\ShippingFeeController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\GuestCheckoutController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\ProductVariantController;
@@ -169,6 +171,22 @@ Route::GET('/vnpay-return', [CheckoutController::class, 'vnpayReturn'])->name('v
 Route::get('/locations', [CheckoutController::class, 'index']);
 Route::get('/districts/{provinceId}', [CheckoutController::class, 'getDistricts']);
 Route::get('/wards/{districtId}', [CheckoutController::class, 'getWards']);
+
+ //thanh toán khi chưa đăng nhập
+Route::get('/guest-checkout/{id_product}/{color}/{size}/{quantity}', [GuestCheckoutController::class, 'guestCheckout'])->name('guest.checkout');// Route xử lý thanh toán khi khách chưa đăng nhập
+Route::post('/guest-checkout/process', [GuestCheckoutController::class, 'processGuestCheckout'])->name('guest.checkout.process');
+
+// Route để hiển thị form nhập số điện thoại
+Route::get('/order/verify', [GuestOrderController::class, 'showPhoneForm'])->name('guest.order.verify');
+
+// Route để kiểm tra đơn hàng sau khi người dùng nhập số điện thoại
+Route::post('/order/verify', [GuestOrderController::class, 'checkPhone'])->name('guest.order.check');
+Route::post('/guest/order/check', [GuestOrderController::class, 'showOrders'])->name('guest.order.check');
+
+Route::get('/guest/order/{id}', [GuestOrderController::class, 'show'])->name('guest.order.detail');
+
+
+
 // }}
 
 Route::middleware(['auth'])->group(function () {

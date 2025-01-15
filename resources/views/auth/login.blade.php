@@ -7,8 +7,8 @@
                 <div class="col-12">
                     <div class="breadcrumb_content">
                         <ul>
-                            <li><a href="index.html">home</a></li>
-                            <li>Login</li>
+                            <li><a href="index.html">Trang chủ</a></li>
+                            <li>Đăng nhập</li>
                         </ul>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                             @endif
                             </p>
                             <p>
-                                <label>Passwords <span>*</span></label>
+                                <label>Mật khẩu <span>*</span></label>
                                 <input type="password" name="password" >
                                 @if ($errors->has('password'))
                                 <div class="alert alert-danger">
@@ -65,7 +65,7 @@
                                     <input id="remember" type="checkbox">
                                     Remember me
                                 </label>
-                                <button type="submit">login</button>
+                                <button type="submit">Đăng nhập</button>
 
                             </div>
 

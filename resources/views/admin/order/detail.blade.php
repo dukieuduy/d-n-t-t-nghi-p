@@ -19,8 +19,6 @@
             <div class="col-md-6">
                 <label for="customer_name" class="form-label">Khách hàng</label>
                 <p>{{ $order->user->name ?? 'Không xác định' }}</p>
-
-                
             </div>
         </div>
 

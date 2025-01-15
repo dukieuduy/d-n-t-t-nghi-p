@@ -233,7 +233,7 @@ class CartController extends Controller
 
     // Nếu không tìm thấy biến thể phù hợp
     if (!$matchedVariation) {
-        return redirect()->back()->with('error', 'Sản phẩm với màu sắc và kích thước đã chọn không tồn tại.');
+        return redirect()->back()->with('error', 'chọn màu sắc và size.');
     }
 
     $image = $matchedVariation->image;
@@ -355,33 +355,33 @@ class CartController extends Controller
             // dd($cartItem,$sizesWithColors);
                 // Trả về view edit với các dữ liệu cần thiết
                 return view('client.pages.cart.edit',compact('cartItem','sizesWithColors','imagePrd'));
-            }
+    }
             
 
-public function remove($id)
-{
-    // Lấy id của người dùng đang đăng nhập
-    $userId = Auth::id();
+    public function remove($id)
+    {
+        // Lấy id của người dùng đang đăng nhập
+        $userId = Auth::id();
 
-    if ($userId === null) {
-        // Nếu người dùng chưa đăng nhập, có thể redirect hoặc thông báo lỗi
-        return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để thực hiện thao tác này.');
+        if ($userId === null) {
+            // Nếu người dùng chưa đăng nhập, có thể redirect hoặc thông báo lỗi
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để thực hiện thao tác này.');
+        }
+
+        // Tìm giỏ hàng của người dùng bằng cách sử dụng user_id và cart_id
+        $cartItem = CartItem::where('id', $id)
+                            ->whereHas('cart', function($query) use ($userId) {
+                                $query->where('user_id', $userId); // Kết nối với bảng carts để tìm cart_id của người dùng
+                            })
+                            ->first();
+
+        if ($cartItem) {
+            $cartItem->delete(); // Xóa sản phẩm
+            return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
+        } else {
+            return redirect()->route('cart.index')->with('error', 'Không tìm thấy sản phẩm này trong giỏ hàng của bạn.');
+        }
     }
-
-    // Tìm giỏ hàng của người dùng bằng cách sử dụng user_id và cart_id
-    $cartItem = CartItem::where('id', $id)
-                        ->whereHas('cart', function($query) use ($userId) {
-                            $query->where('user_id', $userId); // Kết nối với bảng carts để tìm cart_id của người dùng
-                        })
-                        ->first();
-
-    if ($cartItem) {
-        $cartItem->delete(); // Xóa sản phẩm
-        return redirect()->route('cart.index')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
-    } else {
-        return redirect()->route('cart.index')->with('error', 'Không tìm thấy sản phẩm này trong giỏ hàng của bạn.');
-    }
-}
 
 
 

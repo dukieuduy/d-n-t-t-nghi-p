@@ -29,6 +29,7 @@
                     <th>Số Điện Thoại</th>
                     <th>Tổng tiền</th>
                     <th>Thanh toán</th>
+                    <th>Kiểu Thanh Toán</th>
                     <th>Trạng thái</th>
                     <th>Ngày Đặt</th>
                     <th>Chức Năng</th>
@@ -51,6 +52,16 @@
                                 <span class="text-danger">Thanh toán thất bại</span>
                             @else
                                 <span class="text-muted">Chưa xác định</span>
+                            @endif
+                        </td>
+                        <td>
+                            {{-- @dd($order->payment_method); --}}
+                            @if ($order->payment_method === 'CASH')
+                                <span>Thanh toán khi nhận hàng</span>
+                            @elseif ($order->payment_method === 'VNPAY')
+                                <span>VNPay</span>
+                            @else
+                                <span class="text-muted">Không xác định</span>
                             @endif
                         </td>
 

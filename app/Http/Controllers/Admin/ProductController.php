@@ -155,7 +155,8 @@ class ProductController extends Controller
         $products = Product::with(['variations', 'category'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            return view('admin.product.indexProduct', compact('products'));
+        // dd($products);
+        return view('admin.product.indexProduct', compact('products'));
     }
 
 

@@ -2,16 +2,16 @@
 @extends('app')
 @section('content')
 
-    @if (session('error'))
-        <script>
-            alert("{{ session('error') }}");
-        </script>
-        <script>
-            alert("{{ session('error') }}");
-        </script>
-    @endif
+    
     <div class="product_details mt-20">
         <div class="container">
+            @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+             @endif
+        
             @if (session('message'))
                 <div class="alert alert-success">
                     <strong>{{ session('message') }}</strong>
@@ -53,53 +53,6 @@
                 </div>
 
                 <div class="col-lg-6 col-md-6">
-                    {{-- <div class="product_d_right">
-                    <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <h1>{{ $product->name }}</h1>
-                        <div class="price_box">
-                            <span class="current_price">{{ $product->price_new }}vnđ</span>
-                            <span class="old_price">{{ $product->price_old }}</span>
-                        </div>
-                        <div class="product_desc">
-                            <p>{{ $product->description }}</p>
-                        </div>
-                        <div class="product_variant color">
-                            <h3>Chọn màu</h3>
-                            <ul>
-                                @foreach ($colors as $value)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input color-option" type="radio" name="selectedColor" id="{{ $value }}" value="{{ $value }}">
-                                    <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
-                                </div>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="product_variant size mb-4">
-                            <h3>Chọn kích cỡ</h3>
-                            @foreach ($sizes as $value)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input size-option" data-size="{{ $value }}" type="radio" name="selectedSize" id="{{ $value }}" value="{{ $value }}">
-                                <label class="form-check-label" for="{{ $value }}">{{ $value }}</label>
-                            </div>
-                            @endforeach
-                        </div>
-                        <div class="product_variant quantity">
-                            <label>Số Lượng</label>
-                            <input name="quantity" id="quantityInput" min="1" max="{{ $stockQuantity }}" value="1" type="number">
-                            <input type="hidden" name="product_name" value="{{ $product->name }}">
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button class="button" type="submit">Thêm vào Giỏ Hàng</button>
-                        </div>
-                    </form>
-                    <div class="product_meta">
-                        <span>Danh mục: <a href="#">{{ $category->name }}</a></span>
-                        <div style="margin-top: 15px">
-                            <label>Số lượng sản phẩm trong kho: {{ $sumQuantity }}</label>
-                        </div>
-                    </div>
-                </div> --}}
-
                     <div class="col-lg-6 col-md-6">
                         <div class="product_d_right">
                             <form action="{{ route('cart.add') }}" method="POST">
@@ -144,7 +97,15 @@
                                         value="1" type="number">
                                     <input type="hidden" name="product_name" value="{{ $product->name }}">
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <button class="button" type="submit">Thêm vào Giỏ Hàng</button>
+                                    @if (Auth::check())
+                                        <!-- Người dùng đã đăng nhập -->
+                                        <button class="button" type="submit">Thêm vào Giỏ Hàng</button>
+                                    @else
+                                        <!-- Người dùng chưa đăng nhập -->
+                                        <button class="button" type="button" id="buyNowButton">Mua Ngay</button>
+
+                                    @endif
+
                                 </div>
                             </form>
 
@@ -342,56 +303,6 @@
             </div>
         </div>
 
-        {{-- <script>
-    var sizesWithColors = @json($sizesWithColors);
-
-    // Khi chọn màu, lọc kích thước phù hợp
-    document.querySelectorAll('.color-option').forEach(function(colorInput) {
-        colorInput.addEventListener('change', function() {
-            var selectedColor = this.value;
-
-            // Ẩn tất cả các size trước
-            document.querySelectorAll('.size-option').forEach(function(sizeOption) {
-                sizeOption.parentElement.style.display = 'none'; // Ẩn cả input và label
-                sizeOption.checked = false; // Hủy chọn size
-            });
-
-            // Hiển thị size tương ứng với màu đã chọn
-            for (var size in sizesWithColors) {
-                sizesWithColors[size].forEach(function(variant) {
-                    if (variant.color === selectedColor) {
-                        var sizeOption = document.querySelector('.size-option[data-size="' + size + '"]');
-                        if (sizeOption) {
-                            sizeOption.parentElement.style.display = 'inline-block';
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    // Cập nhật max của input quantity khi chọn size và màu
-    document.querySelectorAll('.size-option').forEach(function(sizeInput) {
-        sizeInput.addEventListener('change', function() {
-            var selectedSize = this.value;
-            var selectedColor = document.querySelector('.color-option:checked')?.value;
-
-            if (selectedColor) {
-                var variant = sizesWithColors[selectedSize]?.find(function(v) {
-                    return v.color === selectedColor;
-                });
-
-                if (variant) {
-                    var stockQuantity = variant.stock_quantity;
-                    var quantityInput = document.getElementById('quantityInput');
-                    quantityInput.max = stockQuantity;
-                    quantityInput.value = Math.min(quantityInput.value, stockQuantity); // Đảm bảo giá trị không vượt quá tồn kho
-                }
-            }
-        });
-    });
-</script> --}}
-
 
 
 
@@ -465,5 +376,45 @@
                 }
             }
         </script>
+        <script>
+            let selectedColor = ''; // Biến lưu màu sắc đã chọn
+            let selectedSize = '';  // Biến lưu kích thước đã chọn
+            let quantity = 1;       // Biến lưu số lượng sản phẩm
+        
+            // Lắng nghe sự kiện thay đổi khi chọn size
+            document.querySelectorAll('.size-option').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    selectedSize = this.value; // Lưu giá trị size đã chọn
+                });
+            });
+        
+            // Lắng nghe sự kiện thay đổi khi chọn color
+            document.querySelectorAll('.color-option').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    selectedColor = this.value; // Lưu giá trị color đã chọn
+                });
+            });
+        
+            // Lắng nghe sự kiện thay đổi số lượng
+            document.getElementById('quantityInput').addEventListener('input', function() {
+                quantity = this.value; // Lưu giá trị quantity đã nhập
+            });
+        
+            // Hàm chuyển hướng đến trang thanh toán khi nhấn nút "Mua Ngay"
+            document.getElementById('buyNowButton').addEventListener('click', function() {
+                if (selectedColor && selectedSize && quantity) {
+                    // Thay thế các tham số trong route
+                    let url = '{{ route('guest.checkout', ['id_product' => $product->id, 'color' => ':color', 'size' => ':size', 'quantity' => ':quantity']) }}'
+                        .replace(':color', selectedColor)  // Thay thế :color bằng giá trị người dùng chọn
+                        .replace(':size', selectedSize)    // Thay thế :size bằng giá trị người dùng chọn
+                        .replace(':quantity', quantity);   // Thay thế :quantity bằng số lượng người dùng nhập
+                    
+                    window.location.href = url; // Chuyển hướng đến URL thanh toán
+                } else {
+                    alert('Vui lòng chọn đầy đủ thông tin (size, color, quantity).');
+                }
+            });
+        </script>
+        
 
     @endsection

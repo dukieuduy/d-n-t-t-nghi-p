@@ -25,11 +25,11 @@
                 <!--register area start-->
                 <div class="col-lg-6 col-md-6">
                     <div class="account_form register">
-                        <h2>Register</h2>
+                        <h2>Đăng ký</h2>
                         <form action="{{ route('register') }}" method="POST">
                             @csrf
                             <p>
-                                <label>Name <span>*</span></label>
+                                <label>Tên đầy đủ <span>*</span></label>
                                 <input type="text" name="name" >
                                 @if ($errors->has('name'))
                                 <div class="alert alert-danger">
@@ -39,7 +39,7 @@
                                 
                             </p>
                             <p>
-                                <label>Email address <span>*</span></label>
+                                <label>Địa chỉ <span>*</span></label>
                                 <input type="text" name="email" >
                                 @if ($errors->has('email'))
                                 <div class="alert alert-danger">
@@ -48,7 +48,7 @@
                             @endif
                             </p>
                             <p>
-                                <label>Passwords <span>*</span></label>
+                                <label>Mật khẩu <span>*</span></label>
                                 <input type="password" name="password" >
                                 @if ($errors->has('password'))
                                 <div class="alert alert-danger">
@@ -58,12 +58,12 @@
 
                             </p>
                             <p>
-                                <label>Confirm Passwords <span>*</span></label>
+                                <label>Xác nhận mật khẩu <span>*</span></label>
                                 <input type="password" name="password_confirmation" >
                             </p>
                             <div class="login_submit">
                                 
-                                <button type="submit">Register</button>
+                                <button type="submit">Đăng ký</button>
                             </div>
                         </form>
                     </div>
