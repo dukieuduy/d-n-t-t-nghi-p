@@ -104,7 +104,7 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                <div class="product_variant quantity">
+                                {{-- <div class="product_variant quantity">
                                     <label>Số Lượng</label>
                                     <input name="quantity" id="quantityInput" min="1" max="{{ $stockQuantity }}"
                                         value="1" type="number">
@@ -119,8 +119,8 @@
 
                                     @endif
 
-                                </div>
-                            </form>
+                                </div> --}}
+                            {{-- </form> --}}
                                 </ul>
                             </div>
                             <div class="product_variant size mb-4">
@@ -141,7 +141,15 @@
                                     value="1" type="number">
 
                                 <input type="hidden" name="product_id" id="product_cart_id" value="{{ $product->id }}">
-                                <button class="button" type="button" id="btn_submit_cart">Thêm vào Giỏ Hàng</button>
+                                @if (Auth::check())
+                                        <!-- Người dùng đã đăng nhập -->
+                                        <button class="button" type="button" id="btn_submit_cart">Thêm vào Giỏ Hàng</button>
+                                    @else
+                                        <!-- Người dùng chưa đăng nhập -->
+                                        <button class="button" type="button" id="buyNowButton">Mua Ngay</button>
+
+                                    @endif
+                                
                             </div>
 
 
@@ -432,12 +440,12 @@
             });
         
             // Lắng nghe sự kiện thay đổi số lượng
-            document.getElementById('quantityInput').addEventListener('input', function() {
+            document.getElementById('quantityInput')?.addEventListener('input', function() {
                 quantity = this.value; // Lưu giá trị quantity đã nhập
             });
         
             // Hàm chuyển hướng đến trang thanh toán khi nhấn nút "Mua Ngay"
-            document.getElementById('buyNowButton').addEventListener('click', function() {
+            document.getElementById('buyNowButton')?.addEventListener('click', function() {
                 if (selectedColor && selectedSize && quantity) {
                     // Thay thế các tham số trong route
                     let url = '{{ route('guest.checkout', ['id_product' => $product->id, 'color' => ':color', 'size' => ':size', 'quantity' => ':quantity']) }}'
@@ -456,7 +464,7 @@
         <script>
             let color = '';
             let size = '';
-            let quantity = 1;
+            let quantityy= 1;
 
             function statusAlert(type, title, message) {
                 Swal.fire({
@@ -490,7 +498,7 @@
             });
             const quantitys = document.querySelector('#quantityInput');
             quantitys.addEventListener('change', () => {
-                quantity = quantitys.value;
+                quantityy = quantitys.value;
 
             })
             const id = document.querySelector('#product_cart_id').value;
@@ -507,7 +515,7 @@
                         data: {
                             color,
                             size,
-                            quantity,
+                            quantity:quantityy,
                             id
 
                         },

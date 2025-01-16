@@ -316,9 +316,9 @@ class CartController extends Controller
         }
 
     // Nếu không tìm thấy biến thể phù hợp
-    if (!$matchedVariation) {
-        return redirect()->back()->with('error', 'chọn màu sắc và size.');
-    }
+    // if (!$matchedVariation) {
+    //     return redirect()->back()->with('error', 'chọn màu sắc và size.');
+    // }
         // Tìm giỏ hàng của người dùng bằng cách sử dụng user_id và cart_id
         $cartItem = CartItem::where('id', $id)
             ->whereHas('cart', function ($query) use ($userId) {
