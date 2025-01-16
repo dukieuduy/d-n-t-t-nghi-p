@@ -152,10 +152,43 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
+        // $products = Product::with(['variations', 'category'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->paginate(10);
+        //     foreach ($products as $product) {
+        //         // Tính tổng quantity từ các biến thể của sản phẩm
+        //         $product->total_quantity = $product->variations->sum('stock_quantity');
+        //     }
+        // dd($products);
         $products = Product::with(['variations', 'category'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        // dd($products);
+        // Tính tổng quantity cho từng sản phẩm
+        foreach ($products as $product) {
+            // Tính tổng stock_quantity từ các biến thể của sản phẩm
+            $totalStockQuantity = $product->variations->sum('stock_quantity');
+
+            // Tính tổng số lượng đã bán từ các order_item có trạng thái 'completed'
+            $totalSoldQuantity = 0;
+
+            foreach ($product->variations as $variation) {
+                // Lấy tất cả order_items có product_sku (sku) từ product_variations
+                $orderItems = $variation->orderItems;
+
+                // Lọc các order_item có trạng thái 'completed' thông qua bảng orders
+                $completedOrderItems = $orderItems->filter(function ($orderItem) {
+                    return $orderItem->order && $orderItem->order->status === 'completed';
+                });
+
+                // Tính tổng quantity của các order_item đã lọc
+                $totalSoldQuantity += $completedOrderItems->sum('quantity');
+            }
+
+            // Gán vào thuộc tính của sản phẩm
+            $product->total_stock_quantity = $totalStockQuantity; // Tổng số lượng tồn kho
+            $product->total_sold_quantity = $totalSoldQuantity;   // Tổng số lượng đã bán
+        }
+        // dd($product->total_stock_quantity);
         return view('admin.product.indexProduct', compact('products'));
     }
 
@@ -260,9 +293,25 @@ class ProductController extends Controller
     
         return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được cập nhật!');
     }
+    public function update_is_active(Request $request, $productId)
+        {
+            // Lấy sản phẩm theo ID
+            $product = Product::findOrFail($productId);
+
+            // Cập nhật giá trị 'is_active' dựa trên trạng thái checkbox
+            $product->is_active = $request->has('is_active') ? 1 : 0;
+
+            // Lưu lại thay đổi vào cơ sở dữ liệu
+            $product->save();
+
+            // Trả về response hoặc redirect sau khi cập nhật
+            return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được cập nhật!');
+        }
+
     
 
 
+    
 
 
     public function storeVariation(Request $request, $productId)

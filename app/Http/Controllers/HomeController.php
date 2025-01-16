@@ -19,9 +19,8 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::all();  // Lấy tất cả các sản phẩm
-        // dd($products);
-
+        // $products = Product::all();  // Lấy tất cả các sản phẩm
+        $products = Product::where('is_active', 1)->get();
         $categories = Category::all();
         // dd($categories);
         $banner = Banner::all();

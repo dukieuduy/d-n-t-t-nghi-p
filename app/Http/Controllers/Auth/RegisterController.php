@@ -48,19 +48,37 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        // return Validator::make($data, [
+        //     'name' => ['required', 'string', 'max:255'],
+        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        //     'password' => ['required', 'string', 'min:8', 'confirmed'],
+        // ],[
+        //     'name.required'=>'Không được bỏ trống tên',
+        //     'email.required' => 'Địa chỉ email là bắt buộc.',
+        //     'email.email' => 'Địa chỉ email không hợp lệ.',
+        //     'email.unique' => 'Địa chỉ email đã tồn tại.',
+        //     'password.required' => 'Mật khẩu là bắt buộc.',
+        //     'password.confirmed' => 'Mật khẩu và xác nhận mật khẩu không khớp.',
+        //     'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+        // ]);
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ],[
-            'name.required'=>'Không được bỏ trống tên',
+            'phone' => ['required', 'string', 'regex:/^(\+?\d{1,3}[-.\s]?)?(\(?\d{2,3}\)?[-.\s]?)?[\d\s-]{7,15}$/', 'unique:users'], // thêm validate cho phone_number
+        ], [
+            'name.required' => 'Không được bỏ trống tên',
             'email.required' => 'Địa chỉ email là bắt buộc.',
             'email.email' => 'Địa chỉ email không hợp lệ.',
             'email.unique' => 'Địa chỉ email đã tồn tại.',
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.confirmed' => 'Mật khẩu và xác nhận mật khẩu không khớp.',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'phone.required' => 'Số điện thoại là bắt buộc.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.',
+            'phone.unique' => 'Số điện thoại đã tồn tại.',
         ]);
+        
     }
 
     /**
@@ -74,6 +92,7 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
     }

@@ -39,7 +39,7 @@
                                 
                             </p>
                             <p>
-                                <label>Địa chỉ <span>*</span></label>
+                                <label>Email <span>*</span></label>
                                 <input type="text" name="email" >
                                 @if ($errors->has('email'))
                                 <div class="alert alert-danger">
@@ -47,6 +47,16 @@
                                 </div>
                             @endif
                             </p>
+                            <p>
+                                <label>Số điện thoại <span>*</span></label>
+                                <input type="text" name="phone">
+                                @if ($errors->has('phone'))
+                                    <div class="alert alert-danger">
+                                        {{ $errors->first('phone') }}
+                                    </div>
+                                @endif
+                            </p>
+                            
                             <p>
                                 <label>Mật khẩu <span>*</span></label>
                                 <input type="password" name="password" >

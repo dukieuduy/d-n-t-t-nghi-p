@@ -94,6 +94,7 @@
                         <th>Số lượng</th>
                         <th>Giá</th>
                         <th>Thành tiền</th>
+                        <th>Chi tiết</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,6 +107,7 @@
                             
                             <td>{{ number_format($item->productVariation->price, 0, ',', '.') }}đ</td>
                             <td>{{ number_format($item->quantity * $item->productVariation->price, 0, ',', '.') }}đ</td>
+                            <td><a href="{{route('detail-product',$item->productVariation->product->id)}}"class="btn btn-primary btn-sm"> xem chi tiết</a></td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -42,8 +42,8 @@
                                 <span>Không có ảnh</span>
                             @endif
                         </td>
-                        <td>{{ $product['total_stock'] }}</td>
-                        <td>300</td>
+                        <td>{{$product->total_stock_quantity}}</td>
+                        <td>{{$product->total_sold_quantity}}</td>
                         {{-- <td>
                             <!-- Toggle Switch -->
                             <label class="switch">
@@ -52,10 +52,18 @@
                             </label>
                         </td> --}}
                         <td>
-                            <div class="form-check form-switch mb-3">
+                            {{-- <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" id="variantStatus"{{ $product['is_active'] ? 'checked' : '' }}>
-                                <label class="form-check-label" for="variantStatus">Kích hoạt biến thể sản phẩm</label>
-                            </div>
+                            </div> --}}
+                            
+
+                            <form action="{{ route('admin.products.update_is_active', $product->id) }}" method="POST" id="productForm">
+                                @csrf
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="variantStatus" name="is_active" {{ $product->is_active ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="variantStatus">Kích hoạt sản phẩm</label>
+                                </div>
+                            </form>
                         </td>
                         <td>
                             <!-- Các hành động quản lý sản phẩm -->
@@ -115,6 +123,13 @@
                   this.checked = !isActive; // Khôi phục trạng thái ban đầu
               });
         });
+    });
+</script>
+<script>
+    // Lắng nghe sự kiện khi checkbox thay đổi
+    document.getElementById('variantStatus').addEventListener('change', function() {
+        // Submit form tự động khi checkbox thay đổi
+        document.getElementById('productForm').submit();
     });
 </script>
 @endsection

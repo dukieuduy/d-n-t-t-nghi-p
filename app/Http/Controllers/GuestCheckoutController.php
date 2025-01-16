@@ -73,7 +73,7 @@ class GuestCheckoutController extends Controller
                 'district' => 'required|exists:districts,id',
                 'ward' => 'required|exists:wards,id',
                 'payment_method' => 'required|in:CASH,VNPAY,MOMO',
-                'quantity' => 'required|array|min:1',
+                'quantity' => 'required|min:1',
                 'quantity.*' => 'required|integer|min:1|max:100',
             ], [
                 'full_name.required' => 'Họ và tên không được để trống.',
@@ -88,7 +88,6 @@ class GuestCheckoutController extends Controller
                 'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
                 'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
                 'quantity.required' => 'Số lượng không được để trống.',
-                'quantity.array' => 'Số lượng phải là một mảng.',
                 'quantity.min' => 'Số lượng phải có ít nhất 1 phần tử.',
                 'quantity.*.required' => 'Mỗi sản phẩm phải có số lượng.',
                 'quantity.*.integer' => 'Số lượng phải là số nguyên.',
@@ -162,7 +161,7 @@ class GuestCheckoutController extends Controller
 
                     // Tạo Order
                     $order = Order::create([
-                        'user_id' => Auth::id(),
+                        'user_id' => NULL,
                         'total_amount' => $data['total_amount'] ?? 0,
                         'status' => 'pending',
                         'payment_method' => $data['payment_method'],
@@ -179,17 +178,9 @@ class GuestCheckoutController extends Controller
                             // Tạo OrderItem
                             OrderItem::create([
                                 'order_id' => $order->id,
-                                'product_sku' => $sku,
-                                'quantity' => $data['quantity'][$index],
+                                'product_sku' => $data['sku'],
+                                'quantity' => $data['quantity'][0],
                             ]);
-
-                            // Xóa sản phẩm khỏi giỏ hàng
-                            $cart = Cart::where('user_id', Auth::id())->first();
-                            if ($cart) {
-                                CartItem::where('cart_id', $cart->id)
-                                    ->where('product_sku', $sku)
-                                    ->delete();
-                            }
                         }
                     }
                     DB::commit();
@@ -201,7 +192,7 @@ class GuestCheckoutController extends Controller
                     $vnp_TxnRef = $order->id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
                     $vnp_OrderInfo = 'thanh toán đơn hàng';
                     $vnp_OrderType = 'billpayment';
-                    $vnp_Amount = ($order->total_amount + $order->ship) * 10000;
+                    $vnp_Amount = ($order->total_amount + $order->ship) * 100;
                     $vnp_Locale = 'vn';
                     $vnp_BankCode = 'NCB';
                     $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];

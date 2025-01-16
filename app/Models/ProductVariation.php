@@ -13,12 +13,11 @@ class ProductVariation extends Model
         'product_id', 'sku', 'price', 'stock_quantity', 'image',
     ];
 
-   // Mối quan hệ với Product (biến thể thuộc về một sản phẩm)
-// Model ProductVariation
-public function product()
-{
-    return $this->belongsTo(Product::class, 'product_id');
-}
+    // Model ProductVariation
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 
 
 
@@ -27,5 +26,10 @@ public function product()
     {
         return $this->hasMany(ProductVariationAttribute::class);
     }
+    public function orderItems()
+{
+    return $this->hasMany(OrderItem::class, 'product_sku', 'sku'); // Tương ứng với khóa ngoại của bạn
+}
+
 }
 

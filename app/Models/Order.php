@@ -64,6 +64,10 @@ class Order extends Model
     {
         return $this->belongsTo(ProductVariation::class);
     }
+    public function guestBuyer()
+    {
+        return $this->belongsTo(GuestBuyer::class, 'order_id', 'id');
+    }
 
 
 }

@@ -10,13 +10,14 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LocationController;
-use App\Http\Controllers\WishlistController;
 // use App\Http\Controllers\AdminCartController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminCartController;
-use App\Http\Controllers\UserOrderController;
 
+use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\SaleController;
 use App\Http\Controllers\GuestOrderController;
@@ -99,6 +100,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
     Route::get('products/{product}/detail', [ProductController::class, 'detail'])->name('products.detail');
     Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::post('products/{product}/update', [ProductController::class, 'update'])->name('products.update');
+    Route::post('products/{product}/update_is_active', [ProductController::class, 'update_is_active'])->name('products.update_is_active');
+
+
     Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');
 
     // Route để chỉnh sửa biến thể sản phẩm
@@ -246,7 +250,12 @@ Route::post('/addWishlist/{product_id}', [WishlistController::class, 'create'])-
 Route::delete('/wishlist/delete/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
 
-
+    Route::get('/shipper/orders', [ShipperController::class, 'confirmedOrders'])->name('shipper.orders');
+    // Route::post('/shipper/orders/{id}/confirm', [ShipperController::class, 'confirmDelivery'])->name('shipper.confirmDelivery');
+    Route::post('/shipper/orders/{id}/confirm-delivery', [ShipperController::class, 'confirmDelivery'])->name('shipper.confirmDelivery');
+    Route::post('/shipper/orders/{id}/return', [ShipperController::class, 'returnOrder'])->name('shipper.returnOrder');
+    Route::post('/shipper/orders/{id}/complete', [ShipperController::class, 'completeOrder'])->name('shipper.completeOrder');
+    
 // route cũ không dùng
 
 // login-logout-register-forgetpassword

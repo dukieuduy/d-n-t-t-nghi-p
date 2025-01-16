@@ -39,8 +39,8 @@
                 @foreach($orders as $order)
                     <tr>
                         <td>{{ $order->id }}</td>
-                        <td>{{ $order->user->name }}</td> <!-- Customer Name -->
-                        <td>{{ $order->user->phone }}</td> <!-- Customer Phone -->
+                        <td>@if(isset($order->user)){{$order->user->name}}@else user @endif</td> <!-- Customer Name -->
+                        <td>@if(isset($order->user)){{$order->user->phone}}@else 0869837116 @endif</td> <!-- Customer Phone -->
                         <td>{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
                         {{-- <td>{{ number_format($order->ship, 0, ',', '.') }}đ</td> --}}
                         <td>

@@ -23,13 +23,22 @@ class OrderController extends Controller
     public function index(Request $request)
         {
             // Lấy tất cả đơn hàng của người dùng hiện tại với khả năng lọc theo trạng thái
-            $query = Order::where('user_id', Auth::id());
+            // $query = Order::query();
+
+            // if ($request->has('status') && $request->status != 'all') {
+            //     $query->where('status', $request->status);
+            // }
+
+            // $orders = $query->get();
+            $query = Order::query();
 
             if ($request->has('status') && $request->status != 'all') {
                 $query->where('status', $request->status);
             }
 
-            $orders = $query->get();
+            // Sắp xếp theo thời gian mới nhất
+            $orders = $query->orderBy('created_at', 'desc')->get();
+
 
             return view('admin.order.index', compact('orders'));
         }
