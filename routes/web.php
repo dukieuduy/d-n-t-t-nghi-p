@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\ClientBlogController;
 use App\Http\Controllers\Auth\ContactusClientController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Messages\MessagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,7 +155,7 @@ Route::get('/shipping-fee/{province_id}/{district_id}', [ShippingFeeController::
 Auth::routes();
 
 
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/cart/edit/{id}', [CartController::class, 'edit'])->name('cart.edit');
 
@@ -185,9 +186,12 @@ Route::get('profile',[\App\Http\Controllers\ProfileController::class, 'index'])-
 Route::get('profile-edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile-edit');
 Route::post('profile-edit', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile-update');
 
+Route::post('/update-cart', [CartController::class,'updateQuantityCart'])->name('cart.update');
 
+Route::post('/send-messages/{id}',[MessagesController::class,'sendTheMessage'])->name('send.messages');
 
-
+Route::get('/chat-list', [MessagesController::class,'chatList'])->name('chat.index');
+Route::get('/chat-sp/{id}', [MessagesController::class,'chatSuport'])->name('chat.sp');
 // admin
 // Route::group(['prefix' => 'admin'], function () {
 //     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -226,6 +230,7 @@ Route::prefix('client')->name('client.')->group(function () {
 Route::get('/wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
 Route::post('/addWishlist/{product_id}', [WishlistController::class, 'create'])->name('wishlist.create');
 Route::delete('/wishlist/delete/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+Route::get('/category/{id}', [HomeController::class, 'categoryPage'])->name('category_page');
 
 
 

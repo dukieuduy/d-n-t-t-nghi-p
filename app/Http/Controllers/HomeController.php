@@ -9,9 +9,11 @@ use App\Models\Review;
 use App\Models\Product;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\Messenger;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Models\ProductVariation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -33,13 +35,29 @@ class HomeController extends Controller
         //     ->limit(2)
         //     ->get();
         // // dd($topProducts);
-            return view('client.pages.home', compact('products', 'categories', 'banner'));
+        $id = 5;
+        $messages = Messenger::where(function ($query) use ($id) {
+            $query->where('id_user_revice', $id)
+                ->where('id_user_send', Auth::id());
+        })->orWhere(function ($query) use ($id) {
+            $query->where('id_user_send', $id)
+                ->where('id_user_revice', Auth::id());
+        })->get();
+        return view('client.pages.home', compact('products', 'categories', 'banner', 'messages'));
     }
 
-   
+
 
     public function detailProduct($id)
     {
+        $idChat = 5;
+        $messages = Messenger::where(function ($query) use ($idChat) {
+            $query->where('id_user_revice', $idChat)
+                ->where('id_user_send', Auth::id());
+        })->orWhere(function ($query) use ($idChat) {
+            $query->where('id_user_send', $idChat)
+                ->where('id_user_revice', Auth::id());
+        })->get();
         $categories = Category::all();
 
         $product = Product::findOrFail($id);
@@ -47,7 +65,7 @@ class HomeController extends Controller
         $productRelates = Product::where('category_id', $product->category_id)->limit(5)->get();
         // $reviews = Review::where('product_id', $id)->get();
         $reviews = Review::where('product_id', $id)
-//            ->where('comment_parent', 0) // Chỉ lấy bình luận cha (khách hàng)
+            //            ->where('comment_parent', 0) // Chỉ lấy bình luận cha (khách hàng)
             ->with('replies') // Lấy kèm các câu trả lời (admin)
             ->get();
         //     $review = Review::with('user')
@@ -100,8 +118,12 @@ class HomeController extends Controller
         $sizesWithColors = [];
         foreach ($availableVariations as $variation) {
             // Lấy size, color và stock_quantity từ mỗi biến thể
-            $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
-            $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
+            $sizeAttribute = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size');
+            $size = $sizeAttribute?->attributeValue?->value;
+
+            // Lấy color
+            $colorAttribute = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color');
+            $color = $colorAttribute?->attributeValue?->value;
             $stockQuantity = $variation->stock_quantity;
 
             // Thêm vào mảng sizesWithColors
@@ -137,32 +159,32 @@ class HomeController extends Controller
                 return $attribute->attributeValue->value; // Giá trị của kích thước
             })->unique()->values(); // Loại bỏ trùng lặp và đánh chỉ số lại
 
-        // Lưu thông tin kích thước với các màu sắc, giá và số lượng tương ứng
-        $sizesWithColors = [];
-        foreach ($availableVariations as $variation) {
-            // Lấy size, color, price và stock_quantity từ mỗi biến thể
-            $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
-            $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
-            $price = $variation->price; // Giả sử cột giá là 'price'
-            $stockQuantity = $variation->stock_quantity;
+            // Lưu thông tin kích thước với các màu sắc, giá và số lượng tương ứng
+            $sizesWithColors = [];
+            foreach ($availableVariations as $variation) {
+                // Lấy size, color, price và stock_quantity từ mỗi biến thể
+                $size = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'size')->attributeValue->value;
+                $color = $variation->variationAttributes->firstWhere('attributeValue.attribute.name', 'color')->attributeValue->value;
+                $price = $variation->price; // Giả sử cột giá là 'price'
+                $stockQuantity = $variation->stock_quantity;
 
-            // Thêm vào mảng sizesWithColors
-            if (!isset($sizesWithColors[$size])) {
-                $sizesWithColors[$size] = []; // Khởi tạo mảng cho size nếu chưa tồn tại
+                // Thêm vào mảng sizesWithColors
+                if (!isset($sizesWithColors[$size])) {
+                    $sizesWithColors[$size] = []; // Khởi tạo mảng cho size nếu chưa tồn tại
+                }
+
+                // Lưu thông tin color, price và stock_quantity
+                $sizesWithColors[$size][] = [
+                    'color' => $color,
+                    'price' => $price,
+                    'stock_quantity' => $stockQuantity,
+                ];
             }
 
-            // Lưu thông tin color, price và stock_quantity
-            $sizesWithColors[$size][] = [
-                'color' => $color,
-                'price' => $price,
-                'stock_quantity' => $stockQuantity,
-            ];
-        }
-
-                // dd($sizesWithColors);
+            // dd($sizesWithColors);
 
             // Trả về view với dữ liệu
-            return view('client.pages.detail', compact('product', 'variations', 'category','stockQuantity', 'sumQuantity', 'colors', 'sizes','sizesWithColors','reviews','categories','productRelates'));
+            return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'sumQuantity', 'colors', 'sizes', 'sizesWithColors', 'reviews', 'categories', 'productRelates', 'messages'));
             // Lưu thông tin color và stock_quantity
             $sizesWithColors[$size][] = [
                 'color' => $color,
@@ -173,6 +195,13 @@ class HomeController extends Controller
         // dd($sizesWithColors);
 
         // Trả về view với dữ liệu
-        return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'sumQuantity', 'colors', 'sizes', 'sizesWithColors', 'reviews','categories'));
+        return view('client.pages.detail', compact('product', 'variations', 'category', 'stockQuantity', 'sumQuantity', 'colors', 'sizes', 'sizesWithColors', 'reviews', 'categories', 'messages'));
+    }
+    public function categoryPage($id)
+    {
+        $categories = Category::all();
+        $products = Product::where('category_id', $id)->get();
+        $names = Category::where('id', $id)->pluck('name');
+        return view('client.pages.category', compact('categories', 'products','names'));
     }
 }

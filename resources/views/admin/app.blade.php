@@ -11,7 +11,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-
+    @vite(['resources/js/app.js']);
     <title>SB Admin 2 - Dashboard</title>
     @include("admin.inc.style")
       <!-- Custom fonts for this template-->

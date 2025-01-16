@@ -10,7 +10,9 @@ class ProductVariationAttribute extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_variation_id', 'product_attribute_value_id','product_attribute_id'
+        'product_variation_id',
+        'product_attribute_value_id',
+        'product_attribute_id'
     ];
 
     // Mối quan hệ với ProductVariation (biến thể thuộc về một biến thể sản phẩm)
@@ -23,5 +25,9 @@ class ProductVariationAttribute extends Model
     public function attributeValue()
     {
         return $this->belongsTo(ProductAttributeValue::class, 'product_attribute_value_id');
+    }
+    public function productVariation()
+    {
+        return $this->belongsTo(ProductVariation::class, 'product_variation_id');
     }
 }

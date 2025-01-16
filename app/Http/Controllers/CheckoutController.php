@@ -11,6 +11,7 @@ use App\Models\Order;
 use Mockery\Exception;
 use App\Models\CartItem;
 use App\Models\District;
+use App\Models\Messenger;
 use App\Models\Province;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -46,9 +47,17 @@ class CheckoutController extends Controller
                 $order->update(['status' => 'cancelled']);
             }
         }
+        $id = 5;
+        $messages = Messenger::where(function ($query) use ($id) {
+            $query->where('id_user_revice', $id)
+                ->where('id_user_send', Auth::id());
+        })->orWhere(function ($query) use ($id) {
+            $query->where('id_user_send', $id)
+                ->where('id_user_revice', Auth::id());
+        })->get();
 
         // Trả về view với danh sách đơn hàng
-        return view('client.pages.orders.index', compact('userOrders'));
+        return view('client.pages.orders.index', compact('userOrders','messages'));
     }
 
     public function getDistricts($provinceId)
@@ -73,11 +82,11 @@ class CheckoutController extends Controller
             $order = Order::find($vnp_TxnRef);
 
             if ($order) {
-                    $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
+                $order->payment_status = 'paid'; // Cập nhật trạng thái đơn hàng thành 'paid'
 
-                    $order->save();
+                $order->save();
 
-                    return redirect()->route('user.orders.index')->with('success', 'Thanh toán thành công');
+                return redirect()->route('user.orders.index')->with('success', 'Thanh toán thành công');
             } else {
                 return response()->json([
                     'message' => 'Không tìm thấy đơn hàng.',
@@ -92,6 +101,7 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
+
         try {
             // Bắt đầu transaction
             DB::beginTransaction();
@@ -123,8 +133,7 @@ class CheckoutController extends Controller
                         'ship' => $data['ship'],
                         'payment_expires_at' => Carbon::now(),
                     ]);
-                    if ($data['discount'] && $data['discount'] !== 0)
-                    {
+                    if ($data['discount'] && $data['discount'] !== 0) {
                         OrderDiscount::create([
                             'order_id' => $order->id,
                             'discount_id' => $data['discount'],
@@ -151,6 +160,13 @@ class CheckoutController extends Controller
 
                             // Xóa sản phẩm khỏi giỏ hàng
                             $cart = Cart::where('user_id', Auth::id())->first();
+                            $cart_item = CartItem::where('cart_id', $cart->id)->get();
+                            foreach ($cart_item as $key => $value) {
+                                $variant = ProductVariation::find($value->product_variation_id);
+                                $variant->update([
+                                    'stock_quantity' => $variant->stock_quantity - $value->quantity
+                                ]);
+                            }
                             if ($cart) {
                                 CartItem::where('cart_id', $cart->id)
                                     ->where('product_sku', $sku)
@@ -165,13 +181,13 @@ class CheckoutController extends Controller
                     // Commit transaction
                     DB::commit();
 
-                return redirect()->route('user.orders.index')->with([
-                    'message' => 'Đơn hàng của bạn đã được tạo thành công!',
-                    'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
-                    'order_id' => $order->id
-                ]);
+                    return redirect()->route('user.orders.index')->with([
+                        'message' => 'Đơn hàng của bạn đã được tạo thành công!',
+                        'details' => 'Chúng tôi đã nhận được đơn hàng của bạn và sẽ xử lý ngay lập tức. Cảm ơn bạn đã tin tưởng mua sắm tại cửa hàng!',
+                        'order_id' => $order->id
+                    ]);
 
-                break;
+                    break;
 
 
                 case 'VNPAY':
@@ -213,7 +229,7 @@ class CheckoutController extends Controller
                     // Thực hiện tạo URL thanh toán VNPAY
                     $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
                     $vnp_Returnurl = route('vnpay.return');
-                    $vnp_TmnCode = "0BQGSJLL";//Mã website tại VNPAY
+                    $vnp_TmnCode = "0BQGSJLL"; //Mã website tại VNPAY
                     $vnp_HashSecret = "YYDH932FZ19XBC6F79BXIG833K2UO7ON"; //Chuỗi bí mật
                     $vnp_TxnRef = $order->id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
                     $vnp_OrderInfo = 'thanh toán đơn hàng';
@@ -266,10 +282,8 @@ class CheckoutController extends Controller
                     }
 
                     $returnData = array(
-                        'code' => '00'
-                        ,
-                        'message' => 'success'
-                        ,
+                        'code' => '00',
+                        'message' => 'success',
                         'data' => $vnp_Url
                     );
                     if (isset($_POST['redirect'])) {
@@ -284,7 +298,6 @@ class CheckoutController extends Controller
                 default:
                     return response()->json(['message' => 'Phương thức thanh toán không hợp lệ!'], 400);
             }
-
         } catch (Exception $e) {
             // Rollback nếu có lỗi
             DB::rollBack();
@@ -299,6 +312,14 @@ class CheckoutController extends Controller
 
     public function confirmCheckout(Request $request)
     {
+        $id = 5;
+        $messages = Messenger::where(function ($query) use ($id) {
+            $query->where('id_user_revice', $id)
+                ->where('id_user_send', Auth::id());
+        })->orWhere(function ($query) use ($id) {
+            $query->where('id_user_send', $id)
+                ->where('id_user_revice', Auth::id());
+        })->get();
         // Cập nhật size, color và product_sku cho từng cart item
         if ($request->has('cart_item_id') && is_array($request->cart_item_id)) {
             foreach ($request->cart_item_id as $index => $cartItemId) {
@@ -355,14 +376,15 @@ class CheckoutController extends Controller
         $wards = Ward::where('district_id', $request->districtId)->get();
 
         // Trả về view xác nhận thanh toán
-        return view('client.pages.confirm_checkout', compact('cartItems', 'totalAmount', 'provinces', 'districts', 'wards', 'discounts'));
+        return view('client.pages.confirm_checkout', compact('cartItems','messages', 'totalAmount', 'provinces', 'districts', 'wards', 'discounts'));
     }
 
     /**
      * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
      */
-    public function getDataDiscount($id) {
+    public function getDataDiscount($id)
+    {
         $discount = Discount::findOrFail($id);
         return response([
             'result' => true,

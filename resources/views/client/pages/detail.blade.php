@@ -1,7 +1,26 @@
 {{-- @dd($colors,$sizes) --}}
 @extends('app')
 @section('content')
+    <style>
+        .form-check-input {
+            display: none;
+        }
 
+        .form-check-label {
+            cursor: pointer;
+            padding: 10px 15px;
+            border: 2px solid lightgray;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+
+        }
+
+        .form-check-input:checked+.form-check-label {
+            border: 2px solid red;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
     @if (session('error'))
         <script>
             alert("{{ session('error') }}");
@@ -102,51 +121,51 @@
 
                     <div class="col-lg-6 col-md-6">
                         <div class="product_d_right">
-                            <form action="{{ route('cart.add') }}" method="POST">
-                                @csrf
-                                <h1>{{ $product->name }}</h1>
-                                <div class="price_box">
-                                    <span class="current_price">{{ $product->price_new }}vnđ</span>
-                                    <span class="old_price">{{ $product->price_old }}</span>
-                                </div>
-                                <div class="product_desc">
-                                    <p>{{ $product->description }}</p>
-                                </div>
-                                <div class="product_variant color">
-                                    <h3>Chọn màu</h3>
-                                    <ul>
-                                        @foreach ($colors as $value)
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input color-option" type="radio"
-                                                    name="selectedColor" id="{{ $value }}"
-                                                    value="{{ $value }}">
-                                                <label class="form-check-label"
-                                                    for="{{ $value }}">{{ $value }}</label>
-                                            </div>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="product_variant size mb-4">
-                                    <h3>Chọn kích cỡ</h3>
-                                    @foreach ($sizes as $value)
+
+                            <h1>{{ $product->name }}</h1>
+                            <div class="price_box">
+                                <span class="current_price">{{ number_format($product->price_new, 0, ',', '.') }}
+                                    VNĐ</span>
+                                <span class="old_price">{{ number_format($product->price_old, 0, ',', '.') }} </span>
+
+                            </div>
+                            <div class="product_desc">
+                                <p>{{ $product->description }}</p>
+                            </div>
+                            <div class="product_variant color">
+                                <h3>Chọn màu</h3>
+                                <ul>
+                                    @foreach ($colors as $value)
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input size-option" data-size="{{ $value }}"
-                                                type="radio" name="selectedSize" id="{{ $value }}"
-                                                value="{{ $value }}">
+                                            <input class="form-check-input color-option" type="radio" name="selectedColor"
+                                                id="{{ $value }}" value="{{ $value }}">
                                             <label class="form-check-label"
                                                 for="{{ $value }}">{{ $value }}</label>
                                         </div>
                                     @endforeach
-                                </div>
-                                <div class="product_variant quantity">
-                                    <label>Số Lượng</label>
-                                    <input name="quantity" id="quantityInput" min="1" max="{{ $stockQuantity }}"
-                                        value="1" type="number">
-                                    <input type="hidden" name="product_name" value="{{ $product->name }}">
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <button class="button" type="submit">Thêm vào Giỏ Hàng</button>
-                                </div>
-                            </form>
+                                </ul>
+                            </div>
+                            <div class="product_variant size mb-4">
+                                <h3>Chọn kích cỡ</h3>
+                                @foreach ($sizes as $value)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input size-option" data-size="{{ $value }}"
+                                            type="radio" name="selectedSize" id="{{ $value }}"
+                                            value="{{ $value }}">
+                                        <label class="form-check-label"
+                                            for="{{ $value }}">{{ $value }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="product_variant quantity">
+                                <label>Số Lượng</label>
+                                <input name="quantity" id="quantityInput" min="1" max="{{ $stockQuantity }}"
+                                    value="1" type="number">
+
+                                <input type="hidden" name="product_id" id="product_cart_id" value="{{ $product->id }}">
+                                <button class="button" type="button" id="btn_submit_cart">Thêm vào Giỏ Hàng</button>
+                            </div>
+
 
                             <form action="{{ route('wishlist.create', $product->id) }}" method="POST">
                                 @csrf
@@ -393,7 +412,7 @@
 </script> --}}
 
 
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
             var sizesWithColors = @json($sizesWithColors);
@@ -464,6 +483,101 @@
                     priceBox.textContent = "{{ $product->price_new }}vnđ"; // Giá mặc định
                 }
             }
+        </script>
+
+        <script>
+            let color = '';
+            let size = '';
+            let quantity = 1;
+
+            function statusAlert(type, title, message) {
+                Swal.fire({
+                    icon: `${type}`,
+                    title: `${title}`,
+                    text: `${message}`,
+
+                });
+            }
+
+            function getSelectedColor() {
+                const selectedColor = document.querySelector('input[name="selectedColor"]:checked');
+                return selectedColor ? selectedColor.value : null;
+            }
+
+            function getSelectedSize() {
+                const selectedSize = document.querySelector('input[name="selectedSize"]:checked');
+                return selectedSize ? selectedSize.value : null;
+            }
+
+            document.querySelectorAll('input[name="selectedColor"]').forEach(input => {
+                input.addEventListener('change', () => {
+                    color = getSelectedColor();
+                });
+            });
+
+            document.querySelectorAll('input[name="selectedSize"]').forEach(input => {
+                input.addEventListener('change', () => {
+                    size = getSelectedSize();
+                });
+            });
+            const quantitys = document.querySelector('#quantityInput');
+            quantitys.addEventListener('change', () => {
+                quantity = quantitys.value;
+
+            })
+            const id = document.querySelector('#product_cart_id').value;
+            const btn_cart = document.querySelector('#btn_submit_cart');
+
+
+            btn_cart.addEventListener('click', () => {
+                if (color == "" || size == "") {
+                    statusAlert('error', 'Lỗi', 'Vui lòng chọn phân loại');
+                } else {
+                    $.ajax({
+                        url: "{{ route('cart.add') }}",
+                        method: "GET",
+                        data: {
+                            color,
+                            size,
+                            quantity,
+                            id
+
+                        },
+                        success: function(response) {
+
+                            statusAlert(response.type, response.title, response.message);
+
+
+                        }
+
+                    });
+                }
+
+            })
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const colorOptions = document.querySelectorAll(".color-option");
+                const sizeOptions = document.querySelectorAll(".size-option");
+
+                colorOptions.forEach(input => {
+                    input.addEventListener("change", function() {
+                        document.querySelectorAll(".color-option + label").forEach(label => {
+                            label.style.border = "2px solid transparent";
+                        });
+                        this.nextElementSibling.style.border = "2px solid red";
+                    });
+                });
+
+                sizeOptions.forEach(input => {
+                    input.addEventListener("change", function() {
+                        document.querySelectorAll(".size-option + label").forEach(label => {
+                            label.style.border = "2px solid transparent";
+                        });
+                        this.nextElementSibling.style.border = "2px solid red";
+                    });
+                });
+            });
         </script>
 
     @endsection
