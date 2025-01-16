@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+Broadcast::channel('MessagesEvent.{user_send}.{user_revice}', function ($user, $user_send, $user_revice) {
+    return $user->id == (int) $user_send || $user->id == (int)$user_revice;
+});

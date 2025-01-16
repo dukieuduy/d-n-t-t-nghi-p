@@ -17,7 +17,7 @@ class OrderController extends Controller
     public function __construct()
     {
         // Áp dụng middleware auth để đảm bảo chỉ người dùng đã đăng nhập mới có thể truy cập
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     public function index(Request $request)
